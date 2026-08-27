@@ -513,17 +513,41 @@ async function sampleAndIdentifyAudio(source, opts = {}) {
     samplePath = `/tmp/sample_${Date.now()}_${Math.random().toString(36).slice(2, 6)}.mp3`;
     isTemp = true;
 
+    // Resolve TuneIn / RadioTime / PLS / M3U / ASX playlist wrapper if needed
+    let streamUrl = source;
+    if (streamUrl.includes('opml.radiotime.com') || streamUrl.includes('.ashx') || streamUrl.endsWith('.pls') || streamUrl.endsWith('.asx') || (streamUrl.endsWith('.m3u') && !streamUrl.includes('.m3u8'))) {
+      try {
+        const res = await fetch(streamUrl, {
+          headers: { 'User-Agent': 'Mozilla/5.0' },
+          signal: AbortSignal.timeout(5000)
+        });
+        if (res.ok) {
+          const body = await res.text();
+          const lines = body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http'));
+          if (lines.length > 0) {
+            streamUrl = lines[0];
+          } else {
+            const m = body.match(/url=["'](https?:\/\/[^"']+)["']/i) || body.match(/href=["'](https?:\/\/[^"']+)["']/i);
+            if (m) streamUrl = m[1];
+          }
+        }
+      } catch (_) {}
+    }
+
     try {
       spawnSync('ffmpeg', [
         '-y',
         '-user_agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        '-i', source,
+        '-reconnect', '1',
+        '-reconnect_streamed', '1',
+        '-reconnect_delay_max', '5',
+        '-i', streamUrl,
         '-t', String(duration),
         '-vn',
         '-acodec', 'libmp3lame',
         '-q:a', '2',
         samplePath
-      ], { timeout: 12000 });
+      ], { timeout: 15000 });
     } catch (e) {
       if (isTemp && fs.existsSync(samplePath)) try { fs.unlinkSync(samplePath); } catch (_) {}
       return { type: 'unknown', match: false, error: 'Could not sample stream' };

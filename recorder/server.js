@@ -307,9 +307,6 @@ function corusMetaUrl(callsign) {
   return `https://globalnewselection.s3.amazonaws.com/fm-playlist/results/${norm}_np.js?callback=jsonpcallback`;
 }
 
-const STATION_LIBRARY_FILE = path.join(__dirname, 'data', 'station_library.json');
-const STATION_LIBRARY = fs.existsSync(STATION_LIBRARY_FILE) ? loadJSON(STATION_LIBRARY_FILE, {}) : {};
-
 // ── Rogers nowplaying ─────────────────────────────────────────────────────────
 
 async function fetchRogersMetadata(callsign) {
@@ -1032,9 +1029,27 @@ async function transcribeAndExtract(audioFile, stationName) {
   }
 }
 
+// ── Stream URL Playlist / OPML Resolver ───────────────────────────────────────
+
+async function resolveDirectStreamUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  if (url.includes('opml.radiotime.com') || url.includes('.ashx') || url.endsWith('.pls') || url.endsWith('.asx') || (url.endsWith('.m3u') && !url.includes('.m3u8'))) {
+    try {
+      const res = await httpGet(url, { timeout: 4000 });
+      if (res && res.body) {
+        const lines = res.body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http'));
+        if (lines.length > 0) return lines[0];
+        const m = res.body.match(/url=["'](https?:\/\/[^"']+)["']/i) || res.body.match(/href=["'](https?:\/\/[^"']+)["']/i);
+        if (m) return m[1];
+      }
+    } catch (_) {}
+  }
+  return url;
+}
+
 // ── Monitor ───────────────────────────────────────────────────────────────────
 
-function startMonitor(id, url, options = {}) {
+async function startMonitor(id, url, options = {}) {
   const {
     pollInterval = 10, stallThreshold = 60,
     metadataUrl = null, metadataSource = 'auto', // 'auto'|'stream'|'json'|'hls'
@@ -1044,8 +1059,10 @@ function startMonitor(id, url, options = {}) {
     metadataLogEnabled = true, metadataRetentionHours = 5,
   } = options;
 
+  const directUrl = await resolveDirectStreamUrl(url);
+
   const state = {
-    id, url, status: 'listening',
+    id, url, directUrl, status: 'listening',
     currentTitle: null, currentArtist: null, currentSongTitle: null, currentAlbumart: null,
     lastTitle: null, lastTitleChange: Date.now(),
     station: null, recordingFile: null, recordingStart: null,
@@ -1105,7 +1122,7 @@ function startMonitor(id, url, options = {}) {
       if (shouldRunAcoustic) {
         state.fpRunning = true;
         state.lastFpCheck = now;
-        audioDsp.sampleAndIdentifyAudio(state.url, {
+        audioDsp.sampleAndIdentifyAudio(state.directUrl || state.url, {
           adDbFile: FINGERPRINTS_FILE,
           musicDbFile: MUSIC_FINGERPRINTS_FILE,
           durationSeconds: 5
@@ -1181,12 +1198,13 @@ function beginRecording(state) {
   state.recordingStart = new Date();
   state.status = 'recording';
 
+  const streamUrl = state.directUrl || state.url;
   const ffmpegArgs = [
     '-user_agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     '-reconnect', '1',
     '-reconnect_streamed', '1',
     '-reconnect_delay_max', '5',
-    '-i', state.url,
+    '-i', streamUrl,
     '-vn',
     '-acodec', 'libmp3lame',
     '-q:a', '2',
@@ -1280,357 +1298,163 @@ function endRecording(state) {
   }
 }
 
-// ── Radio Browser API ─────────────────────────────────────────────────────────
+// ── TuneIn Search & Direct ID Resolver (v2.0) ─────────────────────────────────
+
+async function searchTuneIn(query, limit = 15) {
+  const q = (query || '').trim();
+  if (!q) return [];
+
+  // 1. Direct TuneIn ID lookup (e.g. s12183, s12345, 12183)
+  const isDirectId = /^s?\d+$/i.test(q);
+  if (isDirectId) {
+    const guideId = q.toLowerCase().startsWith('s') ? q.toLowerCase() : 's' + q;
+    try {
+      const [describeRes, tuneRes, npRes] = await Promise.all([
+        httpGet(`https://opml.radiotime.com/Describe.ashx?id=${guideId}&render=json`, { timeout: 5000 }).catch(() => null),
+        httpGet(`https://opml.radiotime.com/Tune.ashx?id=${guideId}&render=json&formats=mp3,aac`, { timeout: 5000 }).catch(() => null),
+        httpGet(`https://feed.tunein.com/profiles/${guideId}/nowPlaying`, { timeout: 4000 }).catch(() => null)
+      ]);
+
+      let stationName = '', stationLogo = '', description = '', genre = '';
+      if (describeRes && describeRes.body) {
+        try {
+          const descData = JSON.parse(describeRes.body);
+          const bodyArr = Array.isArray(descData.body) ? descData.body : [descData.body || {}];
+          const head = descData.head || {};
+          const first = bodyArr[0] || {};
+          stationName = head.title || first.text || first.subtext || guideId;
+          stationLogo = first.image || head.image || '';
+          description = first.description || first.subtext || '';
+          genre = first.genre || '';
+        } catch (_) {}
+      }
+
+      let streamUrl = `https://opml.radiotime.com/Tune.ashx?id=${guideId}&formats=mp3,aac`;
+      if (tuneRes && tuneRes.body) {
+        try {
+          const tuneData = JSON.parse(tuneRes.body);
+          const tuneBody = Array.isArray(tuneData.body) ? tuneData.body : [tuneData.body || {}];
+          if (tuneBody[0]?.url) streamUrl = tuneBody[0].url;
+        } catch (_) {
+          const lines = tuneRes.body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http'));
+          if (lines.length > 0) streamUrl = lines[0];
+        }
+      }
+
+      if (streamUrl.includes('opml.radiotime.com')) {
+        try {
+          const pl = await httpGet(streamUrl, { timeout: 4000 });
+          const plLines = pl.body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http'));
+          if (plLines.length > 0) streamUrl = plLines[0];
+        } catch (_) {}
+      }
+
+      let nowPlaying = '', albumart = '';
+      if (npRes && npRes.body) {
+        try {
+          const npData = JSON.parse(npRes.body);
+          const sec = npData.Secondary || {};
+          nowPlaying = sec.Title || npData.Header?.Subtitle || '';
+          albumart = sec.Image || '';
+        } catch (_) {}
+      }
+
+      return [{
+        name: stationName || `TuneIn ${guideId}`,
+        callsign: (stationName && /^[A-Z]{4}(-\w+)?$/i.test(stationName)) ? stationName : '',
+        streamUrl,
+        directUrl: streamUrl,
+        audioUrl: streamUrl,
+        favicon: stationLogo,
+        tuneinId: guideId,
+        metadataUrl: `https://feed.tunein.com/profiles/${guideId}/nowPlaying`,
+        metadataType: 'tunein',
+        description,
+        genre,
+        nowPlaying,
+        albumart,
+        source: 'tunein'
+      }];
+    } catch (e) {
+      console.error('[tunein-id-lookup] Error:', e.message);
+    }
+  }
+
+  // 2. Keyword Search across TuneIn Global Directory
+  try {
+    const result = await httpGet(
+      `https://opml.radiotime.com/Search.ashx?query=${encodeURIComponent(q)}&formats=mp3,aac&render=json&filter=s`,
+      { timeout: 6000 }
+    );
+    const data = JSON.parse(result.body);
+    const items = (data.body || []).filter(i => i.type === 'audio' && i.guide_id);
+    const stationItems = items.slice(0, parseInt(limit));
+
+    const resolved = await Promise.all(stationItems.map(async s => {
+      const guideId = s.guide_id || '';
+      let streamUrl = s.URL || s.url || `https://opml.radiotime.com/Tune.ashx?id=${guideId}&formats=mp3,aac`;
+      let nowPlaying = '', albumart = '', stationLogo = s.image || '';
+      const metadataUrl = guideId ? `https://feed.tunein.com/profiles/${guideId}/nowPlaying` : '';
+
+      await Promise.all([
+        (async () => {
+          if (streamUrl && streamUrl.includes('opml.radiotime.com')) {
+            try {
+              const playlistRes = await httpGet(streamUrl, { timeout: 4000 });
+              const lines = playlistRes.body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http'));
+              if (lines.length > 0) streamUrl = lines[0];
+            } catch (_) {}
+          }
+        })(),
+        (async () => {
+          if (!guideId) return;
+          try {
+            const npRes = await httpGet(metadataUrl, { timeout: 4000 });
+            const npData = JSON.parse(npRes.body);
+            const secondary = npData.Secondary || {};
+            const primary = npData.Primary || {};
+            nowPlaying = secondary.Title || npData.Header?.Subtitle || '';
+            albumart = secondary.Image || '';
+            if (!stationLogo) stationLogo = primary.Image || '';
+          } catch (_) {}
+        })()
+      ]);
+
+      return {
+        name: s.text || s.subtext || `Station ${guideId}`,
+        callsign: (s.text && /^[A-Z]{4}(-\w+)?$/i.test(s.text)) ? s.text : '',
+        streamUrl,
+        directUrl: streamUrl,
+        audioUrl: streamUrl,
+        favicon: stationLogo,
+        tuneinId: guideId,
+        codec: s.formats || 'mp3',
+        bitrate: s.bitrate || '',
+        metadataUrl,
+        metadataType: 'tunein',
+        nowPlaying,
+        albumart,
+        description: s.subtext || '',
+        source: 'tunein'
+      };
+    }));
+
+    return resolved;
+  } catch (e) {
+    console.error('[tunein-search] Error:', e.message);
+    return [];
+  }
+}
 
 app.get('/api/tools/search-stations', async (req, res) => {
-  const { q, country, limit = 10, source = 'radiobrowser' } = req.query;
+  const { q, limit = 15 } = req.query;
   if (!q) return res.status(400).json({ error: 'q required' });
-
   try {
-    // ── TuneIn ──────────────────────────────────────────────────────────────
-    if (source === 'tunein') {
-      const result = await httpGet(
-        `https://opml.radiotime.com/Search.ashx?query=${encodeURIComponent(q)}&formats=mp3,aac&render=json&filter=s`
-      );
-      const data = JSON.parse(result.body);
-      const items = (data.body || []).filter(i => i.type === 'audio' && i.guide_id);
-      // Resolve each result with a tight per-station timeout
-      const stationItems = items.slice(0, parseInt(limit));
-      const resolved = await Promise.all(stationItems.map(async s => {
-        const guideId = s.guide_id || '';
-        let streamUrl = s.URL || s.url || '';
-        let nowPlaying = '', albumart = '', stationLogo = s.image || '';
-        const metadataUrl = guideId ? `https://feed.tunein.com/profiles/${guideId}/nowPlaying` : '';
-
-        // Race: resolve stream URL + fetch nowplaying simultaneously, 4s timeout each
-        await Promise.all([
-          // 1. Resolve OPML playlist to real stream URL
-          (async () => {
-            if (streamUrl && streamUrl.includes('opml.radiotime.com')) {
-              try {
-                const playlistRes = await Promise.race([
-                  httpGet(streamUrl, { timeout: 4000 }),
-                  new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 4000))
-                ]);
-                const lines = playlistRes.body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http'));
-                if (lines.length > 0) streamUrl = lines[0];
-              } catch(_) {}
-            }
-          })(),
-          // 2. Fetch nowplaying from TuneIn feed
-          (async () => {
-            if (!guideId) return;
-            try {
-              const npRes = await Promise.race([
-                httpGet(metadataUrl, { timeout: 4000 }),
-                new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 4000))
-              ]);
-              const npData = JSON.parse(npRes.body);
-              const secondary = npData.Secondary || {};
-              const primary   = npData.Primary   || {};
-              nowPlaying  = secondary.Title || npData.Header?.Subtitle || '';
-              albumart    = secondary.Image || '';
-              stationLogo = primary.Image   || s.image || '';
-            } catch(_) {}
-          })(),
-        ]);
-
-        return {
-          name:         s.text || s.subtext || '',
-          streamUrl,
-          favicon:      stationLogo,
-          country:      '',
-          codec:        s.formats || '',
-          bitrate:      s.bitrate || '',
-          tuneinId:     guideId,
-          metadataUrl,
-          metadataType: guideId ? 'tunein' : '',
-          nowPlaying,
-          albumart,
-          source: 'tunein',
-        };
-      }));
-      return res.json(resolved);
-    }
-
-    // ── iHeart Radio Canada ──────────────────────────────────────────────────
-    // Uses iHeart's undocumented but functional API - Canada endpoint
-    if (source === 'iheart') {
-      try {
-        const ihrResult = await httpGet(
-          `https://ca.api.iheart.com/api/v3/search/all?keywords=${encodeURIComponent(q)}&maxRows=${limit}&countryCode=CA&station=true&artist=false&album=false&track=false&playlist=false&podcast=false`,
-          { headers: { 'User-Agent': 'Mozilla/5.0', 'Accept': 'application/json', 'X-hostName': 'www.iheart.com' } }
-        );
-        const data = JSON.parse(ihrResult.body);
-        const stations = (data.results && data.results.stations) || [];
-        const ihrMapped = stations.slice(0, parseInt(limit)).map(s => {
-          const streamUrl = s.streams && (s.streams.shoutcast_stream || s.streams.secure_shoutcast_stream || s.streams.pls_stream || '') || '';
-          return {
-            name: s.name || s.callLetters,
-            callsign: s.callLetters || '',
-            streamUrl,
-            favicon: s.logoUrl ? `https://i.iheart.com/v3/re/${s.logoUrl}` : (s.newLogo || ''),
-            country: 'CA',
-            province: s.markets && s.markets[0] && s.markets[0].city ? s.markets[0].city : '',
-            description: s.description || '',
-            iheartId: s.id,
-            source: 'iheart',
-          };
-        });
-        // Auto-resolve metadata + audio for each result
-        const ihrResolved = await Promise.all(ihrMapped.map(async s => {
-          if (!s.streamUrl) return s;
-          try {
-            const resolved = await resolveStationUrls(s.streamUrl, s.callsign, null);
-            return { ...s, audioUrl: resolved.audioUrl || s.streamUrl, metadataUrl: resolved.metadataUrl || '', metadataType: resolved.metadataType || 'auto', nowPlaying: resolved.nowPlaying || '', icyName: resolved.icyName || '' };
-          } catch(_) { return s; }
-        }));
-        return res.json(ihrResolved);
-      } catch(e) {
-        return res.status(500).json({ error: 'iHeart API error: ' + e.message });
-      }
-    }
-
-    // ── Streema ───────────────────────────────────────────────────────────────
-    // Streema has an unofficial JSON API
-    if (source === 'streema') {
-      try {
-        const streemaResult = await httpGet(
-          `https://streema.com/radios/search/?q=${encodeURIComponent(q)}&format=json&limit=${limit}${country ? '&country=' + country : ''}`,
-          { headers: { 'User-Agent': 'Mozilla/5.0', 'Accept': 'application/json, text/html' } }
-        );
-        // Streema may return JSON or HTML - try JSON first
-        try {
-          const data = JSON.parse(streemaResult.body);
-          const objects = data.objects || data.results || [];
-          return res.json(objects.slice(0, parseInt(limit)).map(s => ({
-            name: s.name || s.title,
-            streamUrl: s.stream_url || s.streamUrl || '',
-            favicon: s.logo || s.image || '',
-            country: s.country || '',
-            province: s.city || s.region || '',
-            source: 'streema',
-          })));
-        } catch(_) {
-          // Streema returned HTML - parse station data from it
-          const matches = [...streemaResult.body.matchAll(/"name":\s*"([^"]+)"[^}]*"stream_url":\s*"([^"]+)"/g)];
-          return res.json(matches.slice(0, parseInt(limit)).map(m => ({
-            name: m[1], streamUrl: m[2], source: 'streema',
-          })));
-        }
-      } catch(e) {
-        return res.status(500).json({ error: 'Streema API error: ' + e.message });
-      }
-    }
-
-    // ── Seekr (Rogers) ────────────────────────────────────────────────────────
-    // Seekr is Rogers' app - we search from the Rogers nowplaying API
-    // (which returns all Rogers stations) and filter by name/callsign
-    if (source === 'seekr') {
-      try {
-        const rogersResult = await httpGet('https://radio.rogersdigitalmedia.com/service/now_playing');
-        const allStations = JSON.parse(rogersResult.body);
-        const qLower = q.toLowerCase();
-        const filtered = allStations.filter(s =>
-          s.call_letters && (
-            s.call_letters.toLowerCase().includes(qLower) ||
-            (s.now_playing && s.now_playing.title && s.now_playing.title.toLowerCase().includes(qLower))
-          )
-        );
-        // For stream URLs, cross-reference with Radio Browser
-        const results = await Promise.all(filtered.slice(0, parseInt(limit)).map(async s => {
-          let streamUrl = '';
-          let favicon = '';
-          try {
-            const rbResult = await httpGet(
-              `https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(s.call_letters)}&limit=1&hidebroken=true&countrycodeexact=CA`
-            );
-            const rbStations = JSON.parse(rbResult.body);
-            if (rbStations.length > 0) {
-              streamUrl = rbStations[0].url_resolved || rbStations[0].url || '';
-              favicon = rbStations[0].favicon || '';
-            }
-          } catch(_) {}
-          const np = s.now_playing || {};
-          return {
-            name: s.call_letters,
-            callsign: s.call_letters,
-            streamUrl,
-            favicon,
-            country: 'CA',
-            nowPlaying: np.artist && np.title ? `${np.artist} - ${np.title}` : (np.title || ''),
-            metadataUrl: `https://radio.rogersdigitalmedia.com/service/now_playing`,
-            network: 'Rogers',
-            source: 'seekr',
-            note: 'Rogers / Seekr station',
-          };
-        }));
-        return res.json(results);
-      } catch(e) {
-        return res.status(500).json({ error: 'Seekr/Rogers API error: ' + e.message });
-      }
-    }
-
-    // ── Direct Stream (checklines.net) ──────────────────────────────────────
-    if (source === 'directstream') {
-      const CHECKLINES = [
-        { url: 'https://stingray.checklines.net/', network: 'Stingray' },
-        { url: 'https://rogers.checklines.net/', network: 'Rogers' },
-        { url: 'https://corus.checklines.net/', network: 'Corus' },
-        { url: 'https://mbsradio.checklines.net/', network: 'Stingray' },
-        { url: 'https://goldenwest.checklines.net/', network: 'Golden West' },
-      ];
-      const qUpper = q.toUpperCase().trim();
-      const results = [];
-      await Promise.all(CHECKLINES.map(async ({ url, network }) => {
-        try {
-          const res = await httpGet(url, { timeout: 10000 });
-          const body = res.body;
-          // Extract rows: callsign | MP3 URL | AAC URL
-          // Pattern: | CALLSIGN | ... https://...leanstream... |
-          const rowRegex = /\|\s*(C[A-Z]{2,4}(?:FM|AM)?(?:-META)?)\s*\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)/g;
-          const linkRegex = /https?:\/\/[^\s)\]"]+leanstream[^\s)\]"]+/g;
-          // Simpler: find all callsigns and their first MP3 URL nearby
-          const callsignRegex = /\|\s*(C[A-Z]{3,5}(?:FM|AM)?)\s*(?:\([^)]*\))?\s*\|/g;
-          let match;
-          const seen = new Set();
-          while ((match = callsignRegex.exec(body)) !== null) {
-            const callsign = match[1];
-            if (seen.has(callsign) || callsign.endsWith('META')) continue;
-            seen.add(callsign);
-            // Filter by query
-            if (qUpper && !callsign.includes(qUpper) && !body.substring(match.index, match.index+200).toUpperCase().includes(qUpper)) continue;
-            // Find MP3 URL near this callsign
-            const section = body.substring(match.index, match.index + 600);
-            const mp3Match = section.match(/https?:\/\/[^\s)\]"']+(?:-MP3)[^\s)\]"']*/);
-            const aacMatch = section.match(/https?:\/\/[^\s)\]"']+leanstream[^\s)\]"']*(?<!-MP3)(?<!-MP3-2)/);
-            const streamUrl = (mp3Match && mp3Match[0]) || (aacMatch && aacMatch[0]) || '';
-            // Determine metadata URL based on network
-            let metadataUrl = '';
-            let metadataType = 'icy';
-
-            if (network === 'Corus') {
-              // Corus uses globalnewselection S3 JSONP endpoint
-              metadataUrl = `https://globalnewselection.s3.amazonaws.com/fm-playlist/results/${callsign}_np.js?callback=jsonpcallback`;
-              metadataType = 'corus-jsonp';
-              // Also override stream URL with corus.leanstream.co pattern
-              if (!streamUrl) {
-                const corusStream = `https://corus.leanstream.co/${callsign}?args=web_01`;
-              }
-            } else if (network === 'Rogers') {
-              // Rogers uses the Rogers nowplaying API
-              metadataUrl = 'https://radio.rogersdigitalmedia.com/service/now_playing';
-              metadataType = 'json';
-            } else if (network === 'Stingray' || network === 'MBS Radio') {
-              // Stingray uses player.[domain]/CALLSIGN/nowplaying — domain prompt needed
-              // For now set NP3 as fallback if MP3 URL exists
-              if (streamUrl.includes('-MP3')) {
-                metadataUrl = streamUrl.replace(/-MP3(-\d+)?(\?.*)?$/, '-NP3').split('?')[0];
-                metadataType = 'json';
-              }
-            } else {
-              // Other networks — try NP3 pattern
-              if (streamUrl.includes('-MP3')) {
-                metadataUrl = streamUrl.replace(/-MP3(-\d+)?(\?.*)?$/, '-NP3').split('?')[0];
-                metadataType = 'json';
-              }
-            }
-
-            results.push({
-              name: callsign,
-              callsign,
-              streamUrl,
-              audioUrl: streamUrl,
-              metadataUrl,
-              metadataType,
-              network,
-              country: 'CA',
-              source: 'directstream',
-              checklinesSite: url,
-              note: network + ' via checklines.net',
-            });
-          }
-        } catch(e) { console.error('[checklines]', url, e.message); }
-      }));
-      // Filter and sort
-      const filtered = qUpper
-        ? results.filter(s => s.callsign.includes(qUpper) || s.network.toUpperCase().includes(qUpper) || s.note.toUpperCase().includes(qUpper))
-        : results;
-      return res.json(filtered.slice(0, parseInt(limit)));
-    }
-
-    // ── Radio Player Canada ─────────────────────────────────────────────────
-    if (source === 'radioplayer-canada') {
-      const byName = await httpGet(
-        `https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(q)}&limit=${limit}&hidebroken=true&order=votes&countrycodeexact=CA`
-      );
-      let stations = JSON.parse(byName.body);
-      if (/^[A-Z]{2,5}$/i.test(q.trim())) {
-        try {
-          const byCallsign = await httpGet(
-            `https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(q.trim())}&limit=5&hidebroken=true&countrycodeexact=CA&order=votes`
-          );
-          const csStations = JSON.parse(byCallsign.body);
-          const seen = new Set(stations.map(s => s.stationuuid));
-          csStations.forEach(s => { if (!seen.has(s.stationuuid)) stations.push(s); });
-        } catch(_) {}
-      }
-      return res.json(stations.slice(0, parseInt(limit)).map(s => ({
-        name: s.name,
-        callsign: s.name.match(/^[A-Z]{2,5}(-FM|-AM)?/i)?.[0] || '',
-        streamUrl: s.url_resolved || s.url,
-        homepage: s.homepage, favicon: s.favicon,
-        country: s.country, province: s.state || '',
-        language: s.language, tags: s.tags,
-        codec: s.codec, bitrate: s.bitrate,
-        source: 'radioplayer-canada',
-        note: 'Via Radio Browser (CA)',
-      })));
-    }
-
-    // ── Bell Media ───────────────────────────────────────────────────────────
-    if (source === 'bell') {
-      const qUpper = q.toUpperCase().trim();
-      const bellResults = Object.entries(BELL_STATIONS)
-        .filter(([cs, info]) =>
-          cs.includes(qUpper) ||
-          info.brand.toUpperCase().includes(qUpper) ||
-          info.city.toUpperCase().includes(qUpper) ||
-          info.network.toUpperCase().includes(qUpper)
-        )
-        .slice(0, parseInt(limit))
-        .map(([cs, info]) => ({
-          name: info.brand,
-          callsign: cs,
-          streamUrl: bellStreamUrl(cs),
-          audioUrl: bellStreamUrl(cs),
-          metadataUrl: tritonMetaUrl(cs),
-          metadataType: 'triton',
-          network: 'Bell',
-          country: 'CA',
-          city: info.city,
-          note: 'Bell Media — stream via iHeart. Add stream URL manually from iheart.com.',
-          source: 'bell',
-        }));
-      return res.json(bellResults);
-    }
-
-    // ── Radio Browser (default) ─────────────────────────────────────────────
-    const rbUrl = country
-      ? `https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(q)}&limit=${limit}&hidebroken=true&order=votes&countrycodeexact=${country}`
-      : `https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(q)}&limit=${limit}&hidebroken=true&order=votes`;
-    const result = await httpGet(rbUrl);
-    const stations = JSON.parse(result.body);
-    res.json(stations.map(s => ({
-      name: s.name,
-      callsign: s.name.match(/^[A-Z]{2,5}(-FM|-AM)?/i)?.[0] || '',
-      streamUrl: s.url_resolved || s.url,
-      homepage: s.homepage, favicon: s.favicon, country: s.country,
-      province: s.state || '', language: s.language,
-      tags: s.tags, codec: s.codec, bitrate: s.bitrate,
-      source: 'radiobrowser',
-    })));
-  } catch(e) { res.status(500).json({ error: e.message }); }
+    const results = await searchTuneIn(q, limit);
+    res.json(results);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // ── Auto-resolve stream + metadata for a station ─────────────────────────────
@@ -1949,18 +1773,6 @@ app.post('/api/tools/probe-stream', async (req, res) => {
 
     res.json(result);
   } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-// Station library endpoint — all networks
-app.get('/api/library', (req, res) => {
-  res.json(STATION_LIBRARY);
-});
-
-app.get('/api/library/:network', (req, res) => {
-  const net = req.params.network;
-  const stations = STATION_LIBRARY[net];
-  if (!stations) return res.status(404).json({ error: 'Network not found' });
-  res.json(stations);
 });
 
 // Lookup callsign in Corus registry

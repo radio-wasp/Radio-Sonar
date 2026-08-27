@@ -1322,10 +1322,12 @@ select option { background: var(--surface); color: var(--text); }
 <body>
 <header class="header">
   <div class="brand-badge">
-    <img src="/sonar-logo.png" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex-shrink:0" alt="Radio SONAR" onerror="this.style.display='none'">
+    <img src="/sonar-logo.png" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex-shrink:0" alt="Radio SONAR v2" onerror="this.style.display='none'">
     <div>
-      <div class="app-name">Radio SONAR</div>
-      <div class="app-tag">Broadcast Intelligence Console</div>
+      <div class="app-name" style="display:flex;align-items:center;gap:6px">
+        Radio SONAR <span style="font-size:10px;font-weight:700;padding:2px 7px;background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);border-radius:999px">v2.0</span>
+      </div>
+      <div class="app-tag">Broadcast Intelligence Console · TuneIn & Acoustic AI</div>
     </div>
   </div>
   <nav class="nav-tabs" id="navTabs">
@@ -1345,8 +1347,6 @@ select option { background: var(--surface); color: var(--text); }
         <div class="tools-item" onclick="openIdentifyModal()">🎧 Acoustic Audio Identifier</div>
         <div class="tools-item" onclick="openModal('probeModal')">📡 Probe Stream URL</div>
         <div class="tools-item" onclick="openAiSettingsModal()">🤖 AI & Transcription Settings</div>
-        <div class="tools-item" onclick="repairStationUrls()">🔧 Repair Metadata URLs</div>
-        <div class="tools-item" onclick="rebuildBellUrls()">🔔 Rebuild Bell URLs</div>
         <div class="tools-item" onclick="refreshAllLogos()">🖼 Refresh All Logos</div>
       </div>
     </div>
@@ -1571,8 +1571,10 @@ select option { background: var(--surface); color: var(--text); }
       <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
         <img src="/sonar-logo.png" style="width:72px;height:72px;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.12)">
         <div>
-          <div style="font-size:26px;font-weight:800;letter-spacing:-.5px">Radio SONAR</div>
-          <div style="font-size:14px;color:var(--muted);margin-top:2px">Radio Intelligence Platform · Beta 1.1</div>
+          <div style="font-size:26px;font-weight:800;letter-spacing:-.5px;display:flex;align-items:center;gap:8px">
+            Radio SONAR <span style="font-size:12px;font-weight:700;padding:2px 8px;background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);border-radius:999px">v2.0</span>
+          </div>
+          <div style="font-size:14px;color:var(--muted);margin-top:2px">Radio Intelligence Platform · Pure TuneIn & Acoustic AI Engine</div>
         </div>
       </div>
       <div id="readmeContent" style="font-size:14px;line-height:1.7;color:var(--text)">Loading README...</div>
@@ -1638,84 +1640,27 @@ select option { background: var(--surface); color: var(--text); }
 </div>
 
 <div class="modal-overlay" id="searchModal">
-  <div class="modal" style="max-width:700px">
-    <div class="modal-title">📻 Find a Radio Station <button class="modal-close" onclick="closeModal('searchModal')">✕</button></div>
-    <div id="findModeChooser" style="display:flex;gap:12px;margin-bottom:20px">
-      <button class="btn btn-start" style="flex:1;justify-content:center;font-size:12px;padding:14px;flex-direction:column;line-height:1.6" onclick="showFindMode('library')">
-        📚 LIBRARY<div style="font-weight:400;font-size:10px;opacity:.8">Browse 300+ Canadian stations</div>
-      </button>
-      <button class="btn btn-secondary" style="flex:1;justify-content:center;font-size:12px;padding:14px;flex-direction:column;line-height:1.6" onclick="showFindMode('search')">
-        🔍 SEARCH<div style="font-weight:400;font-size:10px;opacity:.8">Search TuneIn, iHeart, Streema</div>
-      </button>
+  <div class="modal" style="max-width:720px">
+    <div class="modal-title" style="display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span>📻 Find Radio Station</span>
+        <span style="font-size:10px;font-weight:700;padding:2px 7px;background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);border-radius:999px">TuneIn v2</span>
+      </div>
+      <button class="modal-close" onclick="closeModal('searchModal')">✕</button>
     </div>
 
-    <!-- Library pane -->
-    <div id="findLibraryPane" style="display:none">
-      <div class="form-row" style="margin-bottom:14px;align-items:flex-end">
-        <div class="form-col-sm">
-          <label>Network</label>
-          <select id="libraryNetwork" onchange="loadLibraryNetwork()">
-            <option value="">— select —</option>
-            <option value="Rogers">Rogers</option>
-            <option value="Bell">Bell Media</option>
-            <option value="Corus">Corus</option>
-            <option value="Stingray">Stingray</option>
-            <option value="Maritime Broadcasting">Maritime Broadcasting</option>
-            <option value="Vista">Vista Radio</option>
-            <option value="Pattison">Pattison Media</option>
-            <option value="Acadia">Acadia Broadcasting</option>
-          </select>
-        </div>
-        <div class="form-col">
-          <label>Station</label>
-          <select id="libraryStation" onchange="previewLibraryStation()" disabled>
-            <option value="">— select network first —</option>
-          </select>
-        </div>
+    <div style="margin-bottom:16px">
+      <div style="display:flex;gap:8px">
+        <input type="text" id="stationSearchQ" placeholder="Enter station name, city, frequency, or TuneIn ID (e.g. s12183)..." style="flex:1;padding:12px 14px;font-size:14px;border-radius:8px;border:1px solid var(--border)" onkeydown="if(event.key==='Enter')searchStations()" autofocus/>
+        <button class="btn btn-start" style="padding:12px 22px;font-size:13px;border-radius:8px" onclick="searchStations()">FIND</button>
       </div>
-      <div id="libraryPreview" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-          <div id="libPreviewLogoWrap" style="width:52px;height:52px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;overflow:hidden">📻</div>
-          <div style="flex:1">
-            <div id="libPreviewName" style="font-weight:700;font-size:15px"></div>
-            <div id="libPreviewCallsign" style="font-family:Space Mono,monospace;font-size:11px;color:var(--muted)"></div>
-            <div id="libPreviewCity" style="font-size:11px;color:var(--muted)"></div>
-          </div>
-        </div>
-        <div style="display:grid;gap:6px">
-          <div>
-            <div style="font-size:10px;color:var(--muted);font-family:Space Mono,monospace;margin-bottom:2px">AUDIO</div>
-            <div id="libPreviewAudio" style="font-size:11px;word-break:break-all;color:var(--green)"></div>
-          </div>
-          <div>
-            <div style="font-size:10px;color:var(--muted);font-family:Space Mono,monospace;margin-bottom:2px">METADATA</div>
-            <div id="libPreviewMeta" style="font-size:11px;word-break:break-all;color:var(--blue)"></div>
-          </div>
-        </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;font-size:11.5px;color:var(--text-secondary)">
+        <span>💡 Search by name (<em>"Q107"</em>, <em>"Now Radio"</em>, <em>"Halifax"</em>) or enter any TuneIn guide ID (<em>"s12183"</em>).</span>
+        <span style="color:var(--muted)">TuneIn Global Directory</span>
       </div>
-      <button id="libAddBtn" class="btn btn-start" style="width:100%;justify-content:center;display:none" onclick="addLibraryStation()">➕ ADD TO STATIONS</button>
     </div>
 
-    <!-- Search pane -->
-    <div id="findSearchPane" style="display:none">
-      <div class="form-row" style="margin-bottom:12px">
-        <div class="form-col"><label>Station Name, Callsign or City</label><input type="text" id="stationSearchQ" placeholder="e.g. CKFM, AVR, Toronto" onkeydown="if(event.key==='Enter')searchStations()"/></div>
-        <div class="form-col-xs"><label>Country</label><input type="text" id="stationSearchCountry" placeholder="CA" maxlength="2"/></div>
-        <div class="form-col-sm"><label>Source</label>
-          <select id="searchSource" onchange="updateSearchInfo()">
-            <option value="tunein">TuneIn</option>
-            <option value="iheart">iHeart Radio Canada 🍁</option>
-            <option value="streema">Streema</option>
-            <option value="radiobrowser">Radio Browser</option>
-          </select>
-        </div>
-        <button class="btn btn-start" style="align-self:flex-end" onclick="searchStations()">SEARCH</button>
-      </div>
-      <div id="searchSourceInfo" style="background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:var(--blue)">
-        Search by station name, callsign, or city.
-      </div>
-      <div id="stationSearchResults"></div>
-    </div>
+    <div id="stationSearchResults" style="max-height:480px;overflow-y:auto"></div>
   </div>
 </div>
 
@@ -2026,134 +1971,77 @@ async function resolveSearchResult(idx, cardId, s) {
 }
 
 async function searchStations() {
-  const q = document.getElementById('stationSearchQ').value.trim();
-  const source = document.getElementById('searchSource').value;
-  // Auto-set country to CA for Canadian sources
-  const canadianSources = ['radioplayer-canada', 'iheart', 'seekr', 'directstream', 'bell'];
-  if (canadianSources.includes(source) && !document.getElementById('stationSearchCountry').value) {
-    document.getElementById('stationSearchCountry').value = 'CA';
-  }
-  const country = document.getElementById('stationSearchCountry').value.trim().toUpperCase();
-  // Update info banner
-    const infos = {
-    "directstream": "Direct Stream — scrapes stream URLs directly from Stingray, Rogers, Corus, MBS and Golden West checklines pages.",
-    "bell": "Bell Media — searches all 55 Bell stations. Metadata auto-filled via Triton Digital. Add stream URL from iheart.com.",
-    "iheart": "iHeart Radio Canada — searches Rogers-owned stations with stream URLs and now-playing metadata.",
-    "seekr": "Seekr/Rogers — pulls from Rogers nowplaying API, shows what is currently on air.",
-    "streema": "Streema — global radio directory with stream URLs.",
-    "radioplayer-canada": "Radio Player Canada — Canadian stations via Radio Browser index.",
-    "tunein": "TuneIn — large global directory.",
-    "radiobrowser": "Radio Browser — free global open-source directory with 35,000+ stations.",
-  };
-  const infoEl = document.getElementById('searchSourceInfo');
-  if (infoEl) infoEl.textContent = infos[source] || '';
-  if (!q) return toast('Enter a search term', 'error');
+  const q = (document.getElementById('stationSearchQ').value || '').trim();
+  if (!q) return toast('Please enter a station name or TuneIn ID', 'error');
+
   const res = document.getElementById('stationSearchResults');
-  const sourceLabels = {
-    "directstream": "Direct Stream",
-    "bell": "Bell Media",
-    "radioplayer-canada": "Radio Player Canada",
-    "iheart": "iHeart Radio Canada",
-    "seekr": "Seekr / Rogers",
-    "streema": "Streema",
-    "tunein": "TuneIn",
-    "radiobrowser": "Radio Browser",
-  };
-  const sourceLabel = sourceLabels[source] || source;
-  res.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-family:Space Mono,monospace;font-size:12px">Searching ' + sourceLabel + '...<br><span style="font-size:10px;opacity:.6">' + (source === 'tunein' ? 'Resolving stream URLs and fetching now-playing...' : '') + '</span></div>';
+  res.innerHTML = `
+    <div style="padding:24px;text-align:center;color:var(--text-secondary);font-size:13px">
+      <div style="font-size:24px;margin-bottom:8px">📡</div>
+      <div>Querying TuneIn directory for "<strong>${esc(q)}</strong>"...</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Resolving direct audio streams and live metadata...</div>
+    </div>
+  `;
+
   try {
-    let stations = [];
-    if (source === 'tunein') {
-      // TuneIn search via our proxy
-      const r = await fetch(`${API}/api/tools/search-stations?q=${encodeURIComponent(q)}&country=${country}&source=tunein&limit=5`);
-      stations = await r.json();
-    } else {
-      const r = await fetch(`${API}/api/tools/search-stations?q=${encodeURIComponent(q)}&country=${country}&limit=15`);
-      stations = await r.json();
+    const r = await fetch(`${API}/api/tools/search-stations?q=${encodeURIComponent(q)}&limit=15`);
+    const stations = await r.json();
+    if (!stations || !stations.length) {
+      res.innerHTML = `
+        <div class="empty" style="padding:24px">
+          <div class="empty-icon">📻</div>
+          No stations found matching "<strong>${esc(q)}</strong>".<br>
+          <span style="font-size:11px;color:var(--muted)">Try searching by callsign, city, or exact TuneIn ID (e.g. s12183).</span>
+        </div>
+      `;
+      return;
     }
-    if (!stations.length) { res.innerHTML = '<div class="empty">No stations found on ' + source + '</div>'; return; }
-    // Store station data in a global map keyed by index to avoid JSON-in-onclick issues
+
     window._searchResults = {};
     stations.forEach((s, i) => { window._searchResults[i] = s; });
 
     res.innerHTML = stations.map((s, i) => {
-      const streamDisplay = (s.audioUrl || s.streamUrl || 'no stream URL').substring(0, 55);
-      const metaDisplay = s.metadataUrl ? s.metadataUrl.substring(0, 55) : '';
+      const streamDisplay = (s.directUrl || s.audioUrl || s.streamUrl || 'Direct stream').substring(0, 50);
       return `
-      <div class="search-result" id="sr_${i}" onclick="addStationByIndex(${i})">
-        ${s.favicon ? `<img src="${s.favicon}" class="search-result-logo" onerror="this.style.display='none'">` : '<div class="search-result-logo" style="font-size:18px;display:flex;align-items:center;justify-content:center">📻</div>'}
-        <div class="search-result-info">
-          <div class="search-result-name">${esc(s.name)}${s.callsign && s.callsign !== s.name ? ' <span style="font-size:10px;color:var(--muted);font-family:Space Mono,monospace">(' + esc(s.callsign) + ')</span>' : ''}</div>
-          <div class="search-result-meta">${[s.country, s.province, s.network, s.codec, s.bitrate ? s.bitrate + 'kbps' : ''].filter(Boolean).map(esc).join(' · ')}</div>
-          ${s.nowPlaying ? `<div class="search-result-meta" style="color:var(--green);font-size:11px">▶ ${esc(s.nowPlaying)}</div>` : ''}
-          <div class="search-result-meta" style="font-size:10px;opacity:.7">🔊 ${esc(streamDisplay)}${(s.audioUrl || s.streamUrl || '').length > 55 ? '...' : ''}</div>
-          <div class="search-result-meta" style="font-size:10px;color:var(--blue)" id="meta_${i}">
-            ${s.metadataUrl
-              ? '📋 ' + esc(s.metadataUrl.substring(0,55)) + (s.metadataUrl.length > 55 ? '...' : '')
-              : '<span style="color:var(--muted)">📋 <u style="cursor:pointer" onclick="event.stopPropagation();resolveByIndex(' + i + ')">Detect metadata URL</u></span>'}
+      <div class="search-result" id="sr_${i}" onclick="addStationByIndex(${i})" style="display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--border);cursor:pointer">
+        ${s.favicon ? `<img src="${s.favicon}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--surface2)" onerror="this.style.display='none'">` : '<div style="width:48px;height:48px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📻</div>'}
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+            <strong style="font-size:14px;color:var(--text)">${esc(s.name)}</strong>
+            ${s.tuneinId ? `<span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:1px 6px;border-radius:4px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)">${esc(s.tuneinId)}</span>` : ''}
           </div>
+          ${s.description ? `<div style="font-size:11.5px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:2px">${esc(s.description)}</div>` : ''}
+          ${s.nowPlaying ? `<div style="font-size:11.5px;color:var(--green);font-weight:600;display:flex;align-items:center;gap:4px">▶ ${esc(s.nowPlaying)}</div>` : ''}
+          <div style="font-size:10px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px">🔊 ${esc(streamDisplay)}</div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
-          <button class="btn btn-start" style="padding:6px 10px;font-size:10px" onclick="event.stopPropagation();addStationByIndex(${i})">ADD</button>
-          ${!s.metadataUrl ? `<button class="btn btn-sm" style="padding:4px 8px;font-size:9px" onclick="event.stopPropagation();resolveByIndex(${i})">🔍 DETECT</button>` : `<button class="btn btn-sm" style="padding:4px 8px;font-size:9px;color:var(--green);border-color:var(--green-border)" onclick="event.stopPropagation();resolveByIndex(${i})">🔍 REFRESH</button>`}
-        </div>
+        <button class="btn btn-start" style="padding:8px 14px;font-size:11px;flex-shrink:0" onclick="event.stopPropagation();addStationByIndex(${i})">➕ ADD</button>
       </div>`;
     }).join('');
-  } catch(e) { res.innerHTML = '<div class="empty">Search failed: ' + e.message + '</div>'; }
+  } catch (e) {
+    res.innerHTML = `<div class="empty" style="padding:20px">Search failed: ${esc(e.message)}</div>`;
+  }
 }
 
 function addStationByIndex(i) {
   const s = window._searchResults && window._searchResults[i];
-  if (!s) { toast('Station data not found', 'error'); return; }
+  if (!s) return toast('Station data not found', 'error');
+  closeModal('searchModal');
+  switchTab('stations');
 
-  // If this is a checklines or Bell station, handle by network
-  if ((s.source === 'directstream' || s.source === 'bell') && s.callsign) {
-    const net = (s.network || '').toLowerCase();
-    const norm = s.callsign.replace(/[^A-Z0-9]/gi, '').toUpperCase();
-
-    if (net === 'rogers') {
-      s.metadataUrl = 'https://radio.rogersdigitalmedia.com/service/now_playing';
-      s.metadataType = 'json';
-      s.network = 'Rogers';
-      addStationFromSearch(s);
-      return;
-    }
-
-    if (net === 'bell') {
-      s.metadataUrl = `https://np.tritondigital.com/public/nowplaying?mountName=${norm}&numberToFetch=1&eventType=track`;
-      s.metadataType = 'json';
-      s.network = 'Bell';
-      addStationFromSearch(s);
-      return;
-    }
-
-    if (net === 'corus') {
-      s.streamUrl = `https://corus.leanstream.co/${norm}?args=web_01`;
-      s.audioUrl = s.streamUrl;
-      s.metadataUrl = `https://globalnewselection.s3.amazonaws.com/fm-playlist/results/${norm}_np.js?callback=jsonpcallback`;
-      s.metadataType = 'json';
-      s.network = 'Corus';
-      addStationFromSearch(s);
-      return;
-    }
-
-    if (net === 'stingray' || net === 'mbs radio') {
-      // Stingray/MBS — prompt for station domain
-      promptDomain(s);
-      return;
-    }
-
-    if (net === 'golden west') {
-      // Golden West — prompt for domain
-      promptDomain(s);
-      return;
-    }
-
-    // Unknown checklines network — prompt for domain
-    promptDomain(s);
-    return;
+  document.getElementById('newStationName').value = s.name || '';
+  document.getElementById('newStreamUrl').value = s.directUrl || s.streamUrl || '';
+  document.getElementById('newLogoUrl').value = s.favicon || '';
+  if (s.callsign) document.getElementById('newCallsign').value = s.callsign;
+  document.getElementById('newGroup').value = 'TuneIn';
+  document.getElementById('newMetadataSource').value = 'tunein';
+  if (s.metadataUrl) document.getElementById('newMetadataUrl').value = s.metadataUrl;
+  if (s.favicon) {
+    document.getElementById('previewImg').src = s.favicon;
+    document.getElementById('uploadPreview').style.display = 'block';
   }
-  addStationFromSearch(s);
+  toggleNewMetaSource();
+  toast(`Station ${s.name} loaded — review and save`, 'success');
+  document.getElementById('newStationName').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 // ── Domain prompt for Stingray/checklines stations ────────────────────────────
@@ -3804,135 +3692,6 @@ async function fetchStationLogo(callsign, name) {
 // Disabled — logos fetched on-demand only when station is saved
 function ensureLogos(stations) {}
 function autoFetchLogos(stations) {}
-
-// ── Station Library ──────────────────────────────────────────────────────────
-let _stationLibrary = null;
-
-async function loadStationLibrary() {
-  if (_stationLibrary) return _stationLibrary;
-  try {
-    const r = await fetch(`${API}/api/library`);
-    _stationLibrary = await r.json();
-  } catch(e) { _stationLibrary = {}; }
-  return _stationLibrary;
-}
-
-function showFindMode(mode) {
-  document.getElementById('findLibraryPane').style.display = mode === 'library' ? 'block' : 'none';
-  document.getElementById('findSearchPane').style.display  = mode === 'search'  ? 'block' : 'none';
-  document.getElementById('findModeChooser').querySelectorAll('button').forEach((b, i) => {
-    b.className = (mode === 'library' && i === 0) || (mode === 'search' && i === 1)
-      ? 'btn btn-start' : 'btn btn-secondary';
-    b.style.cssText = 'flex:1;justify-content:center;font-size:12px;padding:14px;flex-direction:column;line-height:1.6';
-  });
-  if (mode === 'library' && !_stationLibrary) loadStationLibrary();
-}
-
-async function loadLibraryNetwork() {
-  const net = document.getElementById('libraryNetwork').value;
-  const sel = document.getElementById('libraryStation');
-  const preview = document.getElementById('libraryPreview');
-  const addBtn  = document.getElementById('libAddBtn');
-  if (preview) preview.style.display = 'none';
-  if (addBtn) addBtn.style.display = 'none';
-
-  if (!net) {
-    sel.innerHTML = '<option value="">— select network first —</option>';
-    sel.disabled = true;
-    return;
-  }
-
-  sel.disabled = true;
-  sel.innerHTML = '<option value="">Loading stations...</option>';
-
-  const lib = await loadStationLibrary();
-  const stations = lib[net] || [];
-  if (!stations.length) {
-    sel.innerHTML = `<option value="">No stations found for ${esc(net)}</option>`;
-    sel.disabled = true;
-    return;
-  }
-
-  sel.innerHTML = `<option value="">— select station (${stations.length} available) —</option>` +
-    stations.map((s, i) => `<option value="${i}">${esc(s.brand || s.callsign)}${s.city ? ' — ' + esc(s.city) : ''}</option>`).join('');
-  sel.disabled = false;
-}
-
-function previewLibraryStation() {
-  const net = document.getElementById('libraryNetwork').value;
-  const idx = document.getElementById('libraryStation').value;
-  const preview = document.getElementById('libraryPreview');
-  const addBtn  = document.getElementById('libAddBtn');
-  if (!net || idx === '') { if(preview) preview.style.display='none'; return; }
-  const stations = (_stationLibrary || {})[net] || [];
-  const s = stations[parseInt(idx)];
-  if (!s) return;
-  document.getElementById('libPreviewName').textContent     = s.brand || s.callsign;
-  document.getElementById('libPreviewCallsign').textContent = s.callsign + (s.network ? ' · ' + s.network : '');
-  document.getElementById('libPreviewCity').textContent     = s.city || '';
-  document.getElementById('libPreviewAudio').textContent    = s.streamUrl || 'Not available';
-  document.getElementById('libPreviewMeta').textContent     = s.metadataUrl || 'Not available';
-  const logoWrap = document.getElementById('libPreviewLogoWrap');
-  const existingLogo = logos[s.callsign] || logos[s.brand];
-  if (existingLogo) {
-    logoWrap.innerHTML = `<img src="${existingLogo}" style="width:100%;height:100%;object-fit:contain;padding:4px">`;
-  } else {
-    logoWrap.innerHTML = '📻';
-  }
-  if (preview) preview.style.display = 'block';
-  if (addBtn) addBtn.style.display = '';
-}
-
-async function addLibraryStation() {
-  const net = document.getElementById('libraryNetwork').value;
-  const idx = document.getElementById('libraryStation').value;
-  if (!net || idx === '') return;
-  const stations = (_stationLibrary || {})[net] || [];
-  const s = stations[parseInt(idx)];
-  if (!s) return;
-  if (!s.streamUrl) { toast('No stream URL for this station', 'error'); return; }
-  const btn = document.getElementById('libAddBtn');
-  if (btn) { btn.textContent = 'SAVING...'; btn.disabled = true; }
-  try {
-    const name = s.brand || s.name || s.callsign || '';
-    const resolvedSource = s.metadataSource || s.metadataType || 'auto';
-    let streamUrl = s.streamUrl || '';
-    if (streamUrl.endsWith('.m3u')) streamUrl += '8';
-    const stationData = {
-      name, callsign: s.callsign || '', streamUrl,
-      metadataUrl: s.metadataUrl || '', metadataSource: resolvedSource,
-      network: s.network || net, group: s.network || net,
-      pollInterval: 10, stallThreshold: 60, triggerMode: 'hybrid', triggerKeywords: '',
-    };
-    const r = await fetch(`${API}/api/stations`, {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(stationData)
-    });
-    const data = await r.json();
-    if (data.error) { toast(data.error, 'error'); return; }
-    toast(`✓ ${name} saved`, 'success');
-    closeModal('searchModal');
-    await loadStations();
-    switchTab('stations');
-  } catch(e) {
-    toast('Save failed: ' + e.message, 'error');
-  } finally {
-    if (btn) { btn.textContent = 'ADD TO STATIONS'; btn.disabled = false; }
-  }
-}
-
-// ── Search mode info banner ───────────────────────────────────────────────────
-function updateSearchInfo() {
-  const source = document.getElementById('searchSource').value;
-  const infos = {
-    "tunein":      "TuneIn — large global directory with stream URLs.",
-    "iheart":      "iHeart Radio Canada — searches Rogers-owned stations with metadata.",
-    "streema":     "Streema — global radio directory.",
-    "radiobrowser":"Radio Browser — free global open-source directory with 35,000+ stations.",
-  };
-  const el = document.getElementById('searchSourceInfo');
-  if (el) el.textContent = infos[source] || '';
-}
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
