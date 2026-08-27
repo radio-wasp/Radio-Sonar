@@ -1,0 +1,30 @@
+services:
+
+  recorder:
+    build: ./recorder
+    restart: unless-stopped
+    volumes:
+      - recordings:/recordings
+      - whisper_cache:/root/.cache/whisper
+    networks:
+      - internal
+
+  web:
+    build:
+      context: .
+      dockerfile: web.Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    depends_on:
+      - recorder
+    networks:
+      - internal
+
+volumes:
+  recordings:
+  whisper_cache:
+
+networks:
+  internal:
+    driver: bridge
