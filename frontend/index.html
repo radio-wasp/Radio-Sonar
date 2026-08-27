@@ -1,0 +1,3951 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radio SONAR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface2: #f1f5f9;
+  --surface3: #e2e8f0;
+  --border: #e2e8f0;
+  --border-subtle: #edf2f7;
+  --text: #0f172a;
+  --text-secondary: #475569;
+  --muted: #64748b;
+  --accent: #e11d48;
+  --accent2: #f43f5e;
+  --accent-gradient: linear-gradient(135deg, #e11d48 0%, #f43f5e 100%);
+  --primary: #2563eb;
+  --green: #10b981;
+  --green-bg: #ecfdf5;
+  --green-border: #a7f3d0;
+  --red: #ef4444;
+  --red-bg: #fef2f2;
+  --red-border: #fecaca;
+  --amber: #f59e0b;
+  --amber-bg: #fffbeb;
+  --amber-border: #fde68a;
+  --blue: #3b82f6;
+  --blue-bg: #eff6ff;
+  --blue-border: #bfdbfe;
+  --toggle-bg: #cbd5e1;
+  --grad1: #e11d48;
+  --grad2: #f43f5e;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+}
+
+[data-theme="dark"] {
+  --bg: #090d16;
+  --surface: #0f172a;
+  --surface2: #1e293b;
+  --surface3: #334155;
+  --border: #1e293b;
+  --border-subtle: #162032;
+  --text: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --muted: #94a3b8;
+  --accent: #f43f5e;
+  --accent2: #fb7185;
+  --accent-gradient: linear-gradient(135deg, #f43f5e 0%, #fb7185 100%);
+  --primary: #3b82f6;
+  --green: #10b981;
+  --green-bg: rgba(16, 185, 129, 0.12);
+  --green-border: rgba(16, 185, 129, 0.28);
+  --red: #f43f5e;
+  --red-bg: rgba(244, 63, 94, 0.12);
+  --red-border: rgba(244, 63, 94, 0.28);
+  --amber: #fbbf24;
+  --amber-bg: rgba(251, 191, 36, 0.12);
+  --amber-border: rgba(251, 191, 36, 0.28);
+  --blue: #60a5fa;
+  --blue-bg: rgba(96, 165, 250, 0.12);
+  --blue-border: rgba(96, 165, 250, 0.28);
+  --toggle-bg: #334155;
+  --grad1: #f43f5e;
+  --grad2: #fb7185;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+img { max-width: 100%; height: auto; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  transition: background .2s ease, color .2s ease;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+/* Glassmorphism Header */
+.header {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: 68px;
+  transition: background .2s ease, border-color .2s ease;
+}
+[data-theme="dark"] .header {
+  background: rgba(15, 23, 42, 0.82);
+}
+
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+.logo-mark {
+  width: 38px;
+  height: 38px;
+  background: var(--accent-gradient);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+}
+.app-name {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+.app-tag {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* Segmented Top Navigation */
+.nav-tabs {
+  display: flex;
+  gap: 3px;
+  margin-left: 24px;
+  flex: 1;
+  overflow-x: auto;
+  padding: 4px;
+  background: var(--surface2);
+  border-radius: 12px;
+  max-width: fit-content;
+  border: 1px solid var(--border);
+}
+.nav-tab {
+  padding: 7px 15px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.nav-tab:hover {
+  color: var(--text);
+  background: rgba(255,255,255,0.4);
+}
+[data-theme="dark"] .nav-tab:hover {
+  background: rgba(255,255,255,0.06);
+}
+.nav-tab.active {
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  width: 44px;
+  height: 24px;
+  background: var(--toggle-bg);
+  border-radius: 980px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background .2s ease;
+  flex-shrink: 0;
+}
+.theme-toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: transform .2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+[data-theme="dark"] .theme-toggle::after {
+  transform: translateX(20px);
+}
+[data-theme="dark"] .theme-toggle {
+  background: var(--green);
+}
+
+/* Tools Menu */
+.tools-menu-wrap { position: relative; }
+.tools-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 980px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .15s ease;
+}
+.tools-btn:hover {
+  background: var(--surface3);
+  border-color: var(--muted);
+}
+.tools-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 8px;
+  min-width: 240px;
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  display: none;
+  animation: fadeIn 0.15s ease;
+}
+.tools-dropdown.open { display: block; }
+.tools-item {
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background .15s ease;
+}
+.tools-item:hover { background: var(--surface2); }
+
+/* Main Layout */
+.main {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 32px 32px 80px;
+}
+.tabs { display: none; }
+.tab { display: none; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fadeIn .25s ease-out; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Elevated Cards */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 26px 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.card-label {
+  font-size: 14px;
+  text-transform: none;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.section-header .card-label { margin-bottom: 0; }
+
+/* Forms & Inputs */
+.form-grid { display: grid; gap: 14px; }
+.form-row { display: flex; gap: 12px; align-items: flex-end; }
+.form-col { flex: 1; min-width: 0; }
+.form-col-sm { width: 160px; flex-shrink: 0; }
+.form-col-xs { width: 110px; flex-shrink: 0; }
+label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+input[type=text], input[type=number], input[type=url], select, textarea {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13.5px;
+  padding: 10px 14px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+input::placeholder, textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.6;
+}
+select option { background: var(--surface); color: var(--text); }
+.tuning-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* Professional Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: 980px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  user-select: none;
+}
+.btn-start {
+  background: var(--accent-gradient);
+  color: #ffffff;
+  padding: 10px 22px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.28);
+}
+.btn-start:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(225, 29, 72, 0.38);
+}
+.btn-stop {
+  background: var(--red-bg);
+  color: var(--red);
+  border-color: var(--red-border);
+  padding: 6px 14px;
+  font-size: 12px;
+}
+.btn-stop:hover {
+  background: var(--red);
+  color: #fff;
+}
+.btn-play {
+  background: var(--green-bg);
+  color: var(--green);
+  border-color: var(--green-border);
+  padding: 6px 14px;
+  font-size: 12px;
+}
+.btn-play:hover, .btn-play.playing {
+  background: var(--green);
+  color: #fff;
+}
+.btn-download {
+  background: var(--blue-bg);
+  color: var(--blue);
+  border-color: var(--blue-border);
+  padding: 6px 14px;
+  font-size: 12px;
+}
+.btn-download:hover {
+  background: var(--blue);
+  color: #fff;
+}
+.btn-delete {
+  background: var(--surface2);
+  color: var(--muted);
+  border-color: var(--border);
+  padding: 6px 14px;
+  font-size: 12px;
+}
+.btn-delete:hover {
+  background: var(--red-bg);
+  color: var(--red);
+  border-color: var(--red-border);
+}
+.btn-sm {
+  background: var(--surface2);
+  color: var(--text-secondary);
+  border-color: var(--border);
+  padding: 6px 12px;
+  font-size: 12px;
+}
+.btn-sm:hover {
+  background: var(--surface3);
+  color: var(--text);
+}
+.btn-secondary {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 9px 18px;
+}
+.btn-secondary:hover {
+  background: var(--surface3);
+}
+.btn-rec-on {
+  background: var(--red-bg);
+  color: var(--red);
+  border-color: var(--red-border);
+  padding: 6px 12px;
+  font-size: 11px;
+}
+.btn-rec-on:hover { background: var(--red); color: #fff; }
+.btn-rec-off {
+  background: var(--surface2);
+  color: var(--muted);
+  border-color: var(--border);
+  padding: 6px 12px;
+  font-size: 11px;
+}
+.btn-rec-off:hover { background: var(--surface3); color: var(--text); }
+
+/* Quick Launch Station Grid */
+.quick-launch {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 22px 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+.quick-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+}
+.station-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.station-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all .15s ease;
+  text-align: left;
+  width: 100%;
+}
+.station-btn:hover {
+  background: var(--surface);
+  border-color: var(--muted);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.station-btn-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  object-fit: contain;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 3px;
+  flex-shrink: 0;
+}
+.station-btn-placeholder {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.station-btn-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.station-btn-sub {
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+.group-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 22px 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.group-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.station-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.station-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all .2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.station-card:hover {
+  border-color: var(--muted);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.station-card-logo {
+  width: 80px;
+  height: 80px;
+  max-width: 80px;
+  max-height: 80px;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: #ffffff;
+  padding: 6px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.station-card-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-md);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.station-card-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.station-card-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.station-card-group {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--surface2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  padding: 2px 8px;
+  margin-bottom: 14px;
+}
+
+.station-card-actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  margin-top: auto;
+  justify-content: center;
+}
+.station-card-actions .btn {
+  flex: 1;
+  justify-content: center;
+}
+
+/* Broadcast Intelligence Console: Monitor Cards */
+.monitor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.monitor-card {
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  padding: 22px 24px;
+  background: var(--surface);
+  transition: all .25s ease;
+  box-shadow: var(--shadow);
+}
+.monitor-card.state-listening {
+  border-color: var(--green-border);
+  box-shadow: 0 0 0 1px var(--green-border), var(--shadow);
+}
+.monitor-card.state-recording {
+  border-color: var(--red-border);
+  box-shadow: 0 0 0 1px var(--red-border), 0 8px 24px rgba(239, 68, 68, 0.12);
+}
+.monitor-card.state-starting, .monitor-card.state-monitoring-ad {
+  border-color: var(--amber-border);
+}
+
+.monitor-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+}
+.state-listening .status-dot { background: var(--green); }
+.state-recording .status-dot {
+  background: var(--red);
+  animation: sonar-pulse 1.2s infinite ease-out;
+}
+.state-starting .status-dot, .state-monitoring-ad .status-dot {
+  background: var(--amber);
+  animation: sonar-pulse 1.6s infinite ease-out;
+}
+
+@keyframes sonar-pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.station-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  object-fit: contain;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  padding: 3px;
+}
+.station-logo-placeholder {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.monitor-info { flex: 1; min-width: 0; }
+.monitor-url {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.monitor-status-line {
+  font-size: 12.5px;
+  font-weight: 600;
+  margin-top: 3px;
+  letter-spacing: -0.01em;
+}
+.state-listening .monitor-status-line { color: var(--green); }
+.state-recording .monitor-status-line { color: var(--red); }
+.state-starting .monitor-status-line, .state-monitoring-ad .monitor-status-line { color: var(--amber); }
+
+.monitor-elapsed {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+  background: var(--surface2);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+}
+.monitor-btns { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+/* Metadata & Now Playing Panel */
+.meta-panel {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  display: grid;
+  gap: 14px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+.meta-item { min-width: 0; }
+.meta-key {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 4px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+.meta-val {
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Stream Player */
+.stream-player {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.stream-player audio { flex: 1; height: 32px; outline: none; }
+
+/* Title History */
+.title-history { margin-top: 12px; }
+.history-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.history-list { display: flex; flex-direction: column; gap: 3px; }
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+}
+.history-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.history-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Recordings View */
+.rec-list { display: flex; flex-direction: column; gap: 10px; }
+.rec-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
+  transition: all .15s ease;
+}
+.rec-item:hover {
+  border-color: var(--muted);
+  box-shadow: var(--shadow);
+}
+.rec-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.rec-icon img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
+.rec-info { flex: 1; min-width: 0; }
+.rec-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rec-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.rec-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.audio-player {
+  width: 100%;
+  display: none;
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.audio-player.visible { display: block; }
+.audio-player audio { width: 100%; height: 36px; outline: none; }
+
+/* Advertisers & Transcript Box */
+.brands-panel {
+  width: 100%;
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.brands-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.brands-status { font-size: 11px; color: var(--amber); font-family: 'JetBrains Mono', monospace; }
+.transcript-toggle {
+  font-size: 11px;
+  color: var(--blue);
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  margin-left: auto;
+}
+.transcript-box {
+  display: none;
+  width: 100%;
+  min-height: 64px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  resize: vertical;
+  margin-top: 8px;
+  font-family: inherit;
+  outline: none;
+}
+
+/* Interactive Brand Chips */
+.brands-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+.brand-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--amber-bg);
+  border: 1px solid var(--amber-border);
+  color: var(--amber);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  transition: all 0.15s ease;
+}
+.brand-chip:hover {
+  background: rgba(251, 191, 36, 0.22);
+}
+.brand-chip-remove {
+  cursor: pointer;
+  font-size: 11px;
+  opacity: 0.6;
+  transition: opacity 0.15s ease, color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1px;
+}
+.brand-chip-remove:hover {
+  opacity: 1;
+  color: var(--red);
+}
+.brand-add-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.brand-add-input {
+  width: 140px;
+  padding: 3px 8px !important;
+  font-size: 11.5px !important;
+  border-radius: var(--radius-sm) !important;
+  background: var(--surface2) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  outline: none;
+}
+.brand-add-input:focus {
+  border-color: var(--primary) !important;
+}
+.brand-add-btn {
+  padding: 3px 8px !important;
+  font-size: 10.5px !important;
+  border-radius: var(--radius-sm) !important;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+}
+.brand-add-btn:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Music History Log */
+.retention-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.retention-bar input {
+  width: 70px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+.log-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all .15s ease;
+}
+.log-item:hover {
+  border-color: var(--muted);
+}
+.log-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: var(--muted);
+  width: 70px;
+  flex-shrink: 0;
+  line-height: 1.3;
+}
+.log-art {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+.log-art-placeholder {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.log-info {
+  flex: 1;
+  min-width: 0;
+}
+.log-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.log-artist {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.log-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--blue);
+  background: var(--blue-bg);
+  border: 1px solid var(--blue-border);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.log-ad {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--red);
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Commercial History Items */
+.commercial-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  transition: all .15s ease;
+}
+.commercial-item:hover {
+  border-color: var(--muted);
+  box-shadow: var(--shadow-sm);
+}
+.commercial-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.commercial-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.commercial-transcript {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-top: 10px;
+}
+
+/* Advertisers Tab */
+.date-header {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 20px 0 10px 0;
+  letter-spacing: -0.01em;
+}
+.advertiser-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.advertiser-table th {
+  background: var(--surface2);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+.advertiser-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.advertiser-table tr:last-child td {
+  border-bottom: none;
+}
+.advertiser-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 9999px;
+  padding: 2px 8px;
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: none;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 28px 32px;
+  max-width: 640px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: fadeIn 0.2s ease-out;
+}
+.modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.modal-close {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 20px;
+  background: none;
+  border: none;
+  transition: color 0.15s ease;
+}
+.modal-close:hover { color: var(--text); }
+
+/* Search Results */
+.search-result {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.search-result:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+.search-result-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  object-fit: contain;
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  padding: 3px;
+}
+.search-result-name {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.search-result-meta {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-size: 12.5px;
+  font-weight: 600;
+  z-index: 200;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all .25s cubic-bezier(.34,1.56,.64,1);
+  background: var(--text);
+  color: var(--surface);
+  box-shadow: var(--shadow-lg);
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.error { background: var(--red); color: #fff; }
+.toast.success { background: var(--green); color: #fff; }
+
+.empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.empty-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.5; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+.mb-btn { font-size: 11px; padding: 4px 8px; margin-left: 6px; flex-shrink: 0; }
+
+@media (max-width: 768px) {
+  .header, .main { padding-left: 16px; padding-right: 16px; }
+  .form-row { flex-direction: column; }
+  .rec-actions, .monitor-btns { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="brand-badge">
+    <img src="/sonar-logo.png" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex-shrink:0" alt="Radio SONAR" onerror="this.style.display='none'">
+    <div>
+      <div class="app-name">Radio SONAR</div>
+      <div class="app-tag">Broadcast Intelligence Console</div>
+    </div>
+  </div>
+  <nav class="nav-tabs" id="navTabs">
+    <button class="nav-tab active" onclick="switchTab('monitor')">Monitor</button>
+    <button class="nav-tab" onclick="switchTab('recordings')">Recordings</button>
+    <button class="nav-tab" onclick="switchTab('commercial')">Commercials</button>
+    <button class="nav-tab" onclick="switchTab('music')">Music</button>
+    <button class="nav-tab" onclick="switchTab('advertisers')">Advertisers</button>
+    <button class="nav-tab" onclick="switchTab('stations')">Stations</button>
+    <button class="nav-tab" onclick="switchTab('about')">About</button>
+  </nav>
+  <div class="header-right">
+    <button class="btn btn-start" style="padding:8px 16px;font-size:13px;flex-shrink:0" onclick="openModal('searchModal')">📻 Find Station</button>
+    <div class="tools-menu-wrap">
+      <button class="tools-btn" onclick="toggleToolsMenu()">🔧 Tools</button>
+      <div class="tools-dropdown" id="toolsDropdown">
+        <div class="tools-item" onclick="openIdentifyModal()">🎧 Acoustic Audio Identifier</div>
+        <div class="tools-item" onclick="openModal('probeModal')">📡 Probe Stream URL</div>
+        <div class="tools-item" onclick="openAiSettingsModal()">🤖 AI & Transcription Settings</div>
+        <div class="tools-item" onclick="repairStationUrls()">🔧 Repair Metadata URLs</div>
+        <div class="tools-item" onclick="rebuildBellUrls()">🔔 Rebuild Bell URLs</div>
+        <div class="tools-item" onclick="refreshAllLogos()">🖼 Refresh All Logos</div>
+      </div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode"></button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('monitor')">MONITOR</button>
+    <button class="tab" onclick="switchTab('recordings')">RECORDINGS</button>
+    <button class="tab" onclick="switchTab('commercial')">COMMERCIAL HISTORY</button>
+    <button class="tab" onclick="switchTab('music')">MUSIC HISTORY</button>
+    <button class="tab" onclick="switchTab('advertisers')">ADVERTISERS</button>
+    <button class="tab" onclick="switchTab('stations')">STATIONS</button>
+    <button class="tab" onclick="switchTab('about')">ABOUT</button>
+  </div>
+
+  <!-- MONITOR TAB -->
+  <div class="tab-panel active" id="tab-monitor">
+    <div class="quick-launch" id="quickLaunch" style="display:none">
+      <div class="quick-label">Saved Stations</div>
+      <div id="quickStationList"></div>
+    </div>
+
+    <div class="card" id="monitorsCard" style="display:none">
+      <div class="section-header">
+        <div class="card-label" style="margin:0">Active Monitors</div>
+        <button class="btn btn-sm" onclick="stopAll()">STOP ALL</button>
+      </div>
+      <div class="monitor-list" id="monitorList"></div>
+    </div>
+  </div>
+
+  <!-- RECORDINGS TAB -->
+  <div class="tab-panel" id="tab-recordings">
+    <div class="card">
+      <div class="card-label">Purge Recordings</div>
+      <div class="form-row" style="margin-bottom:12px">
+        <div class="form-col-sm"><label>Older than (hours)</label><input type="number" id="purgeHours" value="24" min="1"/></div>
+        <button class="btn btn-delete" style="padding:9px 16px;align-self:flex-end" onclick="manualPurge()">🗑 PURGE NOW</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px">
+        <div style="flex:1"><div style="font-size:13px;font-weight:500">Auto-purge</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Delete recordings older than set hours</div></div>
+        <input type="number" id="autoPurgeHours" value="24" min="1" style="width:72px"/>
+        <span style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace">HRS</span>
+        <button class="theme-toggle" id="autoPurgeToggle" onclick="toggleAutoPurge()"></button>
+      </div>
+      <div id="autoPurgeStatus" style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:7px;display:none"></div>
+    </div>
+    <div class="card">
+      <div class="section-header">
+        <div class="card-label" style="margin:0">Captured Commercials</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sm" onclick="loadRecordings()">↻ REFRESH</button>
+          <button class="btn btn-delete" style="padding:5px 10px;font-size:10px" onclick="clearAllRecordings()">CLEAR ALL</button>
+        </div>
+      </div>
+      <div class="rec-list" id="recList"><div class="empty"><div class="empty-icon">📭</div>No commercials captured yet</div></div>
+    </div>
+  </div>
+
+  <!-- COMMERCIAL HISTORY TAB -->
+  <div class="tab-panel" id="tab-commercial">
+    <div class="card">
+      <div class="section-header">
+        <div class="card-label" style="margin:0">Commercial History</div>
+        <div style="display:flex;gap:8px">
+          <select id="commercialStationSelect" onchange="loadCommercialHistory()" style="width:180px;padding:6px 10px;font-size:12px"><option value="">— select station —</option></select>
+          <button class="btn btn-sm" onclick="loadCommercialHistory()">↻ REFRESH</button>
+          <button class="btn btn-sm" onclick="purgeHistory('commercial', 30)" title="Delete entries older than 30 days">🗓 PURGE 30d+</button>
+          <button class="btn btn-delete" style="padding:5px 10px;font-size:10px" onclick="clearCommercialHistory()">CLEAR ALL</button>
+        </div>
+      </div>
+      <div id="commercialList"><div class="empty"><div class="empty-icon">📻</div>Select a station to view commercial history</div></div>
+    </div>
+  </div>
+
+  <!-- MUSIC HISTORY TAB -->
+  <div class="tab-panel" id="tab-music">
+    <div class="card">
+      <div class="section-header">
+        <div class="card-label" style="margin:0">Music History</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select id="logStationSelect" onchange="loadLog()" style="width:180px;padding:6px 10px;font-size:12px"><option value="">— select station —</option></select>
+          <button class="btn btn-sm" onclick="openMusicBrainzSearch()">🎵 SEARCH MUSICBRAINZ</button>
+          <button class="btn btn-sm" onclick="loadLog()">↻ REFRESH</button>
+          <button class="btn btn-sm" onclick="purgeHistory('music', 30)" title="Delete entries older than 30 days">🗓 PURGE 30d+</button>
+          <button class="btn btn-delete" style="padding:5px 10px;font-size:10px" onclick="clearLog()">CLEAR ALL</button>
+        </div>
+      </div>
+      <div id="logList"><div class="empty"><div class="empty-icon">🎵</div>Select a station to view music history</div></div>
+    </div>
+  </div>
+
+  <!-- ADVERTISERS TAB -->
+  <div class="tab-panel" id="tab-advertisers">
+    <div class="card">
+      <div class="section-header">
+        <div class="card-label" style="margin:0">Advertiser Directory</div>
+        <select id="advStationSelect" onchange="loadAdvertisers()" style="width:180px;padding:6px 10px;font-size:12px"><option value="">— select station —</option></select>
+      </div>
+      <div id="advertiserContent"><div class="empty"><div class="empty-icon">🏢</div>Select a station to view advertisers</div></div>
+    </div>
+  </div>
+
+  <!-- STATIONS TAB -->
+  <div class="tab-panel" id="tab-stations">
+    <div class="card">
+      <div class="section-header"><div class="card-label" style="margin:0">Saved Stations</div></div>
+      <div id="stationGroupsView"></div>
+      <hr class="divider">
+      <div class="card-label" id="stationFormLabel">Add Station</div>
+      <input type="hidden" id="editingStation" value="">
+      <div class="form-row" style="margin-bottom:12px">
+        <div class="form-col"><label>Station Name</label><input type="text" id="newStationName" placeholder="Name"/></div>
+        <div class="form-col-xs"><label>Callsign</label><div style="display:flex;gap:6px">
+          <input type="text" id="newCallsign" placeholder="CKFM" onblur="checkBellCallsign(this.value)" style="flex:1"/>
+          <button class="btn btn-sm" style="flex-shrink:0;padding:5px 9px;font-size:10px" onclick="lookupTuneIn()" title="Look up station on TuneIn">📻</button>
+        </div></div>
+        <div class="form-col-sm"><label>Network Group</label>
+          <select id="newGroup"><option value="Other">Other</option><option>Rogers</option><option>Stingray</option><option>Corus</option><option>Bell</option><option>Acadia</option><option>Maritime Broadcasting</option><option>Vista</option><option>Golden West</option><option>Pattison</option></select>
+        </div>
+      </div>
+      <div class="form-row" style="margin-bottom:12px">
+        <div class="form-col"><label>Stream URL</label>
+        <div style="display:flex;gap:6px">
+          <input type="text" id="newStreamUrl" placeholder="URL" style="flex:1"/>
+          <button class="btn btn-sm" style="flex-shrink:0;padding:5px 9px;font-size:10px" onclick="detectMetaFromForm()" title="Detect metadata sources">🔍</button>
+        </div></div>
+        <div class="form-col-sm"><label>Metadata Source</label>
+          <select id="newMetadataSource" onchange="toggleNewMetaSource()"><option value="auto">Auto-detect</option><option value="stream">ICY Stream</option><option value="json">JSON API</option><option value="tunein">TuneIn nowPlaying</option><option value="hls">HLS/M3U8</option><option value="rogers">Rogers API (auto)</option></select>
+        </div>
+      </div>
+      <div id="newMetadataUrlRow" style="margin-bottom:12px">
+        <label>Metadata URL <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)">— optional</span></label>
+        <input type="text" id="newMetadataUrl" placeholder="JSON endpoint or ICY stream URL"/>
+      </div>
+      <div class="form-row" style="margin-bottom:12px">
+        <div class="form-col-sm"><label>Poll interval (s)</label><input type="number" id="newPollInterval" value="10" min="3"/></div>
+        <div class="form-col-sm"><label>Trigger mode</label>
+          <select id="newTriggerMode" onchange="toggleNewTriggerMode()">
+            <option value="hybrid" selected>✨ Hybrid: Fingerprint + Cues + Silence (Default)</option>
+            <option value="stall">⏱ Stall Threshold (Freeze timer)</option>
+            <option value="keyword">🔤 Blank / Keyword</option>
+            <option value="silence">🔇 Silence Detection</option>
+            <option value="cue">🔔 In-Band Cues Only (Triton/HLS)</option>
+          </select>
+        </div>
+        <div id="newStallOpt" class="form-col-sm"><label>Stall threshold (s)</label><input type="number" id="newStallThreshold" value="60" min="10"/></div>
+      </div>
+      <div id="newKeywordOpt" style="display:none;margin-bottom:12px">
+        <label>Keywords</label><input type="text" id="newTriggerKeywords" placeholder="comma separated"/>
+      </div>
+      <div style="margin-bottom:12px">
+        <label>Station Logo</label>
+        <div class="form-row" style="margin-bottom:8px">
+          <div class="form-col"><input type="url" id="newLogoUrl" placeholder="https://... logo image URL"/></div>
+          <button class="btn btn-sm" style="align-self:flex-end" onclick="fetchLogoFromRadioBrowser()">🔍 RADIO BROWSER</button>
+          <button class="btn btn-sm" style="align-self:flex-end" onclick="previewLogoUrl()">PREVIEW</button>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-family:'Space Mono',monospace">— OR UPLOAD FILE —</div>
+        <div class="upload-zone" onclick="document.getElementById('logoFile').click()">
+          <input type="file" id="logoFile" accept="image/*" onchange="previewLogo()">
+          <div style="font-size:22px;opacity:.4">🖼</div>
+          <div class="upload-zone-text">Click to upload logo</div>
+          <div id="uploadPreview" style="margin-top:8px;display:none"><img id="previewImg" style="height:44px;border-radius:6px;border:1px solid var(--border)"/></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-start" style="flex:1;justify-content:center" onclick="saveStation()">SAVE STATION</button>
+        <button class="btn btn-secondary" id="cancelEditBtn" style="display:none" onclick="cancelEdit()">CANCEL</button>
+      </div>
+    </div>
+  </div>
+<!-- Metadata Source Picker Modal -->
+<div class="modal-overlay" id="metaPickerModal">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-title">📋 Select Metadata Source <button class="modal-close" onclick="closeModal('metaPickerModal')">✕</button></div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Multiple valid metadata sources found. Select the one you want to use:</div>
+    <div id="metaPickerList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal('metaPickerModal')">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- Domain Prompt Modal -->
+<div class="modal-overlay" id="domainModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-title">📡 Station Domain <button class="modal-close" onclick="closeDomainModal()">✕</button></div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6">
+      This is a Stingray station. Enter the station's public website domain so Barracuda can build the correct metadata URL.
+      <br><br>
+      <span style="font-family:'Space Mono',monospace;font-size:11px">
+        e.g. <strong>VOCM</strong> → <code>vocm.com</code><br>
+        e.g. <strong>CKEZ-FM</strong> → <code>q979.ca</code>
+      </span>
+    </p>
+    <div style="margin-bottom:8px">
+      <label>Callsign</label>
+      <input type="text" id="domainCallsign" readonly style="opacity:.6"/>
+    </div>
+    <div style="margin-bottom:16px">
+      <label>Station Domain</label>
+      <input type="text" id="domainInput" placeholder="e.g. vocm.com or q979.ca"
+        onkeydown="if(event.key==='Enter') confirmDomain()" oninput="updateDomainPreview()"/>
+      <div style="font-size:11px;color:var(--muted);margin-top:5px">
+        Metadata URL will be: <code id="domainPreview" style="color:var(--green)">player.[domain]/CALLSIGN/nowplaying</code>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-start" style="flex:1;justify-content:center" onclick="confirmDomain()">USE THIS DOMAIN</button>
+      <button class="btn btn-secondary" onclick="skipDomain()">SKIP — USE DEFAULT</button>
+    </div>
+  </div>
+</div>
+
+  <!-- ABOUT TAB -->
+  <div class="tab-panel" id="tab-about">
+    <div class="card" id="aboutContent" style="max-width:780px">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
+        <img src="/sonar-logo.png" style="width:72px;height:72px;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.12)">
+        <div>
+          <div style="font-size:26px;font-weight:800;letter-spacing:-.5px">Radio SONAR</div>
+          <div style="font-size:14px;color:var(--muted);margin-top:2px">Radio Intelligence Platform · Beta 1.1</div>
+        </div>
+      </div>
+      <div id="readmeContent" style="font-size:14px;line-height:1.7;color:var(--text)">Loading README...</div>
+    </div>
+  </div>
+
+<!-- AI Settings Modal -->
+<div class="modal-overlay" id="aiSettingsModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-title">🤖 AI & Transcription Settings <button class="modal-close" onclick="closeModal('aiSettingsModal')">✕</button></div>
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:18px;line-height:1.6">
+      Radio SONAR transcribes commercials locally via OpenAI Whisper with zero API keys required. You can optionally supply cloud API keys for near-instant (~300ms) transcription and advanced extraction.
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:18px">
+      <div>
+        <label>Groq Cloud API Key <span style="font-weight:400;color:var(--green)">(Recommended: Ultra-fast & free tier)</span></label>
+        <input type="password" id="aiGroqKey" placeholder="gsk_... (leave blank to keep unchanged)"/>
+        <div id="aiGroqStatus" style="font-size:10.5px;color:var(--muted);margin-top:3px;font-family:'JetBrains Mono',monospace"></div>
+      </div>
+      <div>
+        <label>OpenAI API Key <span style="font-weight:400;color:var(--muted)">(Optional)</span></label>
+        <input type="password" id="aiOpenaiKey" placeholder="sk-... (leave blank to keep unchanged)"/>
+        <div id="aiOpenaiStatus" style="font-size:10.5px;color:var(--muted);margin-top:3px;font-family:'JetBrains Mono',monospace"></div>
+      </div>
+      <div>
+        <label>Anthropic API Key <span style="font-weight:400;color:var(--muted)">(Optional Claude 3.5 Haiku)</span></label>
+        <input type="password" id="aiAnthropicKey" placeholder="sk-ant-... (leave blank to keep unchanged)"/>
+        <div id="aiAnthropicStatus" style="font-size:10.5px;color:var(--muted);margin-top:3px;font-family:'JetBrains Mono',monospace"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-col">
+          <label>Local Whisper Model</label>
+          <select id="aiWhisperModel">
+            <option value="tiny">tiny (75MB — fastest / lowest CPU)</option>
+            <option value="base">base (140MB — balanced)</option>
+            <option value="small">small (460MB — higher accuracy)</option>
+          </select>
+        </div>
+        <div class="form-col-sm">
+          <label>Language</label>
+          <input type="text" id="aiWhisperLang" value="en"/>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-start" style="flex:1;justify-content:center" onclick="saveAiSettings()">SAVE SETTINGS</button>
+      <button class="btn btn-secondary" onclick="closeModal('aiSettingsModal')">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tools: Search Modal -->
+<div class="modal-overlay" id="musicBrainzModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-title">🎵 MusicBrainz Lookup <button class="modal-close" onclick="closeModal('musicBrainzModal')">✕</button></div>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <input type="text" id="mbArtist" placeholder="Artist" style="flex:1;padding:10px;font-size:13px"/>
+      <input type="text" id="mbTitle" placeholder="Song title" style="flex:1;padding:10px;font-size:13px"/>
+      <button class="btn btn-start" style="padding:10px 16px" onclick="runMusicBrainzSearch()">SEARCH</button>
+    </div>
+    <div id="mbResults"><div class="empty"><div class="empty-icon">🔎</div>Enter an artist and/or song title to search</div></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="searchModal">
+  <div class="modal" style="max-width:700px">
+    <div class="modal-title">📻 Find a Radio Station <button class="modal-close" onclick="closeModal('searchModal')">✕</button></div>
+    <div id="findModeChooser" style="display:flex;gap:12px;margin-bottom:20px">
+      <button class="btn btn-start" style="flex:1;justify-content:center;font-size:12px;padding:14px;flex-direction:column;line-height:1.6" onclick="showFindMode('library')">
+        📚 LIBRARY<div style="font-weight:400;font-size:10px;opacity:.8">Browse 300+ Canadian stations</div>
+      </button>
+      <button class="btn btn-secondary" style="flex:1;justify-content:center;font-size:12px;padding:14px;flex-direction:column;line-height:1.6" onclick="showFindMode('search')">
+        🔍 SEARCH<div style="font-weight:400;font-size:10px;opacity:.8">Search TuneIn, iHeart, Streema</div>
+      </button>
+    </div>
+
+    <!-- Library pane -->
+    <div id="findLibraryPane" style="display:none">
+      <div class="form-row" style="margin-bottom:14px;align-items:flex-end">
+        <div class="form-col-sm">
+          <label>Network</label>
+          <select id="libraryNetwork" onchange="loadLibraryNetwork()">
+            <option value="">— select —</option>
+            <option value="Rogers">Rogers</option>
+            <option value="Bell">Bell Media</option>
+            <option value="Corus">Corus</option>
+            <option value="Stingray">Stingray</option>
+            <option value="Maritime Broadcasting">Maritime Broadcasting</option>
+            <option value="Vista">Vista Radio</option>
+            <option value="Pattison">Pattison Media</option>
+            <option value="Acadia">Acadia Broadcasting</option>
+          </select>
+        </div>
+        <div class="form-col">
+          <label>Station</label>
+          <select id="libraryStation" onchange="previewLibraryStation()" disabled>
+            <option value="">— select network first —</option>
+          </select>
+        </div>
+      </div>
+      <div id="libraryPreview" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <div id="libPreviewLogoWrap" style="width:52px;height:52px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;overflow:hidden">📻</div>
+          <div style="flex:1">
+            <div id="libPreviewName" style="font-weight:700;font-size:15px"></div>
+            <div id="libPreviewCallsign" style="font-family:Space Mono,monospace;font-size:11px;color:var(--muted)"></div>
+            <div id="libPreviewCity" style="font-size:11px;color:var(--muted)"></div>
+          </div>
+        </div>
+        <div style="display:grid;gap:6px">
+          <div>
+            <div style="font-size:10px;color:var(--muted);font-family:Space Mono,monospace;margin-bottom:2px">AUDIO</div>
+            <div id="libPreviewAudio" style="font-size:11px;word-break:break-all;color:var(--green)"></div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--muted);font-family:Space Mono,monospace;margin-bottom:2px">METADATA</div>
+            <div id="libPreviewMeta" style="font-size:11px;word-break:break-all;color:var(--blue)"></div>
+          </div>
+        </div>
+      </div>
+      <button id="libAddBtn" class="btn btn-start" style="width:100%;justify-content:center;display:none" onclick="addLibraryStation()">➕ ADD TO STATIONS</button>
+    </div>
+
+    <!-- Search pane -->
+    <div id="findSearchPane" style="display:none">
+      <div class="form-row" style="margin-bottom:12px">
+        <div class="form-col"><label>Station Name, Callsign or City</label><input type="text" id="stationSearchQ" placeholder="e.g. CKFM, AVR, Toronto" onkeydown="if(event.key==='Enter')searchStations()"/></div>
+        <div class="form-col-xs"><label>Country</label><input type="text" id="stationSearchCountry" placeholder="CA" maxlength="2"/></div>
+        <div class="form-col-sm"><label>Source</label>
+          <select id="searchSource" onchange="updateSearchInfo()">
+            <option value="tunein">TuneIn</option>
+            <option value="iheart">iHeart Radio Canada 🍁</option>
+            <option value="streema">Streema</option>
+            <option value="radiobrowser">Radio Browser</option>
+          </select>
+        </div>
+        <button class="btn btn-start" style="align-self:flex-end" onclick="searchStations()">SEARCH</button>
+      </div>
+      <div id="searchSourceInfo" style="background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:var(--blue)">
+        Search by station name, callsign, or city.
+      </div>
+      <div id="stationSearchResults"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Tools: Acoustic Identifier Modal -->
+<div class="modal-overlay" id="identifyModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-title">🎧 Acoustic Audio Identifier <button class="modal-close" onclick="closeModal('identifyModal')">✕</button></div>
+    <p style="font-size:12.5px;color:var(--text-secondary);margin-bottom:14px;line-height:1.5">
+      Sample live audio waves to instantly identify songs or commercials using local Chromaprint catalogs and the <strong>AcoustID (100M+ songs)</strong> global music database.
+    </p>
+    <div class="form-row" style="margin-bottom:12px">
+      <div class="form-col" style="flex:1">
+        <label>Select Station or Enter URL</label>
+        <select id="identifyStationSelect" onchange="onIdentifyStationChange()" style="margin-bottom:6px">
+          <option value="">— Select from monitored stations —</option>
+        </select>
+        <input type="text" id="identifyUrl" placeholder="http://stream-url.mp3 or .m3u8"/>
+      </div>
+      <div class="form-col" style="width:110px">
+        <label>Sample Time</label>
+        <select id="identifyDuration">
+          <option value="4">4 seconds</option>
+          <option value="6" selected>6 seconds</option>
+          <option value="10">10 seconds</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+      <div id="fpCatalogStats" style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace">Loading catalogs...</div>
+      <button class="btn btn-start" id="btnIdentify" onclick="runAudioIdentification()">IDENTIFY AUDIO</button>
+    </div>
+    <div id="identifyResults" style="margin-top:16px"></div>
+  </div>
+</div>
+
+<!-- Tools: Probe Modal -->
+<div class="modal-overlay" id="probeModal">
+  <div class="modal">
+    <div class="modal-title">📡 Probe Stream URL <button class="modal-close" onclick="closeModal('probeModal')">✕</button></div>
+    <div class="form-row" style="margin-bottom:14px">
+      <div class="form-col"><label>Stream URL</label><input type="text" id="probeUrl" placeholder="http://..."/></div>
+      <button class="btn btn-start" style="align-self:flex-end" onclick="probeStream()">PROBE</button>
+    </div>
+    <div id="probeResults"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '';
+let logos = {};
+let savedStations = [];
+let autoPurgeEnabled = false;
+
+// ── Utils ─────────────────────────────────────────────────────────────────────
+
+function esc(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show' + (type ? ' ' + type : '');
+  setTimeout(() => t.className = 'toast', 3200);
+}
+
+function switchTab(name) {
+  const names = ['monitor','recordings','commercial','music','advertisers','stations','about'];
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', names[i] === name));
+  document.querySelectorAll('.nav-tab').forEach((t,i) => t.classList.toggle('active', names[i] === name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+  if (name === 'recordings') loadRecordings();
+  if (name === 'stations') loadStations();
+  if (name === 'music') loadLog();
+  if (name === 'commercial') loadCommercialHistory();
+  if (name === 'advertisers') loadAdvertisers();
+  if (name === 'about') loadReadme();
+}
+
+async function loadReadme() {
+  const el = document.getElementById('readmeContent');
+  if (!el || el.dataset.loaded) return;
+  try {
+    const r = await fetch('/README.md');
+    const md = await r.text();
+    const lines = md.split('\n');
+    let html = '', inList = false;
+    for (const raw of lines) {
+      let line = raw
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/[*][*](.+?)[*][*]/g,'<strong>$1</strong>')
+        .replace(/`([^`]+)`/g,'<code style="background:var(--surface2);padding:1px 6px;border-radius:5px;font-size:12px;font-family:monospace">$1</code>');
+      if (line.startsWith('# ')) {
+        if (inList) { html += '</ul>'; inList = false; }
+        html += '<h1 style="font-size:22px;font-weight:800;margin:24px 0 10px">' + line.slice(2) + '</h1>';
+      } else if (line.startsWith('## ')) {
+        if (inList) { html += '</ul>'; inList = false; }
+        html += '<h2 style="font-size:17px;font-weight:700;margin:20px 0 8px;color:var(--accent)">' + line.slice(3) + '</h2>';
+      } else if (line.startsWith('### ')) {
+        if (inList) { html += '</ul>'; inList = false; }
+        html += '<h3 style="font-size:15px;font-weight:700;margin:14px 0 6px">' + line.slice(4) + '</h3>';
+      } else if (line.startsWith('- ') || line.startsWith('* ')) {
+        if (!inList) { html += '<ul style="padding-left:20px;margin:8px 0">'; inList = true; }
+        html += '<li style="margin:3px 0">' + line.slice(2) + '</li>';
+      } else if (raw.trim().match(/^-{3,}$/)) {
+        if (inList) { html += '</ul>'; inList = false; }
+        html += '<hr style="border:none;border-top:1px solid var(--border);margin:20px 0">';
+      } else if (line.startsWith('|')) {
+        if (inList) { html += '</ul>'; inList = false; }
+        if (raw.replace(/[|\- ]/g,'').trim() === '') continue;
+        const cells = line.split('|').filter(c => c.trim());
+        html += '<div style="display:flex;font-size:13px;border-bottom:1px solid var(--border);padding:4px 0">';
+        cells.forEach(c => { html += '<span style="flex:1;padding:0 8px">' + c.trim() + '</span>'; });
+        html += '</div>';
+      } else if (line.trim() === '') {
+        if (inList) { html += '</ul>'; inList = false; }
+        html += '<div style="height:6px"></div>';
+      } else {
+        if (inList) { html += '</ul>'; inList = false; }
+        html += '<p style="margin:3px 0">' + line + '</p>';
+      }
+    }
+    if (inList) html += '</ul>';
+    el.innerHTML = html;
+    el.dataset.loaded = '1';
+  } catch(e) {
+    el.innerHTML = '<p style="color:var(--muted)">README not found.</p>';
+    el.dataset.loaded = '1';
+  }
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('theme', isDark ? 'light' : 'dark');
+}
+
+function fmtSize(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
+  return (b/1048576).toFixed(1) + ' MB';
+}
+
+function timeAgo(d) {
+  const s = Math.floor((Date.now() - new Date(d)) / 1000);
+  if (s < 60) return s + 's ago'; if (s < 3600) return Math.floor(s/60) + 'm ago';
+  if (s < 86400) return Math.floor(s/3600) + 'h ago'; return new Date(d).toLocaleDateString();
+}
+
+function fmtTime(d) { return new Date(d).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
+function fmtDateTime(d) { return new Date(d).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
+
+function elapsed(start) {
+  const s = Math.floor((Date.now() - new Date(start)) / 1000);
+  return [Math.floor(s/3600), Math.floor((s%3600)/60), s%60].map(v=>String(v).padStart(2,'0')).join(':');
+}
+
+function staleFor(ts) {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return s + 's'; return Math.floor(s/60) + 'm ' + (s%60) + 's';
+}
+
+function getLogoUrl(name) {
+  if (!name) return null;
+  const slug = name.trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+  return logos[slug] || logos[name] || null;
+}
+
+// Fallback when a logo image fails to load — replace with a lettered placeholder
+function logoError(img, letters, cls) {
+  const ph = document.createElement('div');
+  ph.className = cls || 'station-card-placeholder';
+  ph.textContent = (letters || '?').substring(0, 4);
+  if (img.parentNode) img.parentNode.replaceChild(ph, img);
+}
+
+function stationLogoHtml(name, size=34) {
+  const url = getLogoUrl(name);
+  if (url) return `<img src="${url}" class="station-logo" style="width:${size}px;height:${size}px" alt="${name||''}">`;
+  if (name) return `<div class="station-logo-placeholder" style="width:${size}px;height:${size}px">${name.substring(0,4)}</div>`;
+  return '';
+}
+
+function stateLabel(m) {
+  const cueType = m.currentCueType;
+  const cueLabel = cueType && cueType !== 'track'
+    ? ` <span style="font-family:'JetBrains Mono',monospace;font-size:9px;background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);border-radius:4px;padding:2px 6px;vertical-align:middle;text-transform:uppercase;font-weight:700">${esc(cueType)}</span>`
+    : '';
+  if (m.status === 'recording') return '● RECORDING AD — ' + elapsed(m.recordingStart) + cueLabel;
+  if (m.status === 'monitoring-ad') return '● AD DETECTED — not recording' + cueLabel;
+  if (m.status === 'listening') {
+    if (cueType && cueType !== 'track') return '📢 ' + esc(cueType.toUpperCase()) + cueLabel;
+    return m.currentTitle ? '🎵 ' + esc(m.currentTitle) : '● LISTENING (MUSIC)';
+  }
+  return '● STARTING...';
+}
+
+function stateClass(m) {
+  if (m.status === 'recording') return 'state-recording';
+  if (m.status === 'monitoring-ad') return 'state-monitoring-ad';
+  if (m.status === 'listening') return 'state-listening';
+  return 'state-starting';
+}
+
+// ── Tools menu ────────────────────────────────────────────────────────────────
+
+function toggleToolsMenu() {
+  document.getElementById('toolsDropdown').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.tools-menu-wrap')) document.getElementById('toolsDropdown').classList.remove('open');
+});
+
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.getElementById('toolsDropdown').classList.remove('open');
+  if (id === 'searchModal') {
+    showFindMode('library');
+    loadStationLibrary();
+  }
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ── Station search (Radio Browser) ───────────────────────────────────────────
+
+// Cache for resolved station data  
+const resolvedCache = {};
+// Cache for completed recording metadata — avoids re-polling done/error files
+const metaCache = {};
+
+// ── Live stream player ────────────────────────────────────────────────────────
+// Uses HLS.js for HLS streams, native audio for direct streams
+// Reconnects automatically on error
+
+function handleStreamError(audioEl, streamUrl) {
+  // Brief delay then reload — handles transient stream disconnects
+  setTimeout(() => {
+    try {
+      const currentSrc = audioEl.querySelector('source') ? audioEl.querySelector('source').src : audioEl.src;
+      audioEl.load();
+    } catch(e) {}
+  }, 3000);
+}
+
+async function resolveSearchResult(idx, cardId, s) {
+  if (typeof s === 'string') {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = s;
+    s = JSON.parse(txt.value);
+  }
+  const card = document.getElementById(cardId);
+  const metaEl = document.getElementById('meta_resolve_' + idx);
+  if (metaEl) metaEl.innerHTML = '<span style="color:var(--amber)">🔍 Detecting...</span>';
+
+  try {
+    const r = await fetch(`${API}/api/tools/resolve-station`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ streamUrl: s.streamUrl || s.audioUrl, callsign: s.callsign, network: s.network || '' })
+    });
+    const data = await r.json();
+
+    // Update the station object with resolved data
+    if (data.audioUrl) s.audioUrl = data.audioUrl;
+    if (data.metadataUrl) s.metadataUrl = data.metadataUrl;
+    if (data.metadataType) s.metadataType = data.metadataType;
+    if (data.nowPlaying) s.nowPlaying = data.nowPlaying;
+    if (data.icyName && !s.name) s.name = data.icyName;
+
+    // Update display
+    if (metaEl) {
+      if (data.metadataUrl) {
+        metaEl.innerHTML = `<span style="color:var(--blue)">📋 ${data.metadataUrl.substring(0,55)}${data.metadataUrl.length>55?'...':''}</span>`;
+      } else if (data.icyMetaint) {
+        metaEl.innerHTML = '<span style="color:var(--green)">📡 ICY stream metadata detected</span>';
+        s.metadataType = 'icy';
+      } else {
+        metaEl.innerHTML = '<span style="color:var(--muted)">No metadata URL found</span>';
+      }
+    }
+    if (data.nowPlaying) {
+      const npEls = card ? card.querySelectorAll('.search-result-meta') : [];
+      // Refresh by re-rendering isn't trivial here, just show toast
+      toast('Now playing: ' + data.nowPlaying);
+    }
+
+    // Update the ADD button onclick with enriched data
+    const addBtn = card ? card.querySelector('.btn-start') : null;
+    if (addBtn) {
+      const encoded = JSON.stringify(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+      addBtn.setAttribute('onclick', `event.stopPropagation();addStationFromSearch(${encoded})`);
+      card.setAttribute('onclick', `addStationFromSearch(${encoded})`);
+    }
+
+    toast(data.metadataUrl ? 'Metadata URL found!' : (data.icyMetaint ? 'ICY metadata detected' : 'No metadata found'), data.metadataUrl ? 'success' : '');
+  } catch(e) {
+    if (metaEl) metaEl.innerHTML = '<span style="color:var(--red)">Detection failed</span>';
+    toast('Detection failed: ' + e.message, 'error');
+  }
+}
+
+async function searchStations() {
+  const q = document.getElementById('stationSearchQ').value.trim();
+  const source = document.getElementById('searchSource').value;
+  // Auto-set country to CA for Canadian sources
+  const canadianSources = ['radioplayer-canada', 'iheart', 'seekr', 'directstream', 'bell'];
+  if (canadianSources.includes(source) && !document.getElementById('stationSearchCountry').value) {
+    document.getElementById('stationSearchCountry').value = 'CA';
+  }
+  const country = document.getElementById('stationSearchCountry').value.trim().toUpperCase();
+  // Update info banner
+    const infos = {
+    "directstream": "Direct Stream — scrapes stream URLs directly from Stingray, Rogers, Corus, MBS and Golden West checklines pages.",
+    "bell": "Bell Media — searches all 55 Bell stations. Metadata auto-filled via Triton Digital. Add stream URL from iheart.com.",
+    "iheart": "iHeart Radio Canada — searches Rogers-owned stations with stream URLs and now-playing metadata.",
+    "seekr": "Seekr/Rogers — pulls from Rogers nowplaying API, shows what is currently on air.",
+    "streema": "Streema — global radio directory with stream URLs.",
+    "radioplayer-canada": "Radio Player Canada — Canadian stations via Radio Browser index.",
+    "tunein": "TuneIn — large global directory.",
+    "radiobrowser": "Radio Browser — free global open-source directory with 35,000+ stations.",
+  };
+  const infoEl = document.getElementById('searchSourceInfo');
+  if (infoEl) infoEl.textContent = infos[source] || '';
+  if (!q) return toast('Enter a search term', 'error');
+  const res = document.getElementById('stationSearchResults');
+  const sourceLabels = {
+    "directstream": "Direct Stream",
+    "bell": "Bell Media",
+    "radioplayer-canada": "Radio Player Canada",
+    "iheart": "iHeart Radio Canada",
+    "seekr": "Seekr / Rogers",
+    "streema": "Streema",
+    "tunein": "TuneIn",
+    "radiobrowser": "Radio Browser",
+  };
+  const sourceLabel = sourceLabels[source] || source;
+  res.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-family:Space Mono,monospace;font-size:12px">Searching ' + sourceLabel + '...<br><span style="font-size:10px;opacity:.6">' + (source === 'tunein' ? 'Resolving stream URLs and fetching now-playing...' : '') + '</span></div>';
+  try {
+    let stations = [];
+    if (source === 'tunein') {
+      // TuneIn search via our proxy
+      const r = await fetch(`${API}/api/tools/search-stations?q=${encodeURIComponent(q)}&country=${country}&source=tunein&limit=5`);
+      stations = await r.json();
+    } else {
+      const r = await fetch(`${API}/api/tools/search-stations?q=${encodeURIComponent(q)}&country=${country}&limit=15`);
+      stations = await r.json();
+    }
+    if (!stations.length) { res.innerHTML = '<div class="empty">No stations found on ' + source + '</div>'; return; }
+    // Store station data in a global map keyed by index to avoid JSON-in-onclick issues
+    window._searchResults = {};
+    stations.forEach((s, i) => { window._searchResults[i] = s; });
+
+    res.innerHTML = stations.map((s, i) => {
+      const streamDisplay = (s.audioUrl || s.streamUrl || 'no stream URL').substring(0, 55);
+      const metaDisplay = s.metadataUrl ? s.metadataUrl.substring(0, 55) : '';
+      return `
+      <div class="search-result" id="sr_${i}" onclick="addStationByIndex(${i})">
+        ${s.favicon ? `<img src="${s.favicon}" class="search-result-logo" onerror="this.style.display='none'">` : '<div class="search-result-logo" style="font-size:18px;display:flex;align-items:center;justify-content:center">📻</div>'}
+        <div class="search-result-info">
+          <div class="search-result-name">${esc(s.name)}${s.callsign && s.callsign !== s.name ? ' <span style="font-size:10px;color:var(--muted);font-family:Space Mono,monospace">(' + esc(s.callsign) + ')</span>' : ''}</div>
+          <div class="search-result-meta">${[s.country, s.province, s.network, s.codec, s.bitrate ? s.bitrate + 'kbps' : ''].filter(Boolean).map(esc).join(' · ')}</div>
+          ${s.nowPlaying ? `<div class="search-result-meta" style="color:var(--green);font-size:11px">▶ ${esc(s.nowPlaying)}</div>` : ''}
+          <div class="search-result-meta" style="font-size:10px;opacity:.7">🔊 ${esc(streamDisplay)}${(s.audioUrl || s.streamUrl || '').length > 55 ? '...' : ''}</div>
+          <div class="search-result-meta" style="font-size:10px;color:var(--blue)" id="meta_${i}">
+            ${s.metadataUrl
+              ? '📋 ' + esc(s.metadataUrl.substring(0,55)) + (s.metadataUrl.length > 55 ? '...' : '')
+              : '<span style="color:var(--muted)">📋 <u style="cursor:pointer" onclick="event.stopPropagation();resolveByIndex(' + i + ')">Detect metadata URL</u></span>'}
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
+          <button class="btn btn-start" style="padding:6px 10px;font-size:10px" onclick="event.stopPropagation();addStationByIndex(${i})">ADD</button>
+          ${!s.metadataUrl ? `<button class="btn btn-sm" style="padding:4px 8px;font-size:9px" onclick="event.stopPropagation();resolveByIndex(${i})">🔍 DETECT</button>` : `<button class="btn btn-sm" style="padding:4px 8px;font-size:9px;color:var(--green);border-color:var(--green-border)" onclick="event.stopPropagation();resolveByIndex(${i})">🔍 REFRESH</button>`}
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { res.innerHTML = '<div class="empty">Search failed: ' + e.message + '</div>'; }
+}
+
+function addStationByIndex(i) {
+  const s = window._searchResults && window._searchResults[i];
+  if (!s) { toast('Station data not found', 'error'); return; }
+
+  // If this is a checklines or Bell station, handle by network
+  if ((s.source === 'directstream' || s.source === 'bell') && s.callsign) {
+    const net = (s.network || '').toLowerCase();
+    const norm = s.callsign.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+
+    if (net === 'rogers') {
+      s.metadataUrl = 'https://radio.rogersdigitalmedia.com/service/now_playing';
+      s.metadataType = 'json';
+      s.network = 'Rogers';
+      addStationFromSearch(s);
+      return;
+    }
+
+    if (net === 'bell') {
+      s.metadataUrl = `https://np.tritondigital.com/public/nowplaying?mountName=${norm}&numberToFetch=1&eventType=track`;
+      s.metadataType = 'json';
+      s.network = 'Bell';
+      addStationFromSearch(s);
+      return;
+    }
+
+    if (net === 'corus') {
+      s.streamUrl = `https://corus.leanstream.co/${norm}?args=web_01`;
+      s.audioUrl = s.streamUrl;
+      s.metadataUrl = `https://globalnewselection.s3.amazonaws.com/fm-playlist/results/${norm}_np.js?callback=jsonpcallback`;
+      s.metadataType = 'json';
+      s.network = 'Corus';
+      addStationFromSearch(s);
+      return;
+    }
+
+    if (net === 'stingray' || net === 'mbs radio') {
+      // Stingray/MBS — prompt for station domain
+      promptDomain(s);
+      return;
+    }
+
+    if (net === 'golden west') {
+      // Golden West — prompt for domain
+      promptDomain(s);
+      return;
+    }
+
+    // Unknown checklines network — prompt for domain
+    promptDomain(s);
+    return;
+  }
+  addStationFromSearch(s);
+}
+
+// ── Domain prompt for Stingray/checklines stations ────────────────────────────
+let _pendingStation = null;
+
+function promptDomain(s) {
+  _pendingStation = s;
+  // Show the full suffixed callsign (e.g. VOCMAM, VOCMFM, CFRQFM)
+  // This preserves the AM/FM distinction for stations sharing a base callsign
+  document.getElementById('domainCallsign').value = s.callsign;
+  document.getElementById('domainInput').value = '';
+  updateDomainPreview();
+  document.getElementById('domainModal').classList.add('open');
+  setTimeout(() => document.getElementById('domainInput').focus(), 100);
+}
+
+function updateDomainPreview() {
+  const domain = document.getElementById('domainInput').value.trim().toLowerCase();
+  // Keep the full suffixed callsign — strip hyphens only (VOCM-AM -> VOCMAM)
+  // URL is always player.[domain]/FULLCALLSIGN/nowplaying
+  // e.g. player.vocm.com/VOCMAM/nowplaying
+  // e.g. player.q104.ca/CFRQFM/nowplaying
+  const fullCallsign = (document.getElementById('domainCallsign').value || '').replace(/-/g, '').toUpperCase();
+  const preview = document.getElementById('domainPreview');
+  if (domain && fullCallsign) {
+    const metaUrl = `https://player.${domain}/${fullCallsign}/nowplaying`;
+    preview.textContent = metaUrl;
+    preview.style.color = 'var(--green)';
+  } else {
+    preview.textContent = 'player.[domain]/' + (fullCallsign || 'CALLSIGN') + '/nowplaying';
+    preview.style.color = 'var(--muted)';
+  }
+}
+
+function confirmDomain() {
+  const domain = document.getElementById('domainInput').value.trim().toLowerCase();
+  if (!domain) { toast('Please enter the station domain', 'error'); return; }
+  if (_pendingStation) {
+    // Full suffixed callsign in URL — strip hyphens only
+    const fullCallsign = _pendingStation.callsign.replace(/-/g, '').toUpperCase();
+    _pendingStation.metadataUrl = `https://player.${domain}/${fullCallsign}/nowplaying`;
+    _pendingStation.metadataType = 'json';
+  }
+  closeDomainModal();
+  if (_pendingStation) addStationFromSearch(_pendingStation);
+  _pendingStation = null;
+}
+
+function skipDomain() {
+  // Use q104.ca fallback — already baked into server detection
+  closeDomainModal();
+  if (_pendingStation) addStationFromSearch(_pendingStation);
+  _pendingStation = null;
+}
+
+function closeDomainModal() {
+  document.getElementById('domainModal').classList.remove('open');
+}
+
+async function resolveByIndex(i) {
+  const s = window._searchResults && window._searchResults[i];
+  if (!s) return;
+  const metaEl = document.getElementById('meta_' + i);
+  if (metaEl) metaEl.innerHTML = '<span style="color:var(--amber)">🔍 Detecting all sources...</span>';
+  try {
+    const r = await fetch(`${API}/api/tools/resolve-station-all`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ streamUrl: s.streamUrl || s.audioUrl, callsign: s.callsign, name: s.brand || s.name, network: s.network || '' })
+    });
+    const data = await r.json();
+    const sources = data.allSources || [];
+
+    if (sources.length === 0) {
+      if (data.icyMetaint) {
+        s.metadataType = 'icy';
+        if (metaEl) metaEl.innerHTML = '<span style="color:var(--green)">📡 ICY stream metadata</span>';
+        toast('ICY inline metadata detected', 'success');
+      } else {
+        if (metaEl) metaEl.innerHTML = '<span style="color:var(--muted)">No metadata sources found</span>';
+        toast('No metadata sources found', '');
+      }
+      window._searchResults[i] = s;
+      return;
+    }
+
+    if (sources.length === 1) {
+      // Only one source — auto-select it
+      applyMetaSource(i, sources[0]);
+      if (metaEl) metaEl.innerHTML = '📋 <span style="color:var(--blue)">' + sources[0].url.substring(0,55) + (sources[0].url.length>55?'...':'') + '</span>';
+      toast('Metadata found: ' + sources[0].label, 'success');
+      return;
+    }
+
+    // Multiple sources — show picker
+    showMetaPicker(i, sources, metaEl);
+  } catch(e) {
+    if (metaEl) metaEl.innerHTML = '<span style="color:var(--red)">Detection failed</span>';
+    toast('Detection failed: ' + e.message, 'error');
+  }
+}
+
+function showMetaPicker(idx, sources, metaEl) {
+  const list = document.getElementById('metaPickerList');
+  list.innerHTML = sources.map((src, si) => `
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:border-color .15s"
+         onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'"
+         onclick="applyMetaSource(${idx},${JSON.stringify(src).replace(/"/g,'&quot;')});closeModal('metaPickerModal');document.getElementById('meta_${idx}') && (document.getElementById('meta_${idx}').innerHTML='📋 <span style=color:var(--blue)>${src.url.substring(0,50).replace(/'/g,'\'')}</span>')">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+        ${src.albumart ? `<img src="${src.albumart}" style="width:36px;height:36px;border-radius:5px;object-fit:cover;flex-shrink:0" onerror="this.style.display='none'">` : '<div style="width:36px;height:36px;border-radius:5px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🎵</div>'}
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:13px">${src.nowPlaying || '—'}</div>
+          <div style="font-size:11px;color:var(--muted)">${src.artist || ''}</div>
+        </div>
+        <div style="flex-shrink:0;text-align:right">
+          <div style="font-family:Space Mono,monospace;font-size:10px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);border-radius:4px;padding:2px 7px">${src.label}</div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);word-break:break-all">${src.url}</div>
+    </div>`).join('');
+  document.getElementById('metaPickerModal').classList.add('open');
+  toast(sources.length + ' metadata sources found — pick one', 'success');
+}
+
+function applyMetaSource(idx, src) {
+  if (typeof src === 'string') {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = src;
+    src = JSON.parse(txt.value);
+  }
+  const s = window._searchResults && window._searchResults[idx];
+  if (!s) return;
+  s.metadataUrl  = src.url;
+  s.metadataType = src.type;
+  s.nowPlaying   = src.nowPlaying;
+  window._searchResults[idx] = s;
+  // Update ADD button with enriched data
+  const card = document.getElementById('sr_' + idx);
+  if (card) {
+    const addBtn = card.querySelector('.btn-start');
+    if (addBtn) {
+      const encoded = JSON.stringify(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+      addBtn.setAttribute('onclick', `event.stopPropagation();addStationByIndex(${idx})`);
+    }
+  }
+}
+
+function addStationFromSearch(s) {
+  try {
+    if (typeof s === 'string') {
+      // Decode HTML entities before parsing
+      const txt = document.createElement('textarea');
+      txt.innerHTML = s;
+      s = JSON.parse(txt.value);
+    }
+  } catch(e) { toast('Could not parse station data', 'error'); return; }
+  closeModal('searchModal');
+  switchTab('stations');
+  document.getElementById('newStationName').value = s.brand || s.name || s.text || '';
+  // Prefer resolved audioUrl over raw streamUrl
+  document.getElementById('newStreamUrl').value = s.audioUrl || s.streamUrl || '';
+  document.getElementById('newLogoUrl').value = s.favicon || '';
+  if (s.callsign) document.getElementById('newCallsign').value = s.callsign;
+  if (s.network === 'Rogers' || s.source === 'seekr') {
+    document.getElementById('newGroup').value = 'Rogers';
+    document.getElementById('newMetadataSource').value = 'rogers';
+    toggleNewMetaSource();
+  } else if (s.network && ['Stingray','Corus','Bell','Acadia','Golden West','Maritime Broadcasting','Vista','Pattison'].includes(s.network)) {
+    const grpSel = document.getElementById('newGroup');
+    if (grpSel) {
+      const opt = [...grpSel.options].find(o => o.value === s.network);
+      if (opt) grpSel.value = s.network;
+    }
+  }
+  if (s.metadataType === 'icy') {
+    document.getElementById('newMetadataSource').value = 'stream';
+    toggleNewMetaSource();
+  } else if (s.metadataType === 'hls') {
+    document.getElementById('newMetadataSource').value = 'hls';
+    toggleNewMetaSource();
+  } else if (s.metadataUrl) {
+    document.getElementById('newMetadataSource').value = 'json';
+    toggleNewMetaSource();
+  }
+  if (s.metadataUrl) document.getElementById('newMetadataUrl').value = s.metadataUrl;
+  if (s.favicon) { document.getElementById('previewImg').src = s.favicon; document.getElementById('uploadPreview').style.display = 'block'; }
+  toast('Station filled in — review and save', 'success');
+  document.getElementById('newStationName').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ── Acoustic Audio Identifier ─────────────────────────────────────────────────
+
+async function openIdentifyModal() {
+  openModal('identifyModal');
+  const sel = document.getElementById('identifyStationSelect');
+  if (sel) {
+    let optionsHtml = '<option value="">— Select a station —</option>';
+
+    // 1. Live monitored active stations first
+    try {
+      const r = await fetch(`${API}/api/status`);
+      const { active } = await r.json();
+      if (active && active.length) {
+        optionsHtml += '<optgroup label="🔴 Live Monitored Stations">';
+        active.forEach(m => {
+          const sUrl = m.url || '';
+          const sName = m.options?.stationName || m.station || 'Active Station';
+          if (sUrl) {
+            optionsHtml += `<option value="${esc(sUrl)}">${esc(sName)} (Live Monitor)</option>`;
+          }
+        });
+        optionsHtml += '</optgroup>';
+      }
+    } catch (_) {}
+
+    // 2. Saved library stations
+    if (savedStations && savedStations.length) {
+      optionsHtml += '<optgroup label="📻 Saved Stations">';
+      savedStations.forEach(s => {
+        const sUrl = s.streamUrl || s.audioUrl || s.url || '';
+        if (sUrl) {
+          optionsHtml += `<option value="${esc(sUrl)}">${esc(s.name || s.brand || 'Station')} (${esc(s.network || s.group || 'Custom')})</option>`;
+        }
+      });
+      optionsHtml += '</optgroup>';
+    }
+
+    sel.innerHTML = optionsHtml;
+  }
+  loadFpStats();
+}
+
+async function loadFpStats() {
+  const statsEl = document.getElementById('fpCatalogStats');
+  if (!statsEl) return;
+  try {
+    const r = await fetch(`${API}/api/fingerprints/stats`);
+    const data = await r.json();
+    statsEl.textContent = `Catalog: ${data.adCount || 0} Ad Fingerprints · ${data.musicCount || 0} Songs`;
+  } catch (_) {
+    statsEl.textContent = 'Catalog: Ready (AcoustID enabled)';
+  }
+}
+
+function onIdentifyStationChange() {
+  const sel = document.getElementById('identifyStationSelect');
+  const urlIn = document.getElementById('identifyUrl');
+  if (sel && urlIn) {
+    urlIn.value = sel.value || '';
+  }
+}
+
+async function runAudioIdentification() {
+  const url = document.getElementById('identifyUrl').value.trim();
+  if (!url) return toast('Please select a station or enter a stream URL', 'error');
+
+  const durationSeconds = parseInt(document.getElementById('identifyDuration').value) || 6;
+  const resEl = document.getElementById('identifyResults');
+  const btn = document.getElementById('btnIdentify');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Sampling & Fingerprinting...';
+  resEl.innerHTML = `
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;font-size:12.5px;color:var(--text-secondary);text-align:center">
+      <div style="font-size:20px;margin-bottom:6px">📡</div>
+      <div>Capturing ${durationSeconds}s audio sample from stream...</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Querying local ad/music catalogs and AcoustID (100M+ songs)...</div>
+    </div>
+  `;
+
+  try {
+    const r = await fetch(`${API}/api/tools/identify-audio`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, durationSeconds })
+    });
+    const data = await r.json();
+    btn.disabled = false;
+    btn.textContent = 'IDENTIFY AUDIO';
+
+    if (data.type === 'ad' && data.match) {
+      const details = data.details || {};
+      resEl.innerHTML = `
+        <div style="background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:var(--radius-md);padding:14px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <span style="font-size:20px">📢</span>
+            <div>
+              <div style="font-size:14px;font-weight:700;color:var(--amber)">CONFIRMED COMMERCIAL AD</div>
+              <div style="font-size:11px;color:var(--text-secondary)">Matched Local Ad Catalog · Confidence: ${Math.round((data.score || 0.85) * 100)}%</div>
+            </div>
+          </div>
+          ${details.brands && details.brands.length ? `<div style="font-size:12px;margin-top:6px"><strong>Advertiser(s):</strong> ${details.brands.join(', ')}</div>` : ''}
+          ${details.station ? `<div style="font-size:11px;color:var(--muted);margin-top:4px">Station Origin: ${esc(details.station)} · Played ${details.playCount || 1} times</div>` : ''}
+          ${details.transcript ? `<div style="font-size:11px;color:var(--text-secondary);background:var(--surface);border-radius:4px;padding:6px;margin-top:6px;font-style:italic">"${esc(details.transcript)}"</div>` : ''}
+        </div>
+      `;
+    } else if (data.type === 'music' && data.match) {
+      const details = data.details || {};
+      const sourceLabel = data.source === 'acoustid' ? 'AcoustID Global Database (100M+ Songs)' : 'Local Music Catalog';
+      resEl.innerHTML = `
+        <div style="background:var(--green-bg);border:1px solid var(--green-border);border-radius:var(--radius-md);padding:14px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <span style="font-size:20px">🎵</span>
+            <div>
+              <div style="font-size:14px;font-weight:700;color:var(--green)">CONFIRMED MUSIC SONG</div>
+              <div style="font-size:11px;color:var(--text-secondary)">Identified via ${sourceLabel} · Confidence: ${Math.round((data.score || 0.85) * 100)}%</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:12px;margin-top:8px">
+            <span style="color:var(--muted);font-weight:600">Track:</span>
+            <span style="font-weight:600;color:var(--text)">${esc(details.songTitle || 'Unknown')}</span>
+            <span style="color:var(--muted);font-weight:600">Artist:</span>
+            <span style="color:var(--text)">${esc(details.artist || 'Unknown')}</span>
+            ${details.album ? `<span style="color:var(--muted);font-weight:600">Album:</span><span style="color:var(--text-secondary)">${esc(details.album)}</span>` : ''}
+            ${details.year ? `<span style="color:var(--muted);font-weight:600">Year:</span><span style="color:var(--text-secondary)">${esc(details.year)}</span>` : ''}
+          </div>
+        </div>
+      `;
+      loadFpStats();
+    } else {
+      resEl.innerHTML = `
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span style="font-size:20px">❓</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text)">No Exact Acoustic Match Found</div>
+              <div style="font-size:11px;color:var(--muted)">Audio sample (${data.duration ? data.duration.toFixed(1) + 's' : ''}) appears to be live speech, DJ talk, uncataloged commercial, or non-indexed indie track.</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'IDENTIFY AUDIO';
+    resEl.innerHTML = '<div class="empty">Identification request failed</div>';
+  }
+}
+
+// ── Probe stream ──────────────────────────────────────────────────────────────
+
+async function probeStream() {
+  const url = document.getElementById('probeUrl').value.trim();
+  if (!url) return toast('Enter a URL', 'error');
+  const res = document.getElementById('probeResults');
+  res.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:12px">Probing...</div>';
+  try {
+    const r = await fetch(`${API}/api/tools/probe-stream`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ url }) });
+    const data = await r.json();
+    res.innerHTML = `
+      <div class="probe-result">
+        <div class="probe-row"><span class="probe-key">Station Name</span><span>${data.icyName || '—'}</span></div>
+        <div class="probe-row"><span class="probe-key">Content-Type</span><span>${data.contentType || '—'}</span></div>
+        <div class="probe-row"><span class="probe-key">ICY Metadata</span><span>${data.icyMetaint ? 'Yes (interval: ' + data.icyMetaint + ')' : 'No'}</span></div>
+        <div class="probe-row"><span class="probe-key">HLS Stream</span><span>${data.isHls ? 'Yes' : 'No'}</span></div>
+        <div class="probe-row"><span class="probe-key">Playlist</span><span>${data.isPlaylist ? 'Yes' : 'No'}</span></div>
+        ${data.audioUrl ? `<div class="probe-row"><span class="probe-key">Audio URL</span><span style="font-size:11px;word-break:break-all">${data.audioUrl}</span></div>` : ''}
+        ${data.suggestedMetadataUrl ? `<div class="probe-row"><span class="probe-key">Suggested Metadata</span><span style="font-size:11px;word-break:break-all">${data.suggestedMetadataUrl}</span></div>` : ''}
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn btn-start" style="flex:1;justify-content:center" onclick="useProbeResult('${data.suggestedStreamUrl || url}','${data.icyName||''}','')">USE STREAM URL</button>
+        ${data.suggestedMetadataUrl ? `<button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="useProbeResult('${data.suggestedStreamUrl || url}','${data.icyName||''}','${data.suggestedMetadataUrl}')">USE BOTH URLS</button>` : ''}
+      </div>`;
+  } catch(e) { res.innerHTML = '<div class="empty">Probe failed</div>'; }
+}
+
+function useProbeResult(url, name, metaUrl) {
+  closeModal('probeModal');
+  switchTab('stations');
+  document.getElementById('newStreamUrl').value = url;
+  if (name) document.getElementById('newStationName').value = name;
+  if (metaUrl) document.getElementById('newMetadataUrl').value = metaUrl;
+  toast('Stream details filled in', 'success');
+}
+
+// ── Monitor controls ──────────────────────────────────────────────────────────
+
+function toggleTriggerMode() {
+  const mode = document.getElementById('triggerMode').value;
+  document.getElementById('stallOptions').style.display = mode === 'stall' ? '' : 'none';
+  document.getElementById('keywordOptions').style.display = mode === 'keyword' ? '' : 'none';
+}
+
+async function startMonitor() {
+  const url = document.getElementById('streamUrl').value.trim();
+  if (!url) return toast('Stream URL is required', 'error');
+  const body = {
+    url, stationName: document.getElementById('stationName').value.trim(),
+    callsign: document.getElementById('callsign').value.trim(),
+    network: document.getElementById('network').value,
+    metadataUrl: document.getElementById('metadataUrl').value.trim() || null,
+    metadataSource: document.getElementById('metadataSource').value,
+    pollInterval: parseInt(document.getElementById('pollInterval').value) || 10,
+    stallThreshold: parseInt(document.getElementById('stallThreshold').value) || 60,
+    triggerMode: document.getElementById('triggerMode').value,
+    triggerKeywords: document.getElementById('triggerKeywords').value.trim(),
+  };
+  try {
+    const r = await fetch(`${API}/api/monitor/start`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    const data = await r.json();
+    if (data.error) return toast(data.error, 'error');
+    toast('Monitoring started', 'success');
+    ['streamUrl','metadataUrl','stationName','callsign','triggerKeywords'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('network').value = '';
+    refreshStatus();
+  } catch(e) { toast('Could not connect', 'error'); }
+}
+
+async function launchStation(name) {
+  const s = savedStations.find(x => x.name === name);
+  if (!s) return;
+  // Rogers auto-routing
+  let metadataUrl = s.metadataUrl || null;
+  let metadataSource = s.metadataSource || 'auto';
+  const net = (s.network || '').toLowerCase();
+
+  // Rogers — use single array endpoint, matched by call_letters server-side
+  if (net === 'rogers') {
+    metadataUrl = 'https://radio.rogersdigitalmedia.com/service/now_playing';
+    metadataSource = 'json';
+  }
+  // Corus — detect from metadataUrl and force corus-jsonp type
+  else if (net === 'corus' || (metadataUrl && metadataUrl.includes('globalnewselection'))) {
+    metadataSource = 'corus-jsonp';
+    // Rebuild metadataUrl from callsign if missing or broken
+    if (!metadataUrl || !metadataUrl.includes('globalnewselection')) {
+      const cs = (s.callsign || '').replace(/[^A-Z0-9]/gi,'').toUpperCase();
+      if (cs) metadataUrl = `https://globalnewselection.s3.amazonaws.com/fm-playlist/results/${cs}_np.js?callback=jsonpcallback`;
+    }
+  }
+  // Bell — Triton, no eventType filter
+  else if (net === 'bell' || (metadataUrl && metadataUrl.includes('tritondigital'))) {
+    metadataSource = 'triton';
+    // Strip eventType=track if present in saved URL
+    if (metadataUrl) metadataUrl = metadataUrl.replace('&eventType=track','').replace('&numberToFetch=1&eventType=track','&numberToFetch=1');
+  }
+  // Maritime Broadcasting — Leanplayer JSON
+  else if (net === 'maritime broadcasting' || net === 'maritime') {
+    metadataSource = 'json';
+  }
+  // Pattison — HLS embedded ID3 metadata, no separate URL
+  else if (net === 'pattison') {
+    metadataSource = 'hls';
+    metadataUrl = null;
+  }
+  // Acadia Broadcasting — Futuri/cdnstream HLS, title in EXTINF
+  else if (net === 'acadia' || net === 'acadia broadcasting' || (s.streamUrl && s.streamUrl.includes('cdnstream.com'))) {
+    metadataSource = 'hls';
+    metadataUrl = null;
+  }
+  try {
+    const r = await fetch(`${API}/api/monitor/start`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ url:s.streamUrl, metadataUrl, metadataSource, stationName:s.name, callsign:s.callsign||'', network:s.network||'', pollInterval:s.pollInterval, stallThreshold:s.stallThreshold, triggerMode:s.triggerMode, triggerKeywords:s.triggerKeywords||'' })
+    });
+    const data = await r.json();
+    if (data.error) return toast(data.error, 'error');
+    toast(s.name + ' started', 'success');
+    refreshStatus();
+  } catch(e) { toast('Could not connect', 'error'); }
+}
+
+async function stopMonitor(id) {
+  await fetch(`${API}/api/monitor/stop/${id}`, {method:'POST'});
+  toast('Monitor stopped'); refreshStatus(); setTimeout(loadRecordings, 1200);
+}
+
+async function stopAll() {
+  await fetch(`${API}/api/monitor/stopall`, {method:'POST'});
+  toast('All stopped'); refreshStatus();
+}
+
+async function toggleRecording(id, cur) {
+  await fetch(`${API}/api/monitor/${id}/recording`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({enabled:!cur})});
+  toast(!cur ? 'Recording enabled' : 'Recording paused', !cur ? 'success' : '');
+  refreshStatus();
+}
+
+async function toggleTranscribe(id, cur) {
+  await fetch(`${API}/api/monitor/${id}/transcribe`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({enabled:!cur})});
+  toast(!cur ? 'Transcription enabled' : 'Transcription disabled', !cur ? 'success' : '');
+  refreshStatus();
+}
+
+async function toggleMetaLog(id, cur) {
+  await fetch(`${API}/api/monitor/${id}/metalog`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({enabled:!cur})});
+  toast(!cur ? 'Logging enabled' : 'Logging disabled', !cur ? 'success' : '');
+  refreshStatus();
+}
+
+// ── Quick launch ──────────────────────────────────────────────────────────────
+
+function renderQuickLaunch() {
+  const wrap = document.getElementById('quickLaunch');
+  const list = document.getElementById('quickStationList');
+  if (!savedStations.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  // Group by network
+  const groups = {};
+  savedStations.forEach(s => { const g = s.group || 'Other'; if (!groups[g]) groups[g] = []; groups[g].push(s); });
+  list.innerHTML = Object.entries(groups).map(([g, stations]) => `
+    <div class="group-label">${g}</div>
+    <div class="station-list">${stations.map(s => {
+      const logoUrl = getLogoUrl(s.name) || getLogoUrl(s.callsign);
+      const letters = (s.name || '?').substring(0,4);
+      return `<button class="station-btn" onclick="launchStation(${JSON.stringify(s.name).replace(/"/g,'&quot;')})">
+        ${logoUrl ? `<img src="${logoUrl}" class="station-btn-logo" onerror="logoError(this,&quot;${letters}&quot;,'station-btn-placeholder')">` : `<div class="station-btn-placeholder">${letters}</div>`}
+        <div class="station-btn-info">
+          <div class="station-btn-name">${s.name}</div>
+          <div class="station-btn-sub">${s.callsign || ''} ${s.network ? '· ' + s.network : ''}</div>
+        </div>
+      </button>`;
+    }).join('')}</div>`).join('');
+}
+
+// ── Live player (removed — stream URL shown as link instead) ─────────────────
+const livePlayers = {};
+function toggleLivePlayer() {}
+function preserveLivePlayers() {}
+
+// ── Status polling ────────────────────────────────────────────────────────────
+
+let prevStates = {};
+
+async function refreshStatus() {
+  try {
+    const r = await fetch(`${API}/api/status`);
+    const { active } = await r.json();
+    const card = document.getElementById('monitorsCard');
+    const list = document.getElementById('monitorList');
+    if (!active.length) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    active.forEach(m => {
+      if (prevStates[m.id] === 'recording' && m.status === 'listening') setTimeout(loadRecordings, 1500);
+      prevStates[m.id] = m.status;
+    });
+    list.innerHTML = active.map(m => {
+      const staleSeconds = Math.floor((Date.now() - m.lastTitleChange) / 1000);
+      const stallPct = Math.min(100, (staleSeconds / m.options.stallThreshold) * 100);
+      const stallColor = stallPct > 80 ? 'var(--red)' : stallPct > 50 ? 'var(--amber)' : 'var(--green)';
+      const artSrc = m.currentAlbumart
+        ? (m.currentAlbumart.startsWith('//') ? 'https:' + m.currentAlbumart : m.currentAlbumart)
+        : (getLogoUrl(m.options && (m.options.callsign || m.options.stationName)) || getLogoUrl(m.station));
+      const albumArtHtml = artSrc ? `<img src="${artSrc}" style="width:88px;height:88px;border-radius:12px;object-fit:cover;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.15)" onerror="this.style.display='none'">` : '';
+      const artCols = albumArtHtml ? 'auto 1fr 1fr' : '1fr 1fr';
+      const networkBadge = m.options.network ? `<span style="background:var(--surface2);color:var(--muted);border-radius:980px;padding:2px 9px;font-size:10px;font-weight:600">${m.options.network}</span>` : '';
+      const historyHtml = m.titleHistory.length ? `
+        <div class="title-history">
+          <div class="history-label">Recent titles</div>
+          <div class="history-list">${m.titleHistory.map(h => `
+            <div class="history-item">
+              <span class="history-time">${fmtTime(h.time)}</span>
+              <span class="history-title">${h.artist && h.songTitle ? '<strong>' + esc(h.artist) + '</strong> — ' + esc(h.songTitle) : (esc(h.title) || '<em>no title</em>')}</span>
+            </div>`).join('')}
+          </div>
+        </div>` : '';
+      const streamUrl = m.url;
+      return `
+        <div class="monitor-card ${stateClass(m)}">
+          <div class="monitor-top">
+            <div class="status-dot"></div>
+            ${stationLogoHtml(m.options.stationName, 34)}
+            <div class="monitor-info">
+              <div class="monitor-url">${networkBadge} <strong>${esc(m.options.stationName || '')}</strong>${m.options.callsign ? ' (' + esc(m.options.callsign) + ')' : ''} ${m.options.stationName ? '—' : ''} ${esc(m.url)}</div>
+              <div class="monitor-status-line">${stateLabel(m)}</div>
+            </div>
+            <div class="monitor-elapsed">up ${elapsed(m.startTime)}</div>
+            <div class="monitor-btns">
+              <button class="btn ${m.recordingEnabled ? 'btn-rec-on' : 'btn-rec-off'}" onclick="toggleRecording('${m.id}',${m.recordingEnabled})" style="font-size:9px">${m.recordingEnabled ? '⏺ REC' : '○ REC'}</button>
+              <button class="btn ${m.transcribeEnabled ? 'btn-rec-on' : 'btn-rec-off'}" onclick="toggleTranscribe('${m.id}',${m.transcribeEnabled})" style="font-size:9px">${m.transcribeEnabled ? '🎙 AI' : '🎙 OFF'}</button>
+              <button class="btn ${m.metadataLogEnabled ? 'btn-rec-on' : 'btn-rec-off'}" onclick="toggleMetaLog('${m.id}',${m.metadataLogEnabled})" style="font-size:9px">${m.metadataLogEnabled ? '📋 LOG' : '📋 OFF'}</button>
+              <button class="btn btn-stop" onclick="stopMonitor('${m.id}')">STOP</button>
+            </div>
+          </div>
+          <div class="stream-player" id="splayer_${m.id}">
+            <span style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;flex-shrink:0">🔊</span>
+            <a href="${streamUrl}" target="_blank" style="font-size:11px;color:var(--blue);word-break:break-all;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${streamUrl}">${esc(streamUrl)}</a>
+          </div>
+          <div class="meta-panel" style="grid-template-columns:${artCols}">
+            ${albumArtHtml ? '<div>' + albumArtHtml + '</div>' : ''}
+            <div class="meta-item">
+              <div class="meta-key">Now playing</div>
+              <div class="meta-val">${esc(m.currentSongTitle || m.currentTitle || '—')}</div>
+              ${m.currentArtist ? '<div style="font-size:11px;color:var(--muted);margin-top:2px">' + esc(m.currentArtist) + '</div>' : ''}
+            </div>
+            <div class="meta-item">
+              <div class="meta-key">Title unchanged</div>
+              <div class="meta-val" style="color:${stallColor}">${staleFor(m.lastTitleChange)}${m.status==='recording' ? ' — recording' : ''}</div>
+            </div>
+            <div class="meta-item" style="grid-column:1/-1">
+              <div class="meta-key">Source / trigger</div>
+              <div class="meta-val" style="font-size:11px;white-space:normal;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <span title="${m.options.metadataUrl || ''}">${
+                  m.metadataSource === 'json' ? '🔗 ' + (m.options.metadataUrl || '').replace(/https?:\/\//, '').substring(0,55) + ((m.options.metadataUrl || '').length > 60 ? '...' : '')
+                  : m.metadataSource === 'hls' ? '🎵 HLS stream'
+                  : m.metadataSource === 'triton' ? '🔔 Triton'
+                  : m.metadataSource === 'corus-jsonp' ? '🔗 Corus'
+                  : m.metadataSource === 'iheart' ? '❤️ iHeart'
+                  : '📡 ICY stream'
+                } · ${m.options.triggerMode === 'hybrid' ? '✨ Hybrid' : (m.options.triggerMode || 'hybrid')}</span>
+                ${m.currentCueType ? `<span style="font-family:Space Mono,monospace;font-size:10px;padding:2px 7px;border-radius:4px;${m.currentCueType==='track' ? 'background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)' : 'background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)'}">TRITON: ${m.currentCueType.toUpperCase()}</span>` : ''}
+                ${m.acousticMatchInfo && m.acousticMatchInfo.type === 'music' ? `<span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 7px;border-radius:4px;background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)">🎧 ACOUSTID: ${esc(m.acousticMatchInfo.details.songTitle || 'Song')} (${Math.round((m.acousticMatchInfo.score||0.85)*100)}%)</span>` : ''}
+                ${m.currentDurationMs && m.currentCueType === 'track' ? `<span style="font-size:10px;color:var(--muted)">${Math.floor(m.currentDurationMs/60000)}:${String(Math.round((m.currentDurationMs%60000)/1000)).padStart(2,'0')}</span>` : ''}
+              </div>
+            </div>
+          </div>
+          ${historyHtml}
+        </div>`;
+    }).join('');
+  } catch(e) {}
+}
+
+// ── Recordings ────────────────────────────────────────────────────────────────
+
+function togglePlay(name, safeId) {
+  const player = document.getElementById(safeId), btn = document.getElementById('btn_'+safeId), audio = player.querySelector('audio');
+  document.querySelectorAll('.audio-player.visible').forEach(p => {
+    if (p.id !== safeId) {
+      const a = p.querySelector('audio'); if(a) { a.pause(); a.src = ''; }
+      p.classList.remove('visible');
+      const b = document.getElementById('btn_'+p.id); if(b){b.innerHTML='▶ PLAY';b.classList.remove('playing');}
+    }
+  });
+  if (player.classList.contains('visible')) {
+    audio.pause(); player.classList.remove('visible');
+    btn.innerHTML='▶ PLAY'; btn.classList.remove('playing');
+  } else {
+    // Lazy-load: set src from data-src only when play is clicked
+    if (!audio.src || audio.src === window.location.href) {
+      const dataSrc = audio.getAttribute('data-src');
+      if (dataSrc) audio.src = dataSrc;
+    }
+    player.classList.add('visible');
+    audio.play().catch(()=>{});
+    btn.innerHTML='⏸ PAUSE'; btn.classList.add('playing');
+  }
+}
+
+function onAudioEnded(safeId) { const b = document.getElementById('btn_'+safeId); if(b){b.innerHTML='▶ PLAY';b.classList.remove('playing');} }
+
+function downloadRec(name) { const a=document.createElement('a'); a.href=`${API}/api/recordings/download/${encodeURIComponent(name)}`; a.download=name; a.click(); }
+
+async function deleteRec(name) {
+  if (!confirm('Delete ' + name + '?')) return;
+  await fetch(`${API}/api/recordings/${encodeURIComponent(name)}`, {method:'DELETE'});
+  toast('Deleted'); loadRecordings();
+}
+
+async function loadRecordings() {
+  try {
+    const r = await fetch(`${API}/api/recordings`);
+    const files = await r.json();
+    const list = document.getElementById('recList');
+    if (!files.length) { list.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>No commercials captured yet</div>'; return; }
+    list.innerHTML = files.map(f => {
+      const safeId = 'player_' + f.name.replace(/[^a-zA-Z0-9]/g,'_');
+      const stationSlug = f.name.split('-')[0];
+      const logoUrl = logos[stationSlug];
+      const iconHtml = logoUrl ? `<img src="${logoUrl}" style="width:100%;height:100%;object-fit:contain;padding:3px">` : '<span style="font-size:15px">📢</span>';
+      return `
+        <div class="rec-item">
+          <div class="rec-icon">${iconHtml}</div>
+          <div class="rec-info"><div class="rec-name">${f.name}</div><div class="rec-meta">${fmtSize(f.size)} · ${timeAgo(f.modified)}</div></div>
+          <div class="rec-actions">
+            <button class="btn btn-play" id="btn_${safeId}" onclick="togglePlay('${f.name}','${safeId}')">▶ PLAY</button>
+            <button class="btn btn-sm" onclick="retranscribe('${f.name}')" title="Re-run Whisper AI and advertiser extraction">🎙 AI</button>
+            <button class="btn btn-download" onclick="downloadRec('${f.name}')">⬇ DL</button>
+            <button class="btn btn-delete" onclick="deleteRec('${f.name}')">DEL</button>
+          </div>
+          <div class="audio-player" id="${safeId}"><audio controls preload="none" onended="onAudioEnded('${safeId}')" data-src="${API}/api/recordings/download/${encodeURIComponent(f.name)}"></audio></div>
+          <div class="brands-panel" id="brands_${safeId}">
+            <div class="brands-label">🏢 Advertisers <span class="brands-status" id="brandsstatus_${safeId}">Loading...</span><span class="transcript-toggle" onclick="toggleTranscriptView('${safeId}')">show transcript</span></div>
+            <div id="brandswrap_${safeId}"></div>
+            <textarea class="transcript-box" id="transcript_${safeId}" readonly placeholder="Transcript will appear here..."></textarea>
+          </div>
+        </div>`;
+    }).join('');
+    files.forEach(f => {
+      const safeId = 'player_' + f.name.replace(/[^a-zA-Z0-9]/g,'_');
+      const stName = f.name.split('-')[0].replace(/_/g, ' ');
+      loadBrandsMeta(f.name, safeId, stName);
+    });
+  } catch(e) {}
+}
+
+const _recordingBrands = {};
+
+function renderBrandChipsHtml(filename, safeId, brands, stationName) {
+  const brandList = Array.isArray(brands) ? brands : [];
+  _recordingBrands[filename] = brandList;
+  const chips = brandList.map(b => `
+    <span class="brand-chip">
+      ${esc(b)}
+      <span class="brand-chip-remove" title="Remove ${esc(b)}" onclick="removeBrandFromRecording('${filename}','${safeId}','${encodeURIComponent(b)}','${encodeURIComponent(stationName)}')">✕</span>
+    </span>
+  `).join('');
+
+  return `
+    <div class="brands-tags" id="tags_${safeId}">
+      ${chips}
+      <div class="brand-add-wrap">
+        <input type="text" class="brand-add-input" id="in_${safeId}" placeholder="+ Add advertiser..." onkeydown="if(event.key==='Enter')addBrandToRecording('${filename}','${safeId}','${encodeURIComponent(stationName)}')"/>
+        <button class="brand-add-btn" onclick="addBrandToRecording('${filename}','${safeId}','${encodeURIComponent(stationName)}')">+ ADD</button>
+      </div>
+    </div>
+  `;
+}
+
+async function addBrandToRecording(filename, safeId, encodedStation) {
+  const input = document.getElementById('in_' + safeId);
+  if (!input) return;
+  const brand = input.value.trim();
+  if (!brand) return;
+  const stationName = decodeURIComponent(encodedStation || '');
+  const current = _recordingBrands[filename] || [];
+  if (current.map(c => c.toLowerCase()).includes(brand.toLowerCase())) {
+    toast('Advertiser already in list', 'error');
+    input.value = '';
+    return;
+  }
+  const updated = [...current, brand];
+  _recordingBrands[filename] = updated;
+
+  try {
+    await fetch(`${API}/api/recordings/meta/${encodeURIComponent(filename)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ brands: updated, station: stationName })
+    });
+    toast(`✓ Added "${brand}"`, 'success');
+    input.value = '';
+    const tagsEl = document.getElementById('tags_' + safeId);
+    if (tagsEl) {
+      tagsEl.outerHTML = renderBrandChipsHtml(filename, safeId, updated, stationName);
+      const nextIn = document.getElementById('in_' + safeId);
+      if (nextIn) nextIn.focus();
+    }
+    const statusEl = document.getElementById('brandsstatus_' + safeId);
+    if (statusEl) {
+      statusEl.innerHTML = `✓ ${updated.length} found`;
+      statusEl.style.color = 'var(--green)';
+    }
+    // If advertisers tab is active, refresh it
+    const advTab = document.getElementById('tab-advertisers');
+    if (advTab && advTab.classList.contains('active')) loadAdvertisers();
+  } catch (e) {
+    toast('Failed to save advertiser', 'error');
+  }
+}
+
+async function removeBrandFromRecording(filename, safeId, encodedBrand, encodedStation) {
+  const brand = decodeURIComponent(encodedBrand);
+  const stationName = decodeURIComponent(encodedStation || '');
+  const current = _recordingBrands[filename] || [];
+  const updated = current.filter(b => b !== brand);
+  _recordingBrands[filename] = updated;
+
+  try {
+    await fetch(`${API}/api/recordings/meta/${encodeURIComponent(filename)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ brands: updated, station: stationName })
+    });
+    toast(`Removed "${brand}"`, '');
+    const tagsEl = document.getElementById('tags_' + safeId);
+    if (tagsEl) {
+      tagsEl.outerHTML = renderBrandChipsHtml(filename, safeId, updated, stationName);
+    }
+    const statusEl = document.getElementById('brandsstatus_' + safeId);
+    if (statusEl) {
+      statusEl.innerHTML = updated.length ? `✓ ${updated.length} found` : '✓ none';
+    }
+    const advTab = document.getElementById('tab-advertisers');
+    if (advTab && advTab.classList.contains('active')) loadAdvertisers();
+  } catch (e) {
+    toast('Failed to remove advertiser', 'error');
+  }
+}
+
+async function loadBrandsMeta(filename, safeId, stationName) {
+  const statusEl = document.getElementById('brandsstatus_' + safeId);
+  const wrapEl = document.getElementById('brandswrap_' + safeId);
+  const transcriptEl = document.getElementById('transcript_' + safeId);
+  if (!statusEl) return;
+  try {
+    const r = await fetch(`${API}/api/recordings/meta/${encodeURIComponent(filename)}`);
+    const data = await r.json();
+    const stName = stationName || filename.split('-')[0].replace(/_/g, ' ');
+    const spotBadge = (data.spots && data.spots.length > 0) ? ` <span style="font-family:'JetBrains Mono',monospace;font-size:9px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);border-radius:3px;padding:1px 5px">${data.spots.length} spots</span>` : '';
+    const brands = data.brands || [];
+
+    if (data.status === 'transcribing') {
+      statusEl.innerHTML = '⏳ Transcribing...' + spotBadge;
+      setTimeout(() => loadBrandsMeta(filename, safeId, stationName), 4000);
+    } else if (data.status === 'extracting') {
+      statusEl.innerHTML = '🤖 Extracting...' + spotBadge;
+      setTimeout(() => loadBrandsMeta(filename, safeId, stationName), 3000);
+    } else if (data.status === 'done') {
+      statusEl.innerHTML = (brands.length ? '✓ ' + brands.length + ' found' : '✓ none') + spotBadge;
+      statusEl.style.color = 'var(--green)';
+      if (wrapEl) wrapEl.innerHTML = renderBrandChipsHtml(filename, safeId, brands, stName);
+      if (transcriptEl && data.transcript) transcriptEl.value = data.transcript;
+    } else if (data.status === 'error') {
+      statusEl.innerHTML = '⚠ ' + (data.error || 'error') + spotBadge;
+      statusEl.style.color = 'var(--red)';
+      if (wrapEl) wrapEl.innerHTML = renderBrandChipsHtml(filename, safeId, brands, stName);
+    } else {
+      statusEl.innerHTML = '⏳ Pending...' + spotBadge;
+      statusEl.style.color = 'var(--muted)';
+      if (wrapEl) wrapEl.innerHTML = renderBrandChipsHtml(filename, safeId, brands, stName);
+    }
+  } catch(e) { if (statusEl) statusEl.textContent = '—'; }
+}
+
+function toggleTranscriptView(safeId) {
+  const box = document.getElementById('transcript_'+safeId);
+  const toggleEl = document.querySelector(`#brands_${safeId} .transcript-toggle`);
+  if (!box) return;
+  const visible = box.style.display === 'block';
+  box.style.display = visible ? 'none' : 'block';
+  if (toggleEl) toggleEl.textContent = visible ? 'show transcript' : 'hide transcript';
+}
+
+async function retranscribe(filename) {
+  try {
+    const r = await fetch(`${API}/api/recordings/retranscribe/${encodeURIComponent(filename)}`, { method: 'POST' });
+    const data = await r.json();
+    toast('Transcription queued', 'success');
+    const safeId = 'player_' + filename.replace(/[^a-zA-Z0-9]/g, '_');
+    const statusEl = document.getElementById('brandsstatus_' + safeId);
+    if (statusEl) { statusEl.textContent = '⏳ Queued...'; }
+    setTimeout(() => loadBrandsMeta(filename, safeId), 2000);
+  } catch (e) {
+    toast('Failed to queue transcription', 'error');
+  }
+}
+
+async function openAiSettingsModal() {
+  openModal('aiSettingsModal');
+  try {
+    const r = await fetch(`${API}/api/settings/ai`);
+    const data = await r.json();
+    const gEl = document.getElementById('aiGroqStatus');
+    const oEl = document.getElementById('aiOpenaiStatus');
+    const aEl = document.getElementById('aiAnthropicStatus');
+    if (gEl) {
+      gEl.textContent = data.hasGroqKey ? '✓ Active / Configured' : '— Not set';
+      gEl.style.color = data.hasGroqKey ? 'var(--green)' : 'var(--muted)';
+    }
+    if (oEl) {
+      oEl.textContent = data.hasOpenaiKey ? '✓ Active / Configured' : '— Not set';
+      oEl.style.color = data.hasOpenaiKey ? 'var(--green)' : 'var(--muted)';
+    }
+    if (aEl) {
+      aEl.textContent = data.hasAnthropicKey ? '✓ Active / Configured' : '— Not set';
+      aEl.style.color = data.hasAnthropicKey ? 'var(--green)' : 'var(--muted)';
+    }
+    if (data.whisperModel) document.getElementById('aiWhisperModel').value = data.whisperModel;
+    if (data.whisperLanguage) document.getElementById('aiWhisperLang').value = data.whisperLanguage;
+  } catch (e) {}
+}
+
+async function saveAiSettings() {
+  const groqApiKey = document.getElementById('aiGroqKey').value.trim();
+  const openaiApiKey = document.getElementById('aiOpenaiKey').value.trim();
+  const anthropicApiKey = document.getElementById('aiAnthropicKey').value.trim();
+  const whisperModel = document.getElementById('aiWhisperModel').value;
+  const whisperLanguage = document.getElementById('aiWhisperLang').value.trim() || 'en';
+
+  const body = { whisperModel, whisperLanguage };
+  if (groqApiKey) body.groqApiKey = groqApiKey;
+  if (openaiApiKey) body.openaiApiKey = openaiApiKey;
+  if (anthropicApiKey) body.anthropicApiKey = anthropicApiKey;
+
+  try {
+    const r = await fetch(`${API}/api/settings/ai`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await r.json();
+    toast('AI settings saved', 'success');
+    closeModal('aiSettingsModal');
+    document.getElementById('aiGroqKey').value = '';
+    document.getElementById('aiOpenaiKey').value = '';
+    document.getElementById('aiAnthropicKey').value = '';
+  } catch (e) {
+    toast('Save failed', 'error');
+  }
+}
+
+// ── Commercial History ────────────────────────────────────────────────────────
+
+async function loadCommercialHistory() {
+  const sel = document.getElementById('commercialStationSelect');
+  const station = sel ? sel.value : '';
+  populateStationSelects();
+  const list = document.getElementById('commercialList');
+  if (!station) { list.innerHTML = '<div class="empty"><div class="empty-icon">📻</div>Select a station</div>'; return; }
+  try {
+    const r = await fetch(`${API}/api/recordings`);
+    const files = await r.json();
+    const stationFiles = files.filter(f => f.name.startsWith(station.replace(/[^a-zA-Z0-9_-]/g,'_') + '-') || f.name.includes(station));
+    if (!stationFiles.length) { list.innerHTML = '<div class="empty"><div class="empty-icon">📻</div>No commercials for ' + station + '</div>'; return; }
+    // Load meta for each file
+    const metas = await Promise.all(stationFiles.map(async f => {
+      try { const mr = await fetch(`${API}/api/recordings/meta/${encodeURIComponent(f.name)}`); return { file: f, meta: await mr.json() }; }
+      catch(_) { return { file: f, meta: {} }; }
+    }));
+    const logoUrl = getLogoUrl(station);
+    list.innerHTML = metas.map(({ file, meta }) => {
+      const safeId = 'ch_' + file.name.replace(/[^a-zA-Z0-9]/g,'_');
+      return `
+        <div class="commercial-item">
+          <div class="commercial-header">
+            ${logoUrl ? `<img src="${logoUrl}" style="width:28px;height:28px;border-radius:5px;object-fit:contain;border:1px solid var(--border)">` : '<span style="font-size:18px">📢</span>'}
+            <div style="flex:1;min-width:0">
+              <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${file.name}</div>
+              <div class="commercial-date">${fmtDateTime(file.modified)} · ${fmtSize(file.size)}</div>
+            </div>
+            <div style="display:flex;gap:5px">
+              <button class="btn btn-play" id="btn_${safeId}" onclick="togglePlay('${file.name}','${safeId}')" style="font-size:10px">▶ PLAY</button>
+              <button class="btn btn-download" onclick="downloadRec('${file.name}')" style="font-size:10px">⬇</button>
+            </div>
+          </div>
+          <div class="audio-player" id="${safeId}"><audio controls preload="none" onended="onAudioEnded('${safeId}')" data-src="${API}/api/recordings/download/${encodeURIComponent(file.name)}"></audio></div>
+          ${meta.transcript ? `<div class="commercial-transcript">${meta.transcript}</div>` : (meta.status === 'transcribing' ? '<div style="font-size:12px;color:var(--muted);padding:6px">⏳ Transcribing...</div>' : (meta.status === 'pending' || !meta.status ? '<div style="font-size:12px;color:var(--muted);padding:6px">No transcript yet</div>' : ''))}
+          <div style="margin-top:10px">
+            <div style="font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:700;letter-spacing:0.05em;margin-bottom:4px">Advertisers</div>
+            ${renderBrandChipsHtml(file.name, safeId, meta.brands || [], station)}
+          </div>
+        </div>`;
+    }).join('');
+  } catch(e) { list.innerHTML = '<div class="empty">Failed to load</div>'; }
+}
+
+// ── Music History ─────────────────────────────────────────────────────────────
+
+async function loadLog() {
+  const sel = document.getElementById('logStationSelect');
+  const list = document.getElementById('logList');
+  if (!list) return;
+  populateStationSelects();
+  if (!sel.value && savedStations.length === 1) sel.value = savedStations[0].name;
+  const station = sel ? sel.value : '';
+  if (!station) { list.innerHTML = '<div class="empty"><div class="empty-icon">🎵</div>Select a station</div>'; return; }
+  try {
+    const [logRes, statusRes] = await Promise.all([fetch(`${API}/api/metalog/${encodeURIComponent(station)}`), fetch(`${API}/api/status`)]);
+    const entries = await logRes.json();
+    const { active } = await statusRes.json();
+    const monitor = active.find(m => m.options.stationName === station);
+    let retentionHtml = '';
+    if (monitor) {
+      retentionHtml = `<div class="retention-bar"><span>📋 Logging active</span><span style="margin-left:auto">Keep last</span><input type="number" id="retentionInput_${monitor.id}" value="${monitor.metadataRetentionHours}" min="1" step="0.5"/><span>hours</span><button class="btn btn-sm" onclick="updateRetention('${monitor.id}')">SAVE</button></div>`;
+    }
+    if (!entries.length) { list.innerHTML = retentionHtml + '<div class="empty"><div class="empty-icon">🎵</div>No entries for ' + station + ' yet</div>'; return; }
+    list.innerHTML = retentionHtml + entries.map(e => {
+      const isAd = !e.title || e.title.trim() === '';
+      const artHtml = e.albumart ? `<img src="${e.albumart.startsWith('//') ? 'https:' + e.albumart : e.albumart}" class="log-art" onerror="this.style.display='none'">` : `<div class="log-art-placeholder">${isAd ? '📢' : '🎵'}</div>`;
+      const dateStr = new Date(e.time).toLocaleDateString([], {month:'short',day:'numeric'});
+      const songT = (e.songTitle || e.title || '').replace(/'/g, "\\'");
+      const artistT = (e.artist || '').replace(/'/g, "\\'");
+      const mbBtn = !isAd ? `<button class="btn btn-sm mb-btn" title="Look up on MusicBrainz" onclick="lookupMusicBrainz('${artistT}','${songT}','${e.time}')">🔎 MB</button>` : '';
+      return `
+        <div class="log-item">
+          <div class="log-time">${dateStr}<br>${fmtTime(e.time)}</div>
+          ${artHtml}
+          <div class="log-info">
+            <div class="log-title">${esc(e.songTitle || e.title) || '<em style="color:var(--muted)">Ad break</em>'}</div>
+            ${e.artist ? '<div class="log-artist">' + esc(e.artist) + '</div>' : ''}
+          </div>
+          ${e.playCount > 1 ? `<span class="log-count">×${e.playCount}</span>` : ''}
+          ${isAd ? '<span class="log-ad">AD</span>' : ''}
+          ${mbBtn}
+        </div>`;
+    }).join('');
+  } catch(e) { list.innerHTML = '<div class="empty">Failed to load</div>'; }
+}
+
+async function updateRetention(monitorId) {
+  const input = document.getElementById('retentionInput_' + monitorId);
+  if (!input) return;
+  await fetch(`${API}/api/monitor/${monitorId}/metalog`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ enabled:true, retentionHours:parseFloat(input.value)||5 }) });
+  toast('Retention updated', 'success');
+}
+
+async function clearLog() {
+  const station = document.getElementById('logStationSelect').value;
+  if (!station) return toast('Select a station first', 'error');
+  if (!confirm('Clear ALL logged metadata for ' + station + '?')) return;
+  await fetch(`${API}/api/metalog/${encodeURIComponent(station)}`, {method:'DELETE'});
+  toast('Log cleared'); loadLog();
+}
+
+async function clearCommercialHistory() {
+  const station = document.getElementById('commercialStationSelect').value;
+  if (!station) {
+    if (!confirm('Clear ALL commercial audio recordings and metadata across ALL stations?')) return;
+    try {
+      const r = await fetch(`${API}/api/recordings/all`, { method: 'DELETE' });
+      const data = await r.json();
+      toast(`✓ Removed ${data.deleted || 0} commercial recording files`, 'success');
+      loadCommercialHistory();
+      loadRecordings();
+    } catch (e) {
+      toast('Failed to clear recordings: ' + e.message, 'error');
+    }
+    return;
+  }
+
+  if (!confirm(`Clear all captured commercial recordings for ${station}?`)) return;
+  try {
+    const r = await fetch(`${API}/api/recordings/station/${encodeURIComponent(station)}`, { method: 'DELETE' });
+    const data = await r.json();
+    toast(`✓ Cleared ${data.deleted || 0} commercial files for ${station}`, 'success');
+    loadCommercialHistory();
+    loadRecordings();
+  } catch (e) {
+    toast('Failed to clear recordings: ' + e.message, 'error');
+  }
+}
+
+async function clearAllRecordings() {
+  if (!confirm('Clear ALL captured commercial recordings across ALL stations?')) return;
+  try {
+    const r = await fetch(`${API}/api/recordings/all`, { method: 'DELETE' });
+    const data = await r.json();
+    toast(`✓ Removed ${data.deleted || 0} commercial recording files`, 'success');
+    loadRecordings();
+    loadCommercialHistory();
+  } catch (e) {
+    toast('Failed to clear recordings: ' + e.message, 'error');
+  }
+}
+
+async function purgeHistory(which, days) {
+  const sel = which === 'commercial' ? 'commercialStationSelect' : 'logStationSelect';
+  const station = document.getElementById(sel).value;  // optional
+  const scope = station ? ('for ' + station) : 'across ALL stations';
+  if (!confirm(`Delete ${which === 'commercial' ? 'commercial recordings' : 'history entries'} older than ${days} days ${scope}?`)) return;
+  toast('Purging...', '');
+  try {
+    const body = { days };
+    if (station) body.station = station;
+    const url = which === 'commercial' ? `${API}/api/recordings/purge` : `${API}/api/metalog/purge`;
+    const r = await fetch(url, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    const data = await r.json();
+    if (data.error) { toast(data.error, 'error'); return; }
+    const count = data.entriesRemoved !== undefined ? data.entriesRemoved : data.deleted;
+    toast(`✓ Removed ${count} item${count === 1 ? '' : 's'} older than ${days}d`, 'success');
+    if (which === 'commercial') { loadCommercialHistory(); loadRecordings(); } else { loadLog(); }
+  } catch(e) { toast('Purge failed: ' + e.message, 'error'); }
+}
+
+// ── MusicBrainz lookup ────────────────────────────────────────────────────────
+let _mbEntryTime = null;  // time of the log entry being edited (null = manual search)
+let _mbLastData = null;   // last MB result for the Apply button
+
+function openMusicBrainzSearch() {
+  _mbEntryTime = null;
+  document.getElementById('mbArtist').value = '';
+  document.getElementById('mbTitle').value = '';
+  document.getElementById('mbResults').innerHTML = '<div class="empty"><div class="empty-icon">🔎</div>Enter an artist and/or song title to search</div>';
+  openModal('musicBrainzModal');
+}
+
+function lookupMusicBrainz(artist, title, entryTime) {
+  _mbEntryTime = entryTime || null;
+  openModal('musicBrainzModal');
+  document.getElementById('mbArtist').value = artist || '';
+  document.getElementById('mbTitle').value = title || '';
+  runMusicBrainzSearch();
+}
+
+function mbResultCard(d, isPrimary) {
+  const art = d.albumart
+    ? `<img src="${d.albumart}" style="width:120px;height:120px;border-radius:10px;object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,.15)" onerror="this.style.display='none'">`
+    : '<div style="width:120px;height:120px;border-radius:10px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:36px">🎵</div>';
+  // Encode the values for the apply call
+  const payload = encodeURIComponent(JSON.stringify({ artist: d.artist||'', songTitle: d.title||'', album: d.album||'', year: d.year||'', albumart: d.albumart||'' }));
+  const applyBtn = _mbEntryTime
+    ? `<button class="btn btn-start" style="margin-top:10px" onclick="applyMusicBrainz('${payload}')">✓ Apply to this song</button>`
+    : '';
+  return `
+    <div style="display:flex;gap:16px;margin-bottom:14px;padding:14px;background:var(--surface2);border-radius:14px">
+      ${art}
+      <div style="flex:1;min-width:0">
+        <div style="font-size:18px;font-weight:700;letter-spacing:-.3px;margin-bottom:3px">${d.title || '—'}</div>
+        <div style="font-size:15px;color:var(--accent);font-weight:600;margin-bottom:8px">${d.artist || '—'}</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7">
+          ${d.album ? '<div>💿 ' + d.album + '</div>' : ''}
+          ${d.year ? '<div>📅 ' + d.year + '</div>' : ''}
+          ${d.albumart ? '<div>🖼️ Artwork available</div>' : ''}
+        </div>
+        ${d.mbid ? `<a href="https://musicbrainz.org/recording/${d.mbid}" target="_blank" style="font-size:12px;color:var(--accent);text-decoration:none;display:inline-block;margin-top:6px">View on MusicBrainz →</a>` : ''}
+        ${applyBtn}
+      </div>
+    </div>`;
+}
+
+async function runMusicBrainzSearch() {
+  const artist = document.getElementById('mbArtist').value.trim();
+  const title  = document.getElementById('mbTitle').value.trim();
+  const results = document.getElementById('mbResults');
+  if (!artist && !title) { toast('Enter an artist or title', 'error'); return; }
+  results.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div>Searching MusicBrainz...</div>';
+  try {
+    const params = new URLSearchParams();
+    if (artist) params.set('artist', artist);
+    if (title)  params.set('title', title);
+    const r = await fetch(`${API}/api/tools/musicbrainz?${params}`);
+    const data = await r.json();
+    if (!data.found) {
+      results.innerHTML = '<div class="empty"><div class="empty-icon">🤷</div>No matches found on MusicBrainz</div>';
+      return;
+    }
+    _mbLastData = data;
+    let html = mbResultCard(data, true);
+    if (data.alternates && data.alternates.length > 1) {
+      html += '<div style="font-size:12px;font-weight:600;color:var(--muted);margin:12px 0 8px">Other matches — click to use</div>';
+      data.alternates.slice(1).forEach(a => {
+        const ap = encodeURIComponent(JSON.stringify({ artist:a.artist||'', songTitle:a.title||'', album:a.album||'', year:a.year||'', albumart:'' }));
+        const applyAlt = _mbEntryTime ? `onclick="applyMusicBrainz('${ap}')" style="cursor:pointer"` : '';
+        html += `<div ${applyAlt} class="mb-alt" style="font-size:13px;padding:9px 12px;background:var(--surface2);border-radius:10px;margin-bottom:5px">
+          <span style="font-weight:600">${a.title}</span> — <span style="color:var(--accent)">${a.artist}</span>
+          ${a.album ? '<span style="color:var(--muted)"> · ' + a.album + (a.year ? ' (' + a.year + ')' : '') + '</span>' : ''}
+          ${_mbEntryTime ? '<span style="float:right;color:var(--accent);font-size:11px">Apply →</span>' : ''}
+        </div>`;
+      });
+    }
+    results.innerHTML = html;
+  } catch(e) {
+    results.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div>Lookup failed: ' + e.message + '</div>';
+  }
+}
+
+async function applyMusicBrainz(payloadEnc) {
+  if (!_mbEntryTime) { toast('No song entry selected', 'error'); return; }
+  const station = document.getElementById('logStationSelect').value;
+  if (!station) { toast('No station selected', 'error'); return; }
+  let data;
+  try { data = JSON.parse(decodeURIComponent(payloadEnc)); } catch(_) { return; }
+  toast('Applying...', '');
+  try {
+    // If no album art yet but we have a releaseId, fetch it now
+    if (!data.albumart && data.releaseId) {
+      try {
+        const ca = await fetch(`${API}/api/tools/coverart?releaseId=${encodeURIComponent(data.releaseId)}`);
+        const caData = await ca.json();
+        if (caData.albumart) data.albumart = caData.albumart;
+      } catch(_) {}
+    }
+    delete data.releaseId;  // not a metalog field
+    const r = await fetch(`${API}/api/metalog/${encodeURIComponent(station)}/entry`, {
+      method: 'PATCH', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ time: _mbEntryTime, ...data })
+    });
+    const res = await r.json();
+    if (res.error) { toast(res.error, 'error'); return; }
+    toast('✓ Applied to song' + (data.albumart ? ' with artwork' : ''), 'success');
+    closeModal('musicBrainzModal');
+    loadLog();
+  } catch(e) { toast('Apply failed: ' + e.message, 'error'); }
+}
+
+// ── Advertisers ───────────────────────────────────────────────────────────────
+
+async function loadAdvertisers() {
+  const sel = document.getElementById('advStationSelect');
+  populateStationSelects();
+  const station = sel ? sel.value : '';
+  const content = document.getElementById('advertiserContent');
+  if (!station) { content.innerHTML = '<div class="empty"><div class="empty-icon">🏢</div>Select a station</div>'; return; }
+  try {
+    const r = await fetch(`${API}/api/advertisers/${encodeURIComponent(station)}`);
+    const data = await r.json();
+    // data = { dateKey: { brandName: count }, _files_xxx: [...] }
+    const dates = Object.keys(data).filter(k => !k.startsWith('_')).sort().reverse();
+    if (!dates.length) { content.innerHTML = '<div class="empty"><div class="empty-icon">🏢</div>No advertisers detected yet for ' + station + '</div>'; return; }
+    content.innerHTML = dates.map(date => {
+      const brands = data[date];
+      const sorted = Object.entries(brands).sort((a,b) => b[1]-a[1]);
+      const total = sorted.reduce((sum,[,c]) => sum+c, 0);
+      return `
+        <div class="date-header">${new Date(date).toLocaleDateString([], {weekday:'long',month:'long',day:'numeric',year:'numeric'})} — ${total} total mentions</div>
+        <table class="advertiser-table">
+          <thead><tr><th>Advertiser</th><th style="text-align:right">Spots</th></tr></thead>
+          <tbody>${sorted.map(([brand, count]) => `
+            <tr><td>${brand}</td><td style="text-align:right"><span class="advertiser-count">${count}</span></td></tr>`).join('')}
+          </tbody>
+        </table>`;
+    }).join('');
+  } catch(e) { content.innerHTML = '<div class="empty">Failed to load</div>'; }
+}
+
+// ── Station management ────────────────────────────────────────────────────────
+
+function toggleNewMetaSource() {
+  const val = document.getElementById('newMetadataSource').value;
+  const row = document.getElementById('newMetadataUrlRow');
+  row.style.display = val === 'rogers' ? 'none' : '';
+}
+
+function toggleNewTriggerMode() {
+  const mode = document.getElementById('newTriggerMode').value;
+  document.getElementById('newStallOpt').style.display = (mode === 'hybrid' || mode === 'stall') ? '' : 'none';
+  document.getElementById('newKeywordOpt').style.display = mode === 'keyword' ? '' : 'none';
+}
+
+async function loadStations() {
+  try {
+    const [stRes, lgRes] = await Promise.all([fetch(`${API}/api/stations`), fetch(`${API}/api/logos`)]);
+    savedStations = await stRes.json();
+    const lgData = await lgRes.json();
+    logos = {}; lgData.forEach(s => { logos[s.station] = s.url; });
+    renderStationGroupsView();
+    renderQuickLaunch();
+    populateStationSelects();
+    // Background-fetch logos for any saved station that doesn't have one yet
+    ensureStationLogos();
+  } catch(e) {}
+}
+
+// Clear all stored logos and re-fetch them cleanly (fixes corrupted images)
+async function refreshAllLogos() {
+  if (!confirm('Clear and re-fetch all station logos from Radio Browser?')) return;
+  toggleToolsMenu();
+  toast('Clearing logos...', '');
+  try {
+    await fetch(`${API}/api/logos/clear-all`, { method: 'POST' });
+    logos = {};
+    renderStationGroupsView();
+    renderQuickLaunch();
+    toast('Re-fetching logos in background...', 'success');
+    _logoFetchRunning = false;
+    ensureStationLogos();
+  } catch(e) { toast('Refresh failed: ' + e.message, 'error'); }
+}
+
+// Sequentially fetch missing logos from Radio Browser (rate-limited, non-blocking)
+let _logoFetchRunning = false;
+async function ensureStationLogos() {  if (_logoFetchRunning) return;
+  const missing = savedStations.filter(s => !getLogoUrl(s.name) && !getLogoUrl(s.callsign));
+  if (!missing.length) return;
+  _logoFetchRunning = true;
+  for (const s of missing) {
+    try {
+      const params = new URLSearchParams();
+      if (s.callsign) params.set('callsign', s.callsign);
+      if (s.name)     params.set('name', s.name);
+      const r = await fetch(`${API}/api/tools/fetch-logo?${params}`);
+      const data = await r.json();
+      if (data.logoUrl) {
+        // Persist and cache under the station name
+        await fetch(`${API}/api/logos/${encodeURIComponent(s.name)}/url`, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ logoUrl: data.logoUrl })
+        });
+        logos[s.name] = data.logoUrl;
+        logos[s.name.trim().replace(/[^a-zA-Z0-9_-]/g, '_')] = data.logoUrl;
+        renderStationGroupsView();
+        renderQuickLaunch();
+      }
+    } catch(_) {}
+    await new Promise(r => setTimeout(r, 1500)); // gentle rate-limit
+  }
+  _logoFetchRunning = false;
+}
+
+async function rebuildBellUrls() {
+  try {
+    const r = await fetch(`${API}/api/stations/rebuild-bell`, { method: 'POST' });
+    const data = await r.json();
+    toast(`Bell URLs rebuilt: ${data.fixed} updated across ${data.total} Bell stations`, 'success');
+    savedStations = data.stations;
+    renderStationGroupsView();
+    renderQuickLaunch();
+  } catch(e) { toast('Rebuild failed: ' + e.message, 'error'); }
+}
+
+async function repairStationUrls() {
+  try {
+    const r = await fetch(`${API}/api/stations/repair-urls`, { method: 'POST' });
+    const data = await r.json();
+    if (data.fixed > 0) {
+      toast(`Fixed ${data.fixed} corrupted metadata URL(s)`, 'success');
+      savedStations = data.stations;
+      renderStationGroupsView();
+      renderQuickLaunch();
+    } else {
+      toast('No corrupted URLs found', '');
+    }
+  } catch(e) { toast('Repair failed: ' + e.message, 'error'); }
+}
+
+function renderStationGroupsView() {
+  const view = document.getElementById('stationGroupsView');
+  if (!savedStations.length) { view.innerHTML = '<div class="empty" style="padding:20px">No stations saved yet</div>'; return; }
+  const groups = {};
+  savedStations.forEach(s => { const g = s.group || 'Other'; if (!groups[g]) groups[g] = []; groups[g].push(s); });
+  view.innerHTML = Object.entries(groups).map(([g, stations]) => `
+    <div class="group-label" style="margin-bottom:10px">${g}</div>
+    <div class="station-grid">${stations.map(s => {
+      const logoUrl = getLogoUrl(s.name) || getLogoUrl(s.callsign);
+      const letters = (s.name || '?').substring(0,4);
+      const logoEl = logoUrl
+        ? `<img src="${logoUrl}" class="station-card-logo" onerror="logoError(this,&quot;${letters}&quot;,'station-card-placeholder')">`
+        : `<div class="station-card-placeholder">${letters}</div>`;
+      return `<div class="station-card">
+        ${logoEl}
+        <div class="station-card-name">${s.name}</div>
+        ${s.callsign ? `<div class="station-card-meta">${s.callsign}</div>` : ''}
+        ${s.group ? `<span class="station-card-group">${s.group}</span>` : ''}
+        <div class="station-card-actions">
+          <button class="btn btn-sm" style="font-size:10px;color:var(--blue)" onclick="editStation(${JSON.stringify(s.name).replace(/"/g,'&quot;')})">EDIT</button>
+          <button class="btn btn-delete" style="padding:5px 8px;font-size:10px" onclick="deleteStation(${JSON.stringify(s.name).replace(/"/g,'&quot;')})">DEL</button>
+        </div>
+      </div>`;
+    }).join('')}</div>`).join('');
+}
+
+function populateStationSelects() {
+  const names = [...new Set(savedStations.map(s => s.name))];
+  ['logStationSelect','commercialStationSelect','advStationSelect'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">— select station —</option>' + names.map(n => `<option value="${n}" ${n===cur?'selected':''}>${n}</option>`).join('');
+  });
+}
+
+function previewLogo() {
+  const file = document.getElementById('logoFile').files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { document.getElementById('previewImg').src = e.target.result; document.getElementById('uploadPreview').style.display = 'block'; };
+  reader.readAsDataURL(file);
+}
+
+async function previewLogoUrl() {
+  const url = document.getElementById('newLogoUrl').value.trim();
+  if (!url) return;
+  document.getElementById('previewImg').src = url;
+  document.getElementById('uploadPreview').style.display = 'block';
+}
+
+async function fetchLogoFromRadioBrowser() {
+  const callsign = document.getElementById('newCallsign').value.trim();
+  const name     = document.getElementById('newStationName').value.trim();
+  if (!callsign && !name) { toast('Enter a callsign or station name first', 'error'); return; }
+  toast('Searching Radio Browser...', '');
+  try {
+    const params = new URLSearchParams();
+    if (callsign) params.set('callsign', callsign);
+    if (name)     params.set('name', name);
+    const r = await fetch(`${API}/api/tools/fetch-logo?${params}`);
+    const data = await r.json();
+    if (data.logoUrl) {
+      document.getElementById('newLogoUrl').value = data.logoUrl;
+      document.getElementById('previewImg').src = data.logoUrl;
+      document.getElementById('uploadPreview').style.display = 'block';
+      toast('✓ Logo found', 'success');
+    } else {
+      toast('No logo found on Radio Browser', 'error');
+    }
+  } catch(e) { toast('Logo lookup failed', 'error'); }
+}
+
+async function saveStation() {
+  const name = document.getElementById('newStationName').value.trim();
+  const streamUrl = document.getElementById('newStreamUrl').value.trim();
+  if (!name) return toast('Station name required', 'error');
+  if (!streamUrl) return toast('Stream URL required', 'error');
+  const stationData = {
+    name, callsign: document.getElementById('newCallsign').value.trim(),
+    streamUrl, metadataUrl: document.getElementById('newMetadataUrl').value.trim() || '',
+    metadataSource: document.getElementById('newMetadataSource').value,
+    network: document.getElementById('newGroup').value,
+    group: document.getElementById('newGroup').value,
+    pollInterval: parseInt(document.getElementById('newPollInterval').value) || 10,
+    stallThreshold: parseInt(document.getElementById('newStallThreshold').value) || 60,
+    triggerMode: document.getElementById('newTriggerMode').value,
+    triggerKeywords: document.getElementById('newTriggerKeywords').value.trim() || '',
+  };
+  try {
+    const r = await fetch(`${API}/api/stations`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(stationData) });
+    const data = await r.json();
+    if (data.error) return toast(data.error, 'error');
+    // Upload logo
+    const logoUrl = document.getElementById('newLogoUrl').value.trim();
+    const file = document.getElementById('logoFile').files[0];
+    if (logoUrl) {
+      await fetch(`${API}/api/logos/${encodeURIComponent(name)}/url`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ logoUrl }) });
+    } else if (!file) {
+      const callsign = document.getElementById('newCallsign').value.trim();
+      const autoLogoUrl = await fetchStationLogo(callsign || name, name);
+      if (autoLogoUrl) {
+        await fetch(`${API}/api/logos/${encodeURIComponent(name)}/url`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ logoUrl: autoLogoUrl }) });
+        logos[callsign || name] = autoLogoUrl;
+      }
+    }
+    if (file) {
+      const fd = new FormData(); fd.append('logo', file);
+      await fetch(`${API}/api/logos/${encodeURIComponent(name)}`, { method:'POST', body:fd });
+    }
+    toast('Station saved', 'success');
+    clearStationForm();
+    await loadStations();
+    renderStationGroupsView();
+    renderQuickLaunch();
+  } catch(e) { toast('Save failed', 'error'); }
+}
+
+function editStation(name) {
+  const s = savedStations.find(x => x.name === name);
+  if (!s) return;
+  document.getElementById('newStationName').value = s.name;
+  document.getElementById('newCallsign').value = s.callsign || '';
+  document.getElementById('newStreamUrl').value = s.streamUrl;
+  document.getElementById('newMetadataUrl').value = s.metadataUrl || '';
+  document.getElementById('newMetadataSource').value = s.metadataSource || 'auto';
+  document.getElementById('newGroup').value = s.group || 'Other';
+  document.getElementById('newPollInterval').value = s.pollInterval;
+  document.getElementById('newStallThreshold').value = s.stallThreshold;
+  document.getElementById('newTriggerMode').value = s.triggerMode;
+  document.getElementById('newTriggerKeywords').value = s.triggerKeywords || '';
+  document.getElementById('editingStation').value = name;
+  document.getElementById('stationFormLabel').textContent = 'Edit Station — ' + name;
+  document.getElementById('cancelEditBtn').style.display = '';
+  toggleNewTriggerMode(); toggleNewMetaSource();
+  document.getElementById('newStationName').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function cancelEdit() { clearStationForm(); }
+
+function clearStationForm() {
+  ['newStationName','newCallsign','newStreamUrl','newMetadataUrl','newLogoUrl','newTriggerKeywords'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('newPollInterval').value = 10;
+  document.getElementById('newStallThreshold').value = 60;
+  document.getElementById('newTriggerMode').value = 'hybrid';
+  document.getElementById('newMetadataSource').value = 'auto';
+  document.getElementById('newGroup').value = 'Other';
+  document.getElementById('logoFile').value = '';
+  document.getElementById('uploadPreview').style.display = 'none';
+  document.getElementById('editingStation').value = '';
+  document.getElementById('stationFormLabel').textContent = 'Add Station';
+  document.getElementById('cancelEditBtn').style.display = 'none';
+  toggleNewTriggerMode(); toggleNewMetaSource();
+}
+
+async function deleteStation(name) {
+  if (!confirm('Delete ' + name + '?')) return;
+  await fetch(`${API}/api/stations/${encodeURIComponent(name)}`, {method:'DELETE'});
+  toast('Deleted'); loadStations();
+}
+
+// ── Purge ─────────────────────────────────────────────────────────────────────
+
+async function manualPurge() {
+  const hours = parseFloat(document.getElementById('purgeHours').value) || 24;
+  if (!confirm('Delete all recordings older than ' + hours + ' hours?')) return;
+  const r = await fetch(`${API}/api/recordings/purge`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({hours}) });
+  const data = await r.json();
+  toast('Deleted ' + data.deleted + ' file(s)', data.deleted > 0 ? 'success' : '');
+  loadRecordings();
+}
+
+async function toggleAutoPurge() {
+  autoPurgeEnabled = !autoPurgeEnabled;
+  const hours = parseFloat(document.getElementById('autoPurgeHours').value) || 24;
+  await fetch(`${API}/api/settings/purge`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({autoPurgeEnabled, autoPurgeHours:hours}) });
+  updateAutoPurgeUI();
+  toast(autoPurgeEnabled ? 'Auto-purge enabled' : 'Auto-purge disabled', autoPurgeEnabled ? 'success' : '');
+}
+
+function updateAutoPurgeUI() {
+  const toggle = document.getElementById('autoPurgeToggle');
+  const status = document.getElementById('autoPurgeStatus');
+  if (!toggle) return;
+  toggle.style.background = autoPurgeEnabled ? 'var(--green)' : 'var(--toggle-bg)';
+  const pseudoStyle = document.getElementById('autoPurgeStyle') || (() => { const s = document.createElement('style'); s.id='autoPurgeStyle'; document.head.appendChild(s); return s; })();
+  pseudoStyle.textContent = autoPurgeEnabled ? '#autoPurgeToggle::after{transform:translateX(20px)}' : '';
+  const hours = document.getElementById('autoPurgeHours').value;
+  status.style.display = autoPurgeEnabled ? 'block' : 'none';
+  status.textContent = '● AUTO-PURGE ON — deletes recordings older than ' + hours + 'h';
+}
+
+async function loadPurgeSettings() {
+  try {
+    const r = await fetch(`${API}/api/settings/purge`);
+    const data = await r.json();
+    autoPurgeEnabled = data.autoPurgeEnabled || false;
+    document.getElementById('autoPurgeHours').value = data.autoPurgeHours || 24;
+    updateAutoPurgeUI();
+  } catch(e) {}
+}
+
+// ── Bell callsign auto-detect ─────────────────────────────────────────────────
+
+async function detectMetaFromForm() {
+  const streamUrl = document.getElementById('newStreamUrl').value.trim();
+  const callsign  = document.getElementById('newCallsign').value.trim();
+  const name      = document.getElementById('newStationName').value.trim();
+  if (!streamUrl && !callsign) return toast('Enter a stream URL or callsign first', 'error');
+  toast('Detecting all metadata sources...', '');
+  try {
+    const r = await fetch(`${API}/api/tools/resolve-station-all`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ streamUrl, callsign, name, network: document.getElementById('newGroup').value })
+    });
+    const data = await r.json();
+    const sources = data.allSources || [];
+    if (!sources.length) {
+      if (data.icyMetaint) {
+        document.getElementById('newMetadataSource').value = 'stream';
+        toggleNewMetaSource();
+        toast('ICY stream metadata detected', 'success');
+      } else {
+        toast('No metadata sources found', '');
+      }
+      return;
+    }
+    if (sources.length === 1) {
+      fillMetaFromSource(sources[0]);
+      toast('Metadata found: ' + sources[0].label + ' — ' + sources[0].nowPlaying, 'success');
+      return;
+    }
+    // Show picker but apply to form instead of search result
+    showFormMetaPicker(sources);
+  } catch(e) { toast('Detection failed: ' + e.message, 'error'); }
+}
+
+function showFormMetaPicker(sources) {
+  const list = document.getElementById('metaPickerList');
+  list.innerHTML = sources.map(src => `
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:border-color .15s"
+         onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'"
+         onclick="fillMetaFromSource(${JSON.stringify(src).replace(/"/g,'&quot;')});closeModal('metaPickerModal')">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+        ${src.albumart ? `<img src="${src.albumart}" style="width:36px;height:36px;border-radius:5px;object-fit:cover;flex-shrink:0" onerror="this.style.display='none'">` : '<div style="width:36px;height:36px;border-radius:5px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🎵</div>'}
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:13px">${src.nowPlaying || '—'}</div>
+          <div style="font-size:11px;color:var(--muted)">${src.artist || ''}</div>
+        </div>
+        <div style="flex-shrink:0">
+          <div style="font-family:Space Mono,monospace;font-size:10px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);border-radius:4px;padding:2px 7px">${src.label}</div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);word-break:break-all">${src.url}</div>
+    </div>`).join('');
+  document.getElementById('metaPickerModal').classList.add('open');
+  toast(sources.length + ' metadata sources found — pick one', 'success');
+}
+
+function fillMetaFromSource(src) {
+  if (typeof src === 'string') {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = src;
+    src = JSON.parse(txt.value);
+  }
+  document.getElementById('newMetadataUrl').value = src.url;
+  const typeMap = { 'json':'json', 'tunein':'tunein', 'icy':'stream', 'corus-jsonp':'json', 'triton':'json', 'hls':'hls' };
+  document.getElementById('newMetadataSource').value = typeMap[src.type] || 'json';
+  toggleNewMetaSource();
+}
+
+async function lookupTuneIn() {
+  const callsign = document.getElementById('newCallsign').value.trim();
+  const name     = document.getElementById('newStationName').value.trim();
+  if (!callsign && !name) return toast('Enter a callsign or station name first', 'error');
+  toast('Looking up on TuneIn...', '');
+  try {
+    const params = new URLSearchParams();
+    if (callsign) params.set('callsign', callsign);
+    if (name)     params.set('name', name);
+    const r = await fetch(`${API}/api/tools/tunein-lookup?${params}`);
+    const data = await r.json();
+    if (!data.found) { toast('Not found on TuneIn', 'error'); return; }
+    // Fill metadata URL only (no logo from TuneIn)
+    document.getElementById('newMetadataUrl').value = data.metadataUrl;
+    document.getElementById('newMetadataSource').value = 'tunein';
+    toggleNewMetaSource();
+    toast('TuneIn: ' + data.guideId + (data.nowPlaying ? ' — ▶ ' + data.nowPlaying : ''), 'success');
+  } catch(e) { toast('TuneIn lookup failed', 'error'); }
+}
+
+async function checkBellCallsign(callsign) {
+  if (!callsign || callsign.length < 3) return;
+  try {
+    const r = await fetch(`${API}/api/tools/lookup-callsign/${encodeURIComponent(callsign)}`);
+    const data = await r.json();
+    if (!data.found) return;
+    if (!document.getElementById('newStationName').value) {
+      document.getElementById('newStationName').value = data.brand || '';
+    }
+    document.getElementById('newGroup').value = data.network;
+    document.getElementById('newMetadataUrl').value = data.metadataUrl;
+    document.getElementById('newMetadataSource').value = 'json';
+    if (data.streamUrl && !document.getElementById('newStreamUrl').value) {
+      document.getElementById('newStreamUrl').value = data.streamUrl;
+    }
+    toggleNewMetaSource();
+    toast(data.network + ' station detected — ' + data.brand + ', ' + data.city, 'success');
+  } catch(_) {}
+}
+
+async function checkBellCallsignMonitor(callsign) {
+  if (!callsign || callsign.length < 3) return;
+  try {
+    const r = await fetch(`${API}/api/tools/lookup-callsign/${encodeURIComponent(callsign)}`);
+    const data = await r.json();
+    if (!data.found) return;
+    if (!document.getElementById('stationName').value) {
+      document.getElementById('stationName').value = data.brand || '';
+    }
+    document.getElementById('network').value = data.network;
+    document.getElementById('metadataUrl').value = data.metadataUrl;
+    document.getElementById('metadataSource').value = 'json';
+    if (data.streamUrl && !document.getElementById('streamUrl').value) {
+      document.getElementById('streamUrl').value = data.streamUrl;
+    }
+    toast(data.network + ' station: ' + data.brand + ' — auto-filled', 'success');
+  } catch(_) {}
+}
+
+// ── Logo fetching — Radio Browser only ─────────────────────────────────────
+async function fetchStationLogo(callsign, name) {
+  const cacheKey = callsign || name;
+  if (cacheKey && logos[cacheKey]) return logos[cacheKey];
+  try {
+    const params = new URLSearchParams();
+    if (callsign) params.set('callsign', callsign);
+    if (name)     params.set('name', name);
+    const r = await fetch(`${API}/api/tools/fetch-logo?${params}`);
+    const data = await r.json();
+    if (data.logoUrl) {
+      if (cacheKey) logos[cacheKey] = data.logoUrl;
+      return data.logoUrl;
+    }
+  } catch(_) {}
+  return null;
+}
+
+// Disabled — logos fetched on-demand only when station is saved
+function ensureLogos(stations) {}
+function autoFetchLogos(stations) {}
+
+// ── Station Library ──────────────────────────────────────────────────────────
+let _stationLibrary = null;
+
+async function loadStationLibrary() {
+  if (_stationLibrary) return _stationLibrary;
+  try {
+    const r = await fetch(`${API}/api/library`);
+    _stationLibrary = await r.json();
+  } catch(e) { _stationLibrary = {}; }
+  return _stationLibrary;
+}
+
+function showFindMode(mode) {
+  document.getElementById('findLibraryPane').style.display = mode === 'library' ? 'block' : 'none';
+  document.getElementById('findSearchPane').style.display  = mode === 'search'  ? 'block' : 'none';
+  document.getElementById('findModeChooser').querySelectorAll('button').forEach((b, i) => {
+    b.className = (mode === 'library' && i === 0) || (mode === 'search' && i === 1)
+      ? 'btn btn-start' : 'btn btn-secondary';
+    b.style.cssText = 'flex:1;justify-content:center;font-size:12px;padding:14px;flex-direction:column;line-height:1.6';
+  });
+  if (mode === 'library' && !_stationLibrary) loadStationLibrary();
+}
+
+async function loadLibraryNetwork() {
+  const net = document.getElementById('libraryNetwork').value;
+  const sel = document.getElementById('libraryStation');
+  const preview = document.getElementById('libraryPreview');
+  const addBtn  = document.getElementById('libAddBtn');
+  if (preview) preview.style.display = 'none';
+  if (addBtn) addBtn.style.display = 'none';
+
+  if (!net) {
+    sel.innerHTML = '<option value="">— select network first —</option>';
+    sel.disabled = true;
+    return;
+  }
+
+  sel.disabled = true;
+  sel.innerHTML = '<option value="">Loading stations...</option>';
+
+  const lib = await loadStationLibrary();
+  const stations = lib[net] || [];
+  if (!stations.length) {
+    sel.innerHTML = `<option value="">No stations found for ${esc(net)}</option>`;
+    sel.disabled = true;
+    return;
+  }
+
+  sel.innerHTML = `<option value="">— select station (${stations.length} available) —</option>` +
+    stations.map((s, i) => `<option value="${i}">${esc(s.brand || s.callsign)}${s.city ? ' — ' + esc(s.city) : ''}</option>`).join('');
+  sel.disabled = false;
+}
+
+function previewLibraryStation() {
+  const net = document.getElementById('libraryNetwork').value;
+  const idx = document.getElementById('libraryStation').value;
+  const preview = document.getElementById('libraryPreview');
+  const addBtn  = document.getElementById('libAddBtn');
+  if (!net || idx === '') { if(preview) preview.style.display='none'; return; }
+  const stations = (_stationLibrary || {})[net] || [];
+  const s = stations[parseInt(idx)];
+  if (!s) return;
+  document.getElementById('libPreviewName').textContent     = s.brand || s.callsign;
+  document.getElementById('libPreviewCallsign').textContent = s.callsign + (s.network ? ' · ' + s.network : '');
+  document.getElementById('libPreviewCity').textContent     = s.city || '';
+  document.getElementById('libPreviewAudio').textContent    = s.streamUrl || 'Not available';
+  document.getElementById('libPreviewMeta').textContent     = s.metadataUrl || 'Not available';
+  const logoWrap = document.getElementById('libPreviewLogoWrap');
+  const existingLogo = logos[s.callsign] || logos[s.brand];
+  if (existingLogo) {
+    logoWrap.innerHTML = `<img src="${existingLogo}" style="width:100%;height:100%;object-fit:contain;padding:4px">`;
+  } else {
+    logoWrap.innerHTML = '📻';
+  }
+  if (preview) preview.style.display = 'block';
+  if (addBtn) addBtn.style.display = '';
+}
+
+async function addLibraryStation() {
+  const net = document.getElementById('libraryNetwork').value;
+  const idx = document.getElementById('libraryStation').value;
+  if (!net || idx === '') return;
+  const stations = (_stationLibrary || {})[net] || [];
+  const s = stations[parseInt(idx)];
+  if (!s) return;
+  if (!s.streamUrl) { toast('No stream URL for this station', 'error'); return; }
+  const btn = document.getElementById('libAddBtn');
+  if (btn) { btn.textContent = 'SAVING...'; btn.disabled = true; }
+  try {
+    const name = s.brand || s.name || s.callsign || '';
+    const resolvedSource = s.metadataSource || s.metadataType || 'auto';
+    let streamUrl = s.streamUrl || '';
+    if (streamUrl.endsWith('.m3u')) streamUrl += '8';
+    const stationData = {
+      name, callsign: s.callsign || '', streamUrl,
+      metadataUrl: s.metadataUrl || '', metadataSource: resolvedSource,
+      network: s.network || net, group: s.network || net,
+      pollInterval: 10, stallThreshold: 60, triggerMode: 'hybrid', triggerKeywords: '',
+    };
+    const r = await fetch(`${API}/api/stations`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(stationData)
+    });
+    const data = await r.json();
+    if (data.error) { toast(data.error, 'error'); return; }
+    toast(`✓ ${name} saved`, 'success');
+    closeModal('searchModal');
+    await loadStations();
+    switchTab('stations');
+  } catch(e) {
+    toast('Save failed: ' + e.message, 'error');
+  } finally {
+    if (btn) { btn.textContent = 'ADD TO STATIONS'; btn.disabled = false; }
+  }
+}
+
+// ── Search mode info banner ───────────────────────────────────────────────────
+function updateSearchInfo() {
+  const source = document.getElementById('searchSource').value;
+  const infos = {
+    "tunein":      "TuneIn — large global directory with stream URLs.",
+    "iheart":      "iHeart Radio Canada — searches Rogers-owned stations with metadata.",
+    "streema":     "Streema — global radio directory.",
+    "radiobrowser":"Radio Browser — free global open-source directory with 35,000+ stations.",
+  };
+  const el = document.getElementById('searchSourceInfo');
+  if (el) el.textContent = infos[source] || '';
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+
+setInterval(refreshStatus, 3000);
+refreshStatus();
+loadStations().then(() => {
+  // Auto-repair corrupted URLs on startup
+  if (savedStations.length) repairStationUrls();
+});
+loadPurgeSettings();
+</script>
+</body>
+</html>

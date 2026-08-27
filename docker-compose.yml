@@ -16,6 +16,8 @@ services:
     restart: unless-stopped
     ports:
       - "8090:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
     depends_on:
       - recorder
     networks:

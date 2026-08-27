@@ -1,0 +1,3442 @@
+{
+  "Stingray": [
+    {
+      "callsign": "CFCBAM",
+      "brand": "570 VOCM",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFCBAM",
+      "metadataUrl": "https://player.vocm.com/CFCBAM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFCWAM",
+      "brand": "840 CFCWM",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFCWAM",
+      "metadataUrl": "https://player.cfcw.com/CFCWAM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFCWFM",
+      "brand": "New Country 98.1",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFCWFM",
+      "metadataUrl": "https://player.newcountry981.com/CFCWFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFHIFM",
+      "brand": "boom 104.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFHIFM",
+      "metadataUrl": "https://player.boom1049.com/CFHIFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFLNFM",
+      "brand": "Big Land FM",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFLNFM",
+      "metadataUrl": "https://player.bigland.fm/CFLNFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFRKFM",
+      "brand": "New Country 92.3",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFRKFM",
+      "metadataUrl": "https://player.newcountry923.com/CFRKFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFRQFM",
+      "brand": "Q104",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFRQFM",
+      "metadataUrl": "https://player.q104.ca/CFRQFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFSXAM",
+      "brand": "870 VOCM",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFSXAM",
+      "metadataUrl": "https://player.vocm.com/CFSXAM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFXEFM",
+      "brand": "New Country Edson",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFXEFM",
+      "metadataUrl": "https://player.newcountrywest.ca/CFXEFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFXJFM",
+      "brand": "New Country 93.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFXJFM",
+      "metadataUrl": "https://player.newcountryhighprairie.ca/CFXJFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFXWFM",
+      "brand": "boom 96.7",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFXWFM",
+      "metadataUrl": "https://player.boom967.com/CFXWFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFXLFM",
+      "brand": "XL 103",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFXLFM",
+      "metadataUrl": "https://player.xl103calgary.com/CFXLFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHBMFM",
+      "brand": "boom 97.3",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHBMFM",
+      "metadataUrl": "https://player.boom973.com/CHBMFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHCMFM",
+      "brand": "88.5 VOCM",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHCMFM",
+      "metadataUrl": "https://player.vocm.com/CHCMFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHHIFM",
+      "brand": "rewind 95.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHHIFM",
+      "metadataUrl": "https://player.rewind959.ca/CHHIFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHLGFM",
+      "brand": "104.3 The Breeze",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHLGFM",
+      "metadataUrl": "https://player.1043thebreeze.ca/CHLGFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHNIFM",
+      "brand": "Q 88.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHNIFM",
+      "metadataUrl": "https://player.q889.ca/CHNIFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHNLAM",
+      "brand": "Radio NL",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHNLAM",
+      "metadataUrl": "https://player.radionl.com/CHNLAM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHNOFM",
+      "brand": "Rewind 103.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHNOFM",
+      "metadataUrl": "https://player.rewind1039.ca/CHNOFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHOOFM",
+      "brand": "boom 99.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHOOFM",
+      "metadataUrl": "https://player.boom995.ca/CHOOFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHRKFM",
+      "brand": "Hot 101.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHRKFM",
+      "metadataUrl": "https://player.hot1019.ca/CHRKFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHSLFM",
+      "brand": "boom 92.7",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHSLFM",
+      "metadataUrl": "https://player.boom927.com/CHSLFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHSPFM",
+      "brand": "New County 97.7",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHSPFM",
+      "metadataUrl": "https://player.newcountrystpaul.ca/CHSPFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHTNFM",
+      "brand": "Ocean 100",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHTNFM",
+      "metadataUrl": "https://player.ocean100.com/CHTNFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHVOFM",
+      "brand": "New Country 103.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHVOFM",
+      "metadataUrl": "https://player.newcountry1039.ca/CHVOFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIBQFM",
+      "brand": "New Country 105.7",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CIBQFM",
+      "metadataUrl": "https://player.newcountrybrooks.ca/CIBQFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIGMFM",
+      "brand": "Hot 93.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CIGMFM",
+      "metadataUrl": "https://player.hot935.ca/CIGMFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIGVFM",
+      "brand": "New Country 100.7",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CIGVFM",
+      "metadataUrl": "https://player.country1007.com/CIGVFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIHIFM",
+      "brand": "Hot 93.1",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CIHIFM",
+      "metadataUrl": "https://player.hot931.ca/CIHIFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIHTFM",
+      "brand": "Hot 89.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CIHTFM",
+      "metadataUrl": "https://player.hot899.com/CIHTFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIJKFM",
+      "brand": "Reqind 89.3",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CIJKFM",
+      "metadataUrl": "https://player.rewind893.ca/CIJKFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CILBFM",
+      "brand": "boom 103.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CILBFM",
+      "metadataUrl": "https://player.boom1035.com/CILBFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CILVFM",
+      "brand": "LiVE 88.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CILVFM",
+      "metadataUrl": "https://player.live885.com/CILVFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIRKFM",
+      "brand": "K-97",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CIRKFM",
+      "metadataUrl": "https://player.k97.ca/CIRKFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIXFFM",
+      "brand": "Boom 101.1",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CIXFFM",
+      "metadataUrl": "https://player.boom1011.com/CIXFFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIZZFM",
+      "brand": "Zed 98.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CIZZFM",
+      "metadataUrl": "https://player.zed989.com/CIZZFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJEGFM",
+      "brand": "Hot 101.3",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJEGFM",
+      "metadataUrl": "https://player.hot1013fm.com/CJEGFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJKCFM",
+      "brand": "New Country 103.1",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJKCFM",
+      "metadataUrl": "https://player.newcountry1031.ca/CJKCFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJMOFM",
+      "brand": "Q103",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJMOFM",
+      "metadataUrl": "https://player.q103fm.com/CJMOFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJPRFM",
+      "brand": "New Country 94.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJPRFM",
+      "metadataUrl": "https://player.newcountry949.ca/CJPRFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJXKFM",
+      "brand": "Boom 95.3",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJXKFM",
+      "metadataUrl": "https://player.boom953.ca/CJXKFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJXLFM",
+      "brand": "New Country 96.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJXLFM",
+      "metadataUrl": "https://player.newcountry969.ca/CJXLFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJYQAM",
+      "brand": "New Country 930",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJYQAM",
+      "metadataUrl": "https://player.newcountry930.ca/CJYQAM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKBAFM",
+      "brand": "boom 94.1",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKBAFM",
+      "metadataUrl": "https://player.boom941.com/CKBAFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKCHFM",
+      "brand": "New Country 103.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKCHFM",
+      "metadataUrl": "https://player.newcountry1035.com/CKCHFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKCMAM",
+      "brand": "620 VOCM",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKCMAM",
+      "metadataUrl": "https://player.vocm.com/CKCMAM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKDQAM",
+      "brand": "New Country 92.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKDQAM",
+      "metadataUrl": "https://player.newcountry925.ca/CKDQAM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKECFM",
+      "brand": "94.1 The Breeze",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKECFM",
+      "metadataUrl": "https://player.941thebreeze.com/CKECFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKEZFM",
+      "brand": "Q97.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKEZFM",
+      "metadataUrl": "https://player.q979.ca/CKEZFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKGAAM",
+      "brand": "650 VOCM",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKGAAM",
+      "metadataUrl": "https://player.vocm.com/CKGAAM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKGYFM",
+      "brand": "New Country 95.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKGYFM",
+      "metadataUrl": "https://player.newcountryreddeer.ca/CKGYFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKIXFM",
+      "brand": "Hot 99.1",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKIXFM",
+      "metadataUrl": "https://player.hot991.ca/CKIXFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKJRAM",
+      "brand": "Sports 1440",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKJRAM",
+      "metadataUrl": "https://player.sports1440.ca/CKJRAM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKKOFM",
+      "brand": "K96.3",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKKOFM",
+      "metadataUrl": "https://player.k963.ca/CKKOFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKKYFM",
+      "brand": "Boom 101.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKKYFM",
+      "metadataUrl": "https://player.1019boom.com/CKKYFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKLNFM",
+      "brand": "New Country 97.1",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKLNFM",
+      "metadataUrl": "https://player.newcountry971.ca/CKLNFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKMPFM",
+      "brand": "90.3 AMP Radio",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKMPFM",
+      "metadataUrl": "https://player.ampcalgary.com/CKMPFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKQKFM",
+      "brand": "Hot 105.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKQKFM",
+      "metadataUrl": "https://player.hot1055fm.com/CKQKFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKRAFM",
+      "brand": "96.3 The Breeze",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKRAFM",
+      "metadataUrl": "https://player.963thebreeze.com/CKRAFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKRVFM",
+      "brand": "K 97.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKRVFM",
+      "metadataUrl": "https://player.k975.ca/CKRVFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKSAFM",
+      "brand": "New Country 95.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKSAFM",
+      "metadataUrl": "https://player.newcountrylloydminster.ca/CKSAFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKSQFM",
+      "brand": "New Country 93.3",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKSQFM",
+      "metadataUrl": "https://player.newcountrystettler.ca/CKSQFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKULFM",
+      "brand": "96.5 The Breeze",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKULFM",
+      "metadataUrl": "https://player.965thebreeze.com/CKULFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKVHFM",
+      "brand": "New Country 93.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKVHFM",
+      "metadataUrl": "https://player.newcountry935.com/CKVHFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKWBFM",
+      "brand": "New Country 97.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKWBFM",
+      "metadataUrl": "https://player.newcountry979.ca/CKWBFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKWYFM",
+      "brand": "Hot 93.7",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKWYFM",
+      "metadataUrl": "https://player.hot937.ca/CKWYFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKXDFM",
+      "brand": "K-Rock 98.7",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKXDFM",
+      "metadataUrl": "https://player.987krock.com/CKXDFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKXGFM",
+      "brand": "K-Rock 102.3",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKXGFM",
+      "metadataUrl": "https://player.krocknl.com/CKXGFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKXXFM",
+      "brand": "K-Rock 103.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKXXFM",
+      "metadataUrl": "https://player.k-rock1039.com/CKXXFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKZZFM",
+      "brand": "Z 95.3",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKZZFM",
+      "metadataUrl": "https://player.z953.ca/CKZZFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "VOCMAM",
+      "brand": "590 VOCM",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/VOCMAM",
+      "metadataUrl": "https://player.vocm.com/VOCMAM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "VOCMFM",
+      "brand": "K-Rock 97.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/VOCMFM",
+      "metadataUrl": "https://player.k-rock975.com/VOCMFM/nowplaying",
+      "network": "Stingray",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    }
+  ],
+  "Corus": [
+    {
+      "callsign": "CFGQFM",
+      "brand": "107.3 The Edge",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFGQFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CFGQFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFHKFM",
+      "brand": "Fresh Radio 103.1",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFHKFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CFHKFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFMIFM",
+      "brand": "Rock 101",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFMIFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CFMIFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFMKFM",
+      "brand": "BIG 96.3",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFMKFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CFMKFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFNYFM",
+      "brand": "102.1 The Edge",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFNYFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CFNYFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFOXFM",
+      "brand": "CFOX 99.3",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFOXFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CFOXFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFPLAM",
+      "brand": "AM 980",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFPLAM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CFPLAM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFPLFM",
+      "brand": "FM 96",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFPLFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CFPLFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHAYFM",
+      "brand": "Fresh Radio 93.1",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHAYFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CHAYFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHEDAM",
+      "brand": "880 CHED",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHEDAM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CHEDAM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHQRAM",
+      "brand": "AM 770",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHQRAM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CHQRAM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CILQFM",
+      "brand": "Q107",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CILQFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CILQFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIMJFM",
+      "brand": "Magic 106.1",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CIMJFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CIMJFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CINGFM",
+      "brand": "Fresh Radio 95.3",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CINGFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CINGFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIQBFM",
+      "brand": "Big 101.1",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CIQBFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CIQBFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CISNFM",
+      "brand": "CISN Country 103.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CISNFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CISNFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJDVFM",
+      "brand": "107.5 DAVE ROCKS",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJDVFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CJDVFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJGVFM",
+      "brand": "Peggy @99.1",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJGVFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CJGVFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJKRFM",
+      "brand": "Power 97",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJKRFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CJKRFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJOBAM",
+      "brand": "AM 680 CJOB",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJOBAM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CJOBAM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJOTFM",
+      "brand": "Boom 99.7",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJOTFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CJOTFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJOYAM",
+      "brand": "1460 CJOY",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJOYAM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CJOYAM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJXYFM",
+      "brand": "Y108",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJXYFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CJXYFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKBTFM",
+      "brand": "91.5 The Beat",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKBTFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CKBTFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKCBFM",
+      "brand": "The Peak 95.1",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKCBFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CKCBFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKDKFM",
+      "brand": "Country 104",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKDKFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CKDKFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKGOAM2",
+      "brand": "AM 730 Traffic",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKGOAM-2",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CKGOAM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKNGFM",
+      "brand": "CHUCK 92.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKNGFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CKNGFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKNWAM",
+      "brand": "CKNW AM 980",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKNWAM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CKNWAM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKQBFM",
+      "brand": "Jump 106.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKQBFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CKQBFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKRUFM",
+      "brand": "Fresh Radio 100.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKRUFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CKRUFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKRYFM",
+      "brand": "Country 105",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKRYFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CKRYFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKWFFM",
+      "brand": "101.5 The Wolf",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKWFFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CKWFFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKWSFM",
+      "brand": "Fresh Radio 104,3",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKWSFM",
+      "metadataUrl": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/CKWSFM_np.js?callback=jsonpcallback",
+      "network": "Corus",
+      "metadataType": "corus-jsonp",
+      "triggerMode": "hybrid"
+    }
+  ],
+  "Maritime Broadcasting": [
+    {
+      "callsign": "CFANFM",
+      "brand": "99.3 The River",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFANFM",
+      "metadataUrl": "https://player.993theriver.com/CFANFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFBCAM",
+      "brand": "93 CFBC Country",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFBCAM",
+      "metadataUrl": "https://player.cfbcradio.com/CFBCAM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFCYFM",
+      "brand": "95.1 CFCY",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFCYFM",
+      "metadataUrl": "https://player.cfcy.fm/CFCYFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFQMFM",
+      "brand": "103.9 MAX FM",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CFQMFM",
+      "metadataUrl": "https://player.1039maxfm.com/CFQMFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHERFM",
+      "brand": "98.3 MAX FM",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHERFM",
+      "metadataUrl": "https://player.max983.ca/CHERFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHFXFM",
+      "brand": "FM 101.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHFXFM",
+      "metadataUrl": "https://player.fx1019.ca/CHFXFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHLQFM",
+      "brand": "93.1 MAX FM",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHLQFM",
+      "metadataUrl": "https://player.max931.ca/CHLQFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHNSFM",
+      "brand": "89.9 The Wave",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHNSFM",
+      "metadataUrl": "https://player.899thewave.fm/CHNSFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHOYFM",
+      "brand": "Choix FM 99.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CHOYFM",
+      "metadataUrl": "https://player.choix999.com/CHOYFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIKXFM",
+      "brand": "93.5 The Wave",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CIKXFM",
+      "metadataUrl": "https://player.thewavegrandfalls.com/CIKXFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIOKFM",
+      "brand": "K 100",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CIOKFM",
+      "metadataUrl": "https://player.k100.ca/CIOKFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJCBAM",
+      "brand": "CJCM AM",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJCBAM",
+      "metadataUrl": "https://player.cjcbam.com/CJCBAM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJCJFM",
+      "brand": "104.1 The Wave",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJCJFM",
+      "metadataUrl": "https://player.thewavewoodstock.com/CJCJFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJCWAM",
+      "brand": "CJCW 92.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJCWAM",
+      "metadataUrl": "https://player.cjcw.ca/CJCWAM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJRWFM",
+      "brand": "Spud 102",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJRWFM",
+      "metadataUrl": "https://player.spud.fm/CJRWFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJYCFM",
+      "brand": "Kool 98",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CJYCFM",
+      "metadataUrl": "https://player.kool98.fm/CJYCFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKBCFM",
+      "brand": "104.9 The Wave",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKBCFM",
+      "metadataUrl": "https://player.wave1049.com/CKBCFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKCWFM",
+      "brand": "K 94.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKCWFM",
+      "metadataUrl": "https://player.k945.ca/CKCWFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKDHFM",
+      "brand": "101.7 CKDH",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKDHFM",
+      "metadataUrl": "https://player.ckdh.com/CKDHFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKENFM",
+      "brand": "AVR 97.7",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKENFM",
+      "metadataUrl": "https://player.avrnetwork.com/CKENFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKNBAM",
+      "brand": "Hits 100",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKNBAM",
+      "metadataUrl": "https://player.hits100.ca/CKNBAM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKPEFM",
+      "brand": "94.9 The Wave",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKPEFM",
+      "metadataUrl": "https://player.wave949.com/CKPEFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKTOFM",
+      "brand": "100.9 The Wave",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKTOFM",
+      "metadataUrl": "https://player.wave1009.com/CKTOFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKTYFM",
+      "brand": "Cat Country 99.5",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKTYFM",
+      "metadataUrl": "https://player.catcountry995.com/CKTYFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKWMFM",
+      "brand": "Magic 94.9",
+      "streamUrl": "https://chi-master3-entry1.leanstream-hd.com:2113/CKWMFM",
+      "metadataUrl": "https://player.magic949.com/CKWMFM/nowplaying",
+      "network": "Maritime Broadcasting",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    }
+  ],
+  "Bell": [
+    {
+      "callsign": "CKXFM",
+      "brand": "Bounce 96.1",
+      "city": "Brandon, MB",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CKXFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CKXFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKXAFM",
+      "brand": "Pure Country 101",
+      "city": "Brandon, MB",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CKXAFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CKXAFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIBKFM",
+      "brand": "98.5 Virgin Radio",
+      "city": "Calgary, AB",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CIBKFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CIBKFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJAYFM",
+      "brand": "CJAY 92",
+      "city": "Calgary, AB",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CJAYFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CJAYFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFBRFM",
+      "brand": "100.3 The Bear",
+      "city": "Edmonton, AB",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CFBRFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CFBRFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFMGFM",
+      "brand": "104.9 Virgin Radio",
+      "city": "Edmonton, AB",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CFMGFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CFMGFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKHJ",
+      "brand": "Pure Country 103.5",
+      "city": "Fredericton, NB",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CKHJ_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CKHJ&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFXYFM",
+      "brand": "Bounce 105.3",
+      "city": "Fredericton, NB",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CFXYFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CFXYFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIBXFM",
+      "brand": "Move 106.9",
+      "city": "Fredericton, NB",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CIBXFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CIBXFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIMFFM",
+      "brand": "94.9 Rouge",
+      "city": "Gatineau, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CIMFFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CIMFFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKTFFM",
+      "brand": "Énergie 104.1",
+      "city": "Gatineau, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CKTFFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CKTFFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJCHFM",
+      "brand": "101.3 Virgin Radio",
+      "city": "Halifax, NS",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CJCHFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CJCHFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIOOFM",
+      "brand": "Move 100",
+      "city": "Halifax, NS",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CIOOFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CIOOFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKKWFM",
+      "brand": "Bounce 99.5",
+      "city": "Kitchener, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CKKWFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CKKWFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFCAFM",
+      "brand": "105.3 Virgin Radio",
+      "city": "Kitchener, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CFCAFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CFCAFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIQMFM",
+      "brand": "97.5 Virgin Radio",
+      "city": "London, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CIQMFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CIQMFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJBXFM",
+      "brand": "Pure Country 93",
+      "city": "London, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CJBXFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CJBXFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIMOFM",
+      "brand": "Énergie 106.1",
+      "city": "Magog, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CIMOFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CIMOFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CICZFM",
+      "brand": "Bounce 104.1",
+      "city": "Midland, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CICZFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CICZFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKGM",
+      "brand": "TSN 690",
+      "city": "Montreal, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CKGM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CKGM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJAD",
+      "brand": "CJAD 800",
+      "city": "Montreal, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CJAD_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CJAD&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHOMFM",
+      "brand": "CHOM 97.7",
+      "city": "Montreal, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CHOMFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CHOMFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJFMFM",
+      "brand": "95.9 Virgin Radio",
+      "city": "Montreal, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CJFMFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CJFMFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKMFFM",
+      "brand": "Énergie 94.3",
+      "city": "Montreal, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CKMFFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CKMFFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CITEFM",
+      "brand": "107.3 Rouge",
+      "city": "Montreal, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CITEFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CITEFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CICXFM",
+      "brand": "Pure Country 106",
+      "city": "Orillia, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CICXFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CICXFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFRA",
+      "brand": "580 CFRA",
+      "city": "Ottawa, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CFRA_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CFRA&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFGO",
+      "brand": "TSN 1200",
+      "city": "Ottawa, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CFGO_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CFGO&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKKLFM",
+      "brand": "Pure Country 94",
+      "city": "Ottawa, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CKKLFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CKKLFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJMJFM",
+      "brand": "Move 100.3",
+      "city": "Ottawa, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CJMJFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CJMJFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHVRFM",
+      "brand": "Pure Country 96.7",
+      "city": "Pembroke, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CHVRFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CHVRFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHIKFM",
+      "brand": "Énergie 98.9",
+      "city": "Quebec City, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CHIKFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CHIKFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CITFFM",
+      "brand": "107.5 Rouge",
+      "city": "Quebec City, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CITFFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CITFFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHBDFM",
+      "brand": "Pure Country 92.7",
+      "city": "Regina, SK",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CHBDFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CHBDFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJMMFM",
+      "brand": "Énergie 99.1",
+      "city": "Rouyn-Noranda, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CJMMFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CJMMFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFIXFM",
+      "brand": "96.9 Rouge",
+      "city": "Saguenay, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CFIXFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CFIXFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJABFM",
+      "brand": "Énergie 94.5",
+      "city": "Saguenay, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CJABFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CJABFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CITEFM1",
+      "brand": "102.7 Rouge",
+      "city": "Sherbrooke, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CITEFM1_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CITEFM1&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CICSFM",
+      "brand": "Pure Country 91.7",
+      "city": "Sudbury, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CICSFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CICSFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFRB",
+      "brand": "Newstalk 1010",
+      "city": "Toronto, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CFRB_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CFRB&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHUM",
+      "brand": "TSN 1050",
+      "city": "Toronto, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CHUM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CHUM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHUMFM",
+      "brand": "CHUM 104.5",
+      "city": "Toronto, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CHUMFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CHUMFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKFMFM",
+      "brand": "99.9 Virgin Radio",
+      "city": "Toronto, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CKFMFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CKFMFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHEYFM",
+      "brand": "94.7 Rouge",
+      "city": "Trois-Rivières, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CHEYFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CHEYFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIGBFM",
+      "brand": "Énergie 102.3",
+      "city": "Trois-Rivières, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CIGBFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CIGBFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJMVFM",
+      "brand": "Énergie 102.7",
+      "city": "Val-d'Or, QC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CJMVFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CJMVFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFBTFM",
+      "brand": "94.5 Virgin Radio",
+      "city": "Vancouver, BC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CFBTFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CFBTFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHQMFM",
+      "brand": "Move 103.5",
+      "city": "Vancouver, BC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CHQMFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CHQMFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFAX",
+      "brand": "CFAX 1070",
+      "city": "Victoria, BC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CFAX_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CFAX&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHBEFM",
+      "brand": "107.3 Virgin Radio",
+      "city": "Victoria, BC",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CHBEFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CHBEFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKLW",
+      "brand": "AM 800 CKLW",
+      "city": "Windsor, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CKLW_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CKLW&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIDRFM",
+      "brand": "93.9 Virgin Radio",
+      "city": "Windsor, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CIDRFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CIDRFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIMXFM",
+      "brand": "89X",
+      "city": "Windsor, ON",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CIMXFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CIMXFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFWMFM",
+      "brand": "Bounce 99.9",
+      "city": "Winnipeg, MB",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CFWMFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CFWMFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKMMFM",
+      "brand": "103.1 Virgin Radio",
+      "city": "Winnipeg, MB",
+      "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CKMMFM_ADP.m3u8",
+      "metadataUrl": "https://np.tritondigital.com/public/nowplaying?mountName=CKMMFM&numberToFetch=1",
+      "network": "Bell",
+      "metadataType": "triton",
+      "triggerMode": "hybrid"
+    }
+  ],
+  "Rogers": [
+    {
+      "callsign": "CFACAM",
+      "brand": "SportsNet 960",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/cal960.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFFRAM",
+      "brand": "CityNews 660",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/cal660.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFGPFM",
+      "brand": "97.7 Rock",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/gra977.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFLTFM",
+      "brand": "Jack 92.9",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/hal929.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFRVFM",
+      "brand": "Kiss 107.7",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/let1077.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFTRAM",
+      "brand": "CityNews 680",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/tor680.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHASFM",
+      "brand": "Kiss 100.5 (Sault Ste. Marie)",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/sau1005.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHBNFM",
+      "brand": "Kiss 91.7",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/edm917.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHDIFM",
+      "brand": "Sonic 102.9",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/edm1029.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHEZFM",
+      "brand": "CHEZ 106.1",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/ott1061.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHFIFM",
+      "brand": "98.1 CHFI",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/tor981.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHFMFM",
+      "brand": "Star 95.9",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/cal959.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHMNFM",
+      "brand": "Mountain FM 106.5",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/can1065.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHSTFM",
+      "brand": "Jack 102.3",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/lon1023.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHTTFM",
+      "brand": "Jack 103.1 (Victoria)",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/vic1031.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHURFM",
+      "brand": "Kiss 100.5 (North Bay)",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/nor1005.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHYMFM",
+      "brand": "96.7 CHYM",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/kit967.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIKRFM",
+      "brand": "K-Rock 105.7",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/kin1057.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIKZFM",
+      "brand": "Country 106.7",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/kit1067.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIOCFM",
+      "brand": "Ocean 98.5",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/vic985.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CISLAM",
+      "brand": "SportsNet 650",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/van650.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CISQFM",
+      "brand": "Mountain FM 107.1",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/squ1071.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CISSFM",
+      "brand": "Kiss 105.3 (Ottawa)",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/ott1053.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CITIFM",
+      "brand": "92.1 CITI",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/win921.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJAQFM",
+      "brand": "Jack 96.9 (Calgary)",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/cal969.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJAXFM",
+      "brand": "Jack 96.9 (Vancouver)",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/van969.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJCLAM",
+      "brand": "SportsNet 590",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/tor590.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJCYFM",
+      "brand": "Jack 102.1",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/med1021.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJMXFM",
+      "brand": "Kiss 105.3 (Sudbury)",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/sud1053.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJNIFM",
+      "brand": "CityNews 95.7 Halifax",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/hal957.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJOKFM",
+      "brand": "Country 93.3",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/for933.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJRXFM",
+      "brand": "Jack FM 107.7 (Edmonton)",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/edm1077.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKBYFM",
+      "brand": "Country 93.1",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/bar931.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKCLFM",
+      "brand": "Jack 103.1 (Kelowna)",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/kel1031.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKCWAM",
+      "brand": "CityNews 630 Edmonton",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/edm630.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKHKFM",
+      "brand": "Country 105.1",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/red1051.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKMHFM",
+      "brand": "Mountain FM 95.3",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/kam953.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKMPFM",
+      "brand": "90.3 AMP Radio",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/cal903.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKORAM",
+      "brand": "CKOR AM 1400",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/pen1400.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKRDFM",
+      "brand": "Kiss 96.7 (Red Deer)",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/red967.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKRSFM",
+      "brand": "Country 104.7",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/reg1047.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKWXAM",
+      "brand": "CityNews 1130 Vancouver",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/van1130.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKXLFM",
+      "brand": "Jack 92.3 (Kelowna)",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/kel923.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKXQFM",
+      "brand": "Jack 100.5",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/por1005.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "ROKTFM",
+      "brand": "Rock 100.5",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/tor1005.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKGBFM",
+      "brand": "Jack 107.1 (Barrie)",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/bar1071.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKGLAM",
+      "brand": "570 NEWS",
+      "streamUrl": "https://chi-master2-ais-master1.leanstream.co/rogers/kit570.stream/48k/program.m3u8",
+      "metadataUrl": "https://radio.rogersdigitalmedia.com/service/now_playing",
+      "network": "Rogers",
+      "metadataType": "json",
+      "triggerMode": "hybrid"
+    }
+  ],
+  "Vista": [
+    {
+      "callsign": "CFNAFM",
+      "brand": "99 Country FM",
+      "city": "Bonnyville, AB",
+      "freq": "99.1",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00089/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFRIFM",
+      "brand": "104.7 The Goat",
+      "city": "Grande Prairie, AB",
+      "freq": "104.7",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00091/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJGYFM",
+      "brand": "96.3 Sun FM",
+      "city": "Grande Prairie, AB",
+      "freq": "96.3",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00478/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKLMFM",
+      "brand": "106.1 The Goat",
+      "city": "Lloydminster, AB",
+      "freq": "106.1",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00090/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJOCFM",
+      "brand": "Lethbridge Country",
+      "city": "Lethbridge, AB",
+      "freq": "98.1",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00093/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKBDFM",
+      "brand": "The Goat 106.7",
+      "city": "Lethbridge, AB",
+      "freq": "106.7",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00094/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKJXFM",
+      "brand": "104.5 The Goat",
+      "city": "Olds, AB",
+      "freq": "104.5",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00386/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKLJFM",
+      "brand": "Country 93.3",
+      "city": "Olds, AB",
+      "freq": "93.3",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00385/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKVGFM",
+      "brand": "Country 95.3",
+      "city": "Vegreville, AB",
+      "freq": "95.3",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00384/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKBX",
+      "brand": "CKBX AM",
+      "city": "100 Mile House, BC",
+      "freq": "1230",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00073/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIQCFM",
+      "brand": "99.7 The River",
+      "city": "Campbell River, BC",
+      "freq": "99.7",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00078/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKQRFM",
+      "brand": "The Goat",
+      "city": "Castlegar, BC",
+      "freq": "99.3",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00085/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFCPFM",
+      "brand": "The Goat 98.9",
+      "city": "Courtenay, BC",
+      "freq": "98.9",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00079/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFSMFM",
+      "brand": "Sun FM 98.5",
+      "city": "Cranbrook, BC",
+      "freq": "98.5",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00075/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKCVFM",
+      "brand": "Country 96.7",
+      "city": "Creston, BC",
+      "freq": "96.7",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00087/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJDC",
+      "brand": "CJDC AM 890",
+      "city": "Dawson Creek, BC",
+      "freq": "890",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00406/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJSUFM",
+      "brand": "The Goat 91.5",
+      "city": "Duncan, BC",
+      "freq": "91.5",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00080/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKRXFM",
+      "brand": "The Goat 101.5",
+      "city": "Fort Nelson, BC",
+      "freq": "101.5",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00405/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHRXFM",
+      "brand": "101.5 Sun FM",
+      "city": "Fort St. John, BC",
+      "freq": "101.5",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00404/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKNLFM",
+      "brand": "101.5 The Goat",
+      "city": "Fort St. John, BC",
+      "freq": "101.5",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00405/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKGRFM",
+      "brand": "CKGR AM",
+      "city": "Golden, BC",
+      "freq": "1400",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00390/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKGF2FM",
+      "brand": "The Goat",
+      "city": "Grand Forks, BC",
+      "freq": "101.5",
+      "streamUrl": "",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHSUFM",
+      "brand": "99.9 Sun FM",
+      "city": "Kelowna, BC",
+      "freq": "99.9",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00397/playlist.m3u8",
+      "metadataUrl": "https://ca.api.iheart.com/api/v3/live-meta/stream/7533/currentTrackMeta",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CILKFM",
+      "brand": "101.5 GO FM",
+      "city": "Kelowna, BC",
+      "freq": "101.5",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00398/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKFR",
+      "brand": "AM 1150",
+      "city": "Kelowna, BC",
+      "freq": "1150",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00399/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKTKFM",
+      "brand": "The Goat 96.1",
+      "city": "Kitimat, BC",
+      "freq": "96.1",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00403/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKAYFM",
+      "brand": "The Goat 101.7",
+      "city": "Nanaimo, BC",
+      "freq": "101.7",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00081/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHNVFM",
+      "brand": "Sun FM 101.5",
+      "city": "Nelson, BC",
+      "freq": "101.5",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00086/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKKCFM",
+      "brand": "The Goat 105.9",
+      "city": "Nelson, BC",
+      "freq": "105.9",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00389/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJOR",
+      "brand": "CJOR AM",
+      "city": "Osoyoos, BC",
+      "freq": "1240",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00395/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFNI",
+      "brand": "CFNI AM",
+      "city": "Port Hardy, BC",
+      "freq": "1240",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00083/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJMGFM",
+      "brand": "97.1 GO FM",
+      "city": "Penticton, BC",
+      "freq": "97.1",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00393/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKOR",
+      "brand": "CKOR AM",
+      "city": "Penticton, BC",
+      "freq": "800",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00394/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFPWFM",
+      "brand": "The Goat 101.7",
+      "city": "Powell River, BC",
+      "freq": "101.7",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00082/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIRXFM",
+      "brand": "94.3 The Goat",
+      "city": "Prince George, BC",
+      "freq": "94.3",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00066/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJCIFM",
+      "brand": "Country 97",
+      "city": "Prince George, BC",
+      "freq": "97.3",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00049/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHTKFM",
+      "brand": "The Goat 93.3",
+      "city": "Prince Rupert, BC",
+      "freq": "93.3",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00402/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKCQFM",
+      "brand": "The Goat 96.7",
+      "city": "Quesnel, BC",
+      "freq": "96.7",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00071/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKCRFM",
+      "brand": "Country 96.7",
+      "city": "Revelstoke, BC",
+      "freq": "96.7",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00392/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKXRFM",
+      "brand": "The Goat 91.5",
+      "city": "Salmon Arm, BC",
+      "freq": "91.5",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00391/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFBV",
+      "brand": "CFBV AM",
+      "city": "Smithers, BC",
+      "freq": "1230",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00077/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHORFM",
+      "brand": "The Goat 98.5",
+      "city": "Summerland, BC",
+      "freq": "98.5",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00387/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFTK",
+      "brand": "CFTK AM",
+      "city": "Terrace, BC",
+      "freq": "590",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00400/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJFWFM",
+      "brand": "103.1 The River",
+      "city": "Terrace, BC",
+      "freq": "103.1",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00401/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJATFM",
+      "brand": "Sun FM 610",
+      "city": "Trail, BC",
+      "freq": "610",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00388/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIRXFM1",
+      "brand": "95.9 The Goat",
+      "city": "Vanderhoof, BC",
+      "freq": "95.9",
+      "streamUrl": "",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CICFFM",
+      "brand": "105.7 The Ranch",
+      "city": "Vernon, BC",
+      "freq": "105.7",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00396/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFFMFM",
+      "brand": "The Goat",
+      "city": "Williams Lake, BC",
+      "freq": "97.5",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00074/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJCDFM",
+      "brand": "The Goat 100.1",
+      "city": "Yellowknife, NT",
+      "freq": "100.1",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00088/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHMSFM",
+      "brand": "Moose FM 105.5",
+      "city": "Bancroft, ON",
+      "freq": "105.5",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00110/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHBYFM",
+      "brand": "Moose FM 88.1",
+      "city": "Barry's Bay, ON",
+      "freq": "88.1",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00109/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFBGFM",
+      "brand": "Moose FM 100.5",
+      "city": "Bracebridge, ON",
+      "freq": "100.5",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00115/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHPBFM",
+      "brand": "Moose FM 88.1",
+      "city": "Cochrane, ON",
+      "freq": "88.1",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00103/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKNRFM",
+      "brand": "Moose FM 96.7",
+      "city": "Elliot Lake, ON",
+      "freq": "96.7",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00098/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJJMFM",
+      "brand": "Moose FM 92.7",
+      "city": "Espanola, ON",
+      "freq": "92.7",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00099/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFZNFM",
+      "brand": "Moose FM 100.9",
+      "city": "Haliburton, ON",
+      "freq": "100.9",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00113/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFBKFM",
+      "brand": "Moose FM 105.5",
+      "city": "Huntsville, ON",
+      "freq": "105.5",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00116/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFIFFM",
+      "brand": "Moose FM 90.1",
+      "city": "Iroquois Falls, ON",
+      "freq": "90.1",
+      "streamUrl": "",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKAPFM",
+      "brand": "Moose FM 100.9",
+      "city": "Kapuskasing, ON",
+      "freq": "100.9",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00104/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKVVFM",
+      "brand": "Country 104.9",
+      "city": "Kemptville, ON",
+      "freq": "104.9",
+      "streamUrl": "",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFXNFM",
+      "brand": "106.3 Jet FM",
+      "city": "North Bay, ON",
+      "freq": "106.3",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00100/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFCHFM",
+      "brand": "Country 90.5",
+      "city": "North Bay, ON",
+      "freq": "90.5",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00101/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKLPFM",
+      "brand": "Moose FM 103.3",
+      "city": "Parry Sound, ON",
+      "freq": "103.3",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00114/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKPPFM",
+      "brand": "Country 99.3",
+      "city": "Prescott, ON",
+      "freq": "99.3",
+      "streamUrl": "",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJCSFM",
+      "brand": "107.1 CJCS",
+      "city": "Stratford, ON",
+      "freq": "107.1",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00107/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHGKFM",
+      "brand": "Country 95.5",
+      "city": "Stratford, ON",
+      "freq": "95.5",
+      "streamUrl": "",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFSFFM",
+      "brand": "Moose FM 100.1",
+      "city": "Sturgeon Falls, ON",
+      "freq": "100.1",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00102/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHMTFM",
+      "brand": "Moose FM 93.1",
+      "city": "Timmins, ON",
+      "freq": "93.1",
+      "streamUrl": "https://hel-streamb-relay1.streamb.live/SB00105/playlist.m3u8",
+      "metadataUrl": "",
+      "network": "Vista",
+      "metadataSource": "iheart",
+      "triggerMode": "hybrid"
+    }
+  ],
+  "Pattison": [
+    {
+      "callsign": "CJVRFM",
+      "brand": "105 CJVR Country",
+      "city": "Melfort, SK",
+      "streamUrl": "https://stream.jpbgdigital.com/CJVR.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKJH",
+      "brand": "Beach Radio 750",
+      "city": "Melfort, SK",
+      "streamUrl": "https://stream.jpbgdigital.com/CKJH.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKLFFM",
+      "brand": "94.7 Star FM",
+      "city": "Brandon, MB",
+      "streamUrl": "https://stream.jpbgdigital.com/CKLF.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKLQFM",
+      "brand": "Q Country 91.5",
+      "city": "Brandon, MB",
+      "streamUrl": "https://stream.jpbgdigital.com/CKLQ.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKOVFM",
+      "brand": "OV 103.9",
+      "city": "Kelowna, BC",
+      "streamUrl": "https://stream.jpbgdigital.com/CKOV.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFMMFM",
+      "brand": "Power 99",
+      "city": "Prince Albert, SK",
+      "streamUrl": "https://stream.jpbgdigital.com/CFMM.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFMYFM",
+      "brand": "My96",
+      "city": "Medicine Hat, AB",
+      "streamUrl": "https://stream.jpbgdigital.com/CFMY.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFQXFM",
+      "brand": "QX104",
+      "city": "Selkirk/Winnipeg, MB",
+      "streamUrl": "https://stream.jpbgdigital.com/CFQX.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHATFM",
+      "brand": "Wild 94.5",
+      "city": "Medicine Hat, AB",
+      "streamUrl": "https://stream.jpbgdigital.com/CHAT.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHBWFM",
+      "brand": "94.5 Rewind Radio",
+      "city": "Rocky Mtn House, AB",
+      "streamUrl": "https://stream.jpbgdigital.com/CHBW.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHBZFM",
+      "brand": "Wild 104.7",
+      "city": "Cranbrook, BC",
+      "streamUrl": "https://stream.jpbgdigital.com/CHBZ.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHDRFM",
+      "brand": "102.9 Rewind Radio",
+      "city": "Cranbrook, BC",
+      "streamUrl": "https://stream.jpbgdigital.com/CHDR.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHLBFM",
+      "brand": "Wild 95.5",
+      "city": "Lethbridge, AB",
+      "streamUrl": "https://stream.jpbgdigital.com/CHLB.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHNWFM",
+      "brand": "Alt 94.3",
+      "city": "Winnipeg, MB",
+      "streamUrl": "https://stream.jpbgdigital.com/CHNW.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHPQFM",
+      "brand": "The Lounge 99.9",
+      "city": "Parksville, BC",
+      "streamUrl": "https://stream.jpbgdigital.com/CHPQ.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHQXFM",
+      "brand": "101.5 Beach Radio",
+      "city": "Prince Albert, SK",
+      "streamUrl": "https://stream.jpbgdigital.com/CHQX.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIBHFM",
+      "brand": "88.5 The Beach",
+      "city": "Parksville, BC",
+      "streamUrl": "https://stream.jpbgdigital.com/CIBH.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIBWFM",
+      "brand": "Big West Country",
+      "city": "Drayton Valley, AB",
+      "streamUrl": "https://stream.jpbgdigital.com/CIBW.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIFMFM",
+      "brand": "98.3 CIFM",
+      "city": "Kamloops, BC",
+      "streamUrl": "https://stream.jpbgdigital.com/CIFM.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIKTFM",
+      "brand": "98.9 Rewind Radio",
+      "city": "Grande Prairie, AB",
+      "streamUrl": "https://stream.jpbgdigital.com/CIKT.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIUPFM",
+      "brand": "Up! 99.3",
+      "city": "Edmonton, AB",
+      "streamUrl": "https://stream.jpbgdigital.com/CIUP.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJBZFM",
+      "brand": "B-93",
+      "city": "Lethbridge, AB",
+      "streamUrl": "https://stream.jpbgdigital.com/CJBZ.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJHDFM",
+      "brand": "93.3 Beach Radio",
+      "city": "North Battleford, SK",
+      "streamUrl": "https://stream.jpbgdigital.com/CJHD.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJJRFM",
+      "brand": "93.7 JR Country",
+      "city": "Vancouver, BC",
+      "streamUrl": "https://stream.jpbgdigital.com/CJJR.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJNB",
+      "brand": "1050 CJNB Country",
+      "city": "North Battleford, SK",
+      "streamUrl": "https://stream.jpbgdigital.com/CJNB.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJXXFM",
+      "brand": "Big Country 93.1",
+      "city": "Grande Prairie, AB",
+      "streamUrl": "https://stream.jpbgdigital.com/CJXX.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJZNFM",
+      "brand": "The Zone @ 91-3",
+      "city": "Victoria, BC",
+      "streamUrl": "https://stream.jpbgdigital.com/CJZN.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKBI",
+      "brand": "900 CKBI",
+      "city": "Prince Albert, SK",
+      "streamUrl": "https://stream.jpbgdigital.com/CKBI.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKCEFM",
+      "brand": "101.5 Today Radio",
+      "city": "Calgary, AB",
+      "streamUrl": "https://stream.jpbgdigital.com/CKCE.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKDVFM",
+      "brand": "99.3 Rewind Radio",
+      "city": "Prince George, BC",
+      "streamUrl": "https://stream.jpbgdigital.com/CKDV.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKKNFM",
+      "brand": "101.3 The River",
+      "city": "Prince George, BC",
+      "streamUrl": "https://stream.jpbgdigital.com/CKKN.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKKQFM",
+      "brand": "100.3 The Q",
+      "city": "Victoria, BC",
+      "streamUrl": "https://stream.jpbgdigital.com/CKKQ.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKLZFM",
+      "brand": "104.7 The Lizard",
+      "city": "Kelowna, BC",
+      "streamUrl": "https://stream.jpbgdigital.com/CKLZ.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKNOFM",
+      "brand": "102.3 Now Radio",
+      "city": "Edmonton, AB",
+      "streamUrl": "https://stream.jpbgdigital.com/CKNO.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKPKFM",
+      "brand": "102.7 The Peak",
+      "city": "Vancouver, BC",
+      "streamUrl": "https://stream.jpbgdigital.com/CKPK.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKQQFM",
+      "brand": "103.1 Beach Radio",
+      "city": "Kelowna, BC",
+      "streamUrl": "https://stream.jpbgdigital.com/CKQQ.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKWDFM",
+      "brand": "Wild 95.3",
+      "city": "Calgary, AB",
+      "streamUrl": "https://stream.jpbgdigital.com/CKWD.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Pattison",
+      "triggerMode": "hybrid"
+    }
+  ],
+  "Acadia": [
+    {
+      "callsign": "CKHYFM",
+      "brand": "Surge 105",
+      "city": "Halifax, NS",
+      "streamUrl": "https://das-edge60-sa48-futuri-chi03.cdnstream.com/7737_128k.aac/playlist.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Acadia",
+      "streamId": "7737",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKHZFM",
+      "brand": "Country 103.5",
+      "city": "Halifax, NS",
+      "streamUrl": "https://das-edge60-sa48-futuri-chi03.cdnstream.com/7738_128k.aac/playlist.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Acadia",
+      "streamId": "7738",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKBWFM",
+      "brand": "98.1 The Coast",
+      "city": "Bridgewater, NS",
+      "streamUrl": "https://das-edge60-sa48-futuri-chi03.cdnstream.com/7239_128k.aac/playlist.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Acadia",
+      "streamId": "7239",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJHKFM",
+      "brand": "Country 100.7",
+      "city": "Kentville, NS",
+      "streamUrl": "https://das-edge60-sa48-futuri-chi03.cdnstream.com/7226_128k.aac/playlist.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Acadia",
+      "streamId": "7226",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CIGOFM",
+      "brand": "101.5 The Hawk",
+      "city": "Port Hawkesbury, NS",
+      "streamUrl": "https://das-edge60-sa48-futuri-chi03.cdnstream.com/7932_128k.aac/playlist.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Acadia",
+      "streamId": "7932",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHTDFM",
+      "brand": "98.1",
+      "city": "St. Stephen, NB",
+      "streamUrl": "https://das-edge60-sa48-futuri-chi03.cdnstream.com/7236_128k.aac/playlist.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Acadia",
+      "streamId": "7236",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHWVFM",
+      "brand": "97.3 The Wave",
+      "city": "Saint John, NB",
+      "streamUrl": "https://das-edge60-sa48-futuri-chi03.cdnstream.com/7227_128k.aac/playlist.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Acadia",
+      "streamId": "7227",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CHSJFM",
+      "brand": "Country 94.1",
+      "city": "Saint John, NB",
+      "streamUrl": "https://das-edge60-sa48-futuri-chi03.cdnstream.com/7230_128k.aac/playlist.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Acadia",
+      "streamId": "7230",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKNIFM",
+      "brand": "91.9 The Bend",
+      "city": "Moncton, NB",
+      "streamUrl": "https://das-edge60-sa48-futuri-chi03.cdnstream.com/7232_128k.aac/playlist.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Acadia",
+      "streamId": "7232",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKDRFM",
+      "brand": "CKDR",
+      "city": "Dryden, ON",
+      "streamUrl": "https://das-edge60-sa48-futuri-chi03.cdnstream.com/7231_128k.aac/playlist.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Acadia",
+      "streamId": "7231",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKQVFM",
+      "brand": "Q104",
+      "city": "Vermilion Bay, ON",
+      "streamUrl": "https://das-edge60-sa48-futuri-chi03.cdnstream.com/7808_128k.aac/playlist.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Acadia",
+      "streamId": "7808",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CJUKFM",
+      "brand": "99.9 The Bay",
+      "city": "Thunder Bay, ON",
+      "streamUrl": "https://das-edge60-sa48-futuri-chi03.cdnstream.com/7237_128k.aac/playlist.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Acadia",
+      "streamId": "7237",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CFOBFM",
+      "brand": "Border 93.1",
+      "city": "Fort Frances, ON",
+      "streamUrl": "https://das-edge60-sa48-futuri-chi03.cdnstream.com/7235_128k.aac/playlist.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Acadia",
+      "streamId": "7235",
+      "triggerMode": "hybrid"
+    },
+    {
+      "callsign": "CKTGFM",
+      "brand": "Country 105",
+      "city": "Thunder Bay, ON",
+      "streamUrl": "https://das-edge60-sa48-futuri-chi03.cdnstream.com/7238_128k.aac/playlist.m3u8",
+      "metadataUrl": "",
+      "metadataSource": "hls",
+      "network": "Acadia",
+      "streamId": "7238",
+      "triggerMode": "hybrid"
+    }
+  ]
+}
