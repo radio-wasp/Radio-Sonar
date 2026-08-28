@@ -1,36 +1,22 @@
+version: '3.8'
+
 services:
-
-  recorder:
-    build: ./recorder
-    restart: unless-stopped
-    volumes:
-      - ./recorder/server.js:/app/server.js
-      - ./recorder/audio_dsp.js:/app/audio_dsp.js
-      - ./recorder/transcriber.js:/app/transcriber.js
-      - ./recorder/shazam_recognize.py:/app/shazam_recognize.py
-      - recordings:/recordings
-      - whisper_cache:/root/.cache/whisper
-    networks:
-      - internal
-
-  web:
+  radioscope:
     build:
       context: .
-      dockerfile: web.Dockerfile
+      dockerfile: Dockerfile
+    container_name: radioscope-app
     restart: unless-stopped
     ports:
-      - "8090:80"
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - PYTHONUNBUFFERED=1
     volumes:
-      - ./frontend:/usr/share/nginx/html:ro
-    depends_on:
-      - recorder
-    networks:
-      - internal
-
-volumes:
-  recordings:
-  whisper_cache:
-
-networks:
-  internal:
-    driver: bridge
+      - ./app:/app/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RadioScope - US & Canadian Radio Coverage Map</title>
+    <meta name="description" content="Generate high-precision broadcast coverage maps, signal contours, and technical engineering profiles for any US (FCC) or Canadian (ISED) radio station by callsign.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <!-- App CSS -->
+    <link rel="stylesheet" href="/static/css/style.css?v=5">
+</head>
+<body class="amber-crt-theme">
+    <div id="app-container">
+        <!-- Top Navigation Header -->
+        <header id="main-header">
+            <div class="brand-area">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="2"></circle>
+                        <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">RadioScope</span>
+                    <span class="brand-subtitle">US &amp; Canada Broadcast Coverage</span>
+                </div>
+            </div>
+
+            <!-- Search Bar with Live Autocomplete -->
+            <div class="search-container">
+                <div class="search-bar">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input 
+                        type="text" 
+                        id="callsign-search-input" 
+                        placeholder="Search US or Canadian callsign (e.g. WNYC, KQED, CBLA-FM, CJBC, WBBM)..." 
+                        autocomplete="off"
+                        spellcheck="false"
+                    />
+                    <button id="search-clear-btn" class="btn-icon hidden" title="Clear search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                    <button id="search-submit-btn" class="btn btn-primary">
+                        <span>Map Station</span>
+                    </button>
+                </div>
+                <div id="autocomplete-dropdown" class="autocomplete-dropdown hidden"></div>
+            </div>
+
+            <!-- Quick Action Toolbar -->
+            <div class="header-actions">
+                <button id="btn-compare-menu" class="btn btn-secondary" title="Compare Station Coverages">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    <span>Compare</span>
+                    <span id="compare-badge" class="badge-count hidden">0</span>
+                </button>
+                <button id="btn-custom-sim" class="btn btn-secondary" title="Simulate Custom Transmitter">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <span>Custom Simulation</span>
+                </button>
+                <button id="btn-export-menu" class="btn btn-secondary" title="Export Coverage Data">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <span>Export</span>
+                </button>
+                <button id="btn-theme-toggle" class="btn-icon" title="Toggle Light/Dark Theme">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Body Layout -->
+        <main id="main-content">
+            <!-- Sidebar Panel -->
+            <aside id="sidebar" class="sidebar">
+                <div class="sidebar-scrollable">
+                    <!-- Quick Suggestions Banner -->
+                    <div class="quick-chips-wrapper">
+                        <span class="chips-label">Popular Stations:</span>
+                        <div class="quick-chips">
+                            <button class="chip" data-callsign="WNYC-FM">🇺🇸 WNYC-FM (93.9)</button>
+                            <button class="chip" data-callsign="CBLA-FM">🇨🇦 CBLA-FM Toronto (99.1)</button>
+                            <button class="chip" data-callsign="CHOM-FM">🇨🇦 CHOM Montréal (97.7)</button>
+                            <button class="chip" data-callsign="CFOX-FM">🇨🇦 CFOX Vancouver (99.3)</button>
+                            <button class="chip" data-callsign="VOCM">🇨🇦 VOCM St. John's (590 AM)</button>
+                            <button class="chip" data-callsign="CKUA">🇨🇦 CKUA Alberta (93.7)</button>
+                            <button class="chip" data-callsign="CILQ-FM">🇨🇦 Q107 Toronto (107.1)</button>
+                            <button class="chip" data-callsign="CJOB">🇨🇦 CJOB Winnipeg (680 AM)</button>
+                            <button class="chip" data-callsign="KQED-FM">🇺🇸 KQED San Francisco (88.5)</button>
+                            <button class="chip" data-callsign="KEXP-FM">🇺🇸 KEXP Seattle (90.3)</button>
+                        </div>
+                    </div>
+
+                    <!-- Station Info Card -->
+                    <section id="station-card" class="panel-card station-card">
+                        <div class="station-header">
+                            <div class="station-title-group">
+                                <div class="callsign-row">
+                                    <h2 id="st-callsign">WNYC-FM</h2>
+                                    <span id="st-country-badge" class="badge badge-country">🇺🇸 USA</span>
+                                    <span id="st-band-badge" class="badge badge-band">FM</span>
+                                    <button id="btn-add-compare" class="btn btn-sm btn-secondary" title="Add to Compare List">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                        <span>+ Compare</span>
+                                    </button>
+                                </div>
+                                <div id="st-name" class="station-name">WNYC 93.9 FM - New York Public Radio</div>
+                            </div>
+                        </div>
+
+                        <!-- AM Day / Night Pattern Switcher -->
+                        <div id="am-mode-toggle-container" class="am-mode-box hidden">
+                            <span class="mode-label">AM Radiation Mode:</span>
+                            <div class="mode-switch-group">
+                                <button id="btn-mode-day" class="btn-mode active" data-mode="day">
+                                    <span>☀️ Day (Groundwave)</span>
+                                </button>
+                                <button id="btn-mode-night" class="btn-mode" data-mode="night">
+                                    <span>🌙 Night (DA Array + Skywave)</span>
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <!-- Live Stream Player (if available) -->
+                        <div id="live-stream-container" class="live-stream-box">
+                            <div class="stream-header">
+                                <div class="live-indicator">
+                                    <span class="live-dot"></span>
+                                    <span>LIVE AUDIO STREAM</span>
+                                </div>
+                                <span id="stream-format-tag" class="stream-tag">AAC / MP3</span>
+                            </div>
+                            <audio id="audio-player" preload="none"></audio>
+                            <div class="audio-controls">
+                                <button id="btn-play-stream" class="btn-play">
+                                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                    <svg class="pause-icon hidden" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                                    <span id="play-btn-text">Listen Live</span>
+                                </button>
+                                <div class="volume-slider-box">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                                    <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.8">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Engineering Parameters Grid -->
+                        <div class="spec-grid">
+                            <div class="spec-item">
+                                <span class="spec-label">Frequency</span>
+                                <span id="st-frequency" class="spec-value highlight">93.9 MHz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Power (ERP)</span>
+                                <span id="st-erp" class="spec-value">6.0 kW</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Antenna HAAT</span>
+                                <span id="st-haat" class="spec-value">415 m (1,361 ft)</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Class &amp; Pattern</span>
+                                <span id="st-class" class="spec-value">Class B (Omni)</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">City of License</span>
+                                <span id="st-location" class="spec-value">New York, NY</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Coordinates</span>
+                                <span id="st-coords" class="spec-value mono">40.7484° N, 73.9857° W</span>
+                            </div>
+                            <div class="spec-item full-width">
+                                <span class="spec-label">Licensee / Operator</span>
+                                <span id="st-licensee" class="spec-value truncate">New York Public Radio</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Coverage Contour Tiers Card -->
+                    <section class="panel-card">
+                        <div class="card-header">
+                            <h3>Coverage Contours</h3>
+                            <span class="header-note">FCC F(50,50) Standard</span>
+                        </div>
+                        <div id="contour-tiers-list" class="contour-tiers-list">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </section>
+
+                    <!-- Signal Strength Drop-off Cross Section -->
+                    <section class="panel-card">
+                        <div class="card-header">
+                            <h3>Signal Attenuation Profile</h3>
+                            <span class="header-note">Field Strength vs Distance</span>
+                        </div>
+                        <div class="profile-chart-container">
+                            <canvas id="profile-chart" height="140"></canvas>
+                        </div>
+                        <div class="chart-legend-row">
+                            <span class="legend-badge leg-70">70 dBu: City</span>
+                            <span class="legend-badge leg-60">60 dBu: Service</span>
+                            <span class="legend-badge leg-54">54 dBu: Secondary</span>
+                            <span class="legend-badge leg-48">48 dBu: Fringe</span>
+                        </div>
+                    </section>
+
+                    <!-- Signal Probe Realtime Card -->
+                    <section id="probe-card" class="panel-card probe-card">
+                        <div class="card-header">
+                            <div class="probe-title-group">
+                                <span class="probe-dot"></span>
+                                <h3>Signal Probe</h3>
+                            </div>
+                            <span class="header-note">Click map to probe</span>
+                        </div>
+                        <div id="probe-content" class="probe-content">
+                            <div class="probe-empty-state">
+                                Click anywhere on the map to test predicted reception quality and field strength.
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </aside>
+
+            <!-- Map Viewport -->
+            <div id="map-container" class="map-container">
+                <div id="map"></div>
+
+                <!-- Floating Map Overlays -->
+                <div class="map-floating-controls">
+                    <!-- Layer Tile Switcher -->
+                    <div class="map-control-group">
+                        <button id="btn-recenter" class="map-floating-btn" title="Recenter on Transmitter">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                        <button id="btn-toggle-probe-tool" class="map-floating-btn active" title="Toggle Signal Probe Tool">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line></svg>
+                        </button>
+                    </div>
+
+                    <!-- Base Tile Switcher -->
+                    <div class="basemap-selector">
+                        <button class="basemap-btn active" data-style="dark">Dark</button>
+                        <button class="basemap-btn" data-style="positron">Light</button>
+                        <button class="basemap-btn" data-style="osm">Street</button>
+                        <button class="basemap-btn" data-style="satellite">Satellite</button>
+                        <button class="basemap-btn" data-style="terrain">Terrain</button>
+                    </div>
+                </div>
+
+                <!-- Map Legend Floating Pill -->
+                <div class="map-floating-legend">
+                    <div class="legend-item"><span class="legend-color-dot" style="background:#10b981;"></span> City (70 dBu)</div>
+                    <div class="legend-item"><span class="legend-color-dot" style="background:#3b82f6;"></span> Service (60 dBu)</div>
+                    <div class="legend-item"><span class="legend-color-dot" style="background:#f59e0b;"></span> Secondary (54 dBu)</div>
+                    <div class="legend-item"><span class="legend-color-dot" style="background:#8b5cf6;"></span> Fringe (48 dBu)</div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Custom Transmitter Modal -->
+        <div id="custom-modal" class="modal-overlay hidden">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h3>Simulate Custom Transmitter</h3>
+                    <button id="modal-close-btn" class="btn-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <form id="custom-sim-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sim-callsign">Station / Project Name</label>
+                            <input type="text" id="sim-callsign" value="WXYZ-SIM" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sim-band">Broadcast Band</label>
+                            <select id="sim-band">
+                                <option value="FM" selected>FM (88.1 - 107.9 MHz)</option>
+                                <option value="AM">AM (530 - 1710 kHz)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sim-freq">Frequency (<span id="freq-unit-label">MHz</span>)</label>
+                            <input type="number" id="sim-freq" step="0.1" value="95.5" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sim-erp">Effective Radiated Power (kW)</label>
+                            <input type="number" id="sim-erp" step="0.1" value="50.0" min="0.1" max="250" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sim-haat">Antenna HAAT (meters)</label>
+                            <input type="number" id="sim-haat" step="1" value="180" min="10" max="1600" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sim-country">Country Rules</label>
+                            <select id="sim-country">
+                                <option value="US" selected>United States (FCC)</option>
+                                <option value="CA">Canada (ISED)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sim-lat">Transmitter Latitude</label>
+                            <input type="number" id="sim-lat" step="0.0001" value="40.7128" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sim-lon">Transmitter Longitude</label>
+                            <input type="number" id="sim-lon" step="0.0001" value="-74.0060" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="sim-directional">
+                            <span>Directional Antenna Pattern (15 dB Cardioid)</span>
+                        </label>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" id="modal-cancel-btn" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Generate Coverage Map</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Export Drawer / Modal -->
+        <div id="export-modal" class="modal-overlay hidden">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h3>Export Station Coverage</h3>
+                    <button id="export-close-btn" class="btn-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div class="export-options-list">
+                    <button id="export-png-btn" class="export-option-card">
+                        <div class="opt-icon">📸</div>
+                        <div class="opt-text">
+                            <h4>Download Map PNG Screenshot</h4>
+                            <p>High-resolution PNG map image with station contours, markers &amp; terrain legend.</p>
+                        </div>
+                    </button>
+                    <button id="export-geojson-btn" class="export-option-card">
+                        <div class="opt-icon">🌍</div>
+                        <div class="opt-text">
+                            <h4>Download GeoJSON</h4>
+                            <p>Standard GIS vector polygons for QGIS, ArcGIS, Mapbox, or Leaflet.</p>
+                        </div>
+                    </button>
+                    <button id="export-kml-btn" class="export-option-card">
+                        <div class="opt-icon">🌐</div>
+                        <div class="opt-text">
+                            <h4>Download Google Earth KML</h4>
+                            <p>3D contours and transmitter coordinates for Google Earth desktop &amp; web.</p>
+                        </div>
+                    </button>
+                    <button id="export-report-btn" class="export-option-card">
+                        <div class="opt-icon">📊</div>
+                        <div class="opt-text">
+                            <h4>Engineering JSON Report</h4>
+                            <p>Technical summary, radial profiles, and coverage area calculations.</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Station Comparison Modal -->
+        <div id="compare-modal" class="modal-overlay hidden">
+            <div class="modal-card modal-large">
+                <div class="modal-header">
+                    <div class="modal-title-group">
+                        <h3>Station Coverage Comparison Matrix</h3>
+                        <span class="header-note">Select up to 5 US &amp; Canadian radio stations</span>
+                    </div>
+                    <button id="compare-close-btn" class="btn-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+
+                <div class="compare-body">
+                    <div class="compare-search-box">
+                        <input type="text" id="compare-search-input" placeholder="Enter station callsign to compare (e.g. WNYC-FM, CBLA-FM, CHOM-FM, CFOX-FM, VOCM)..." autocomplete="off" spellcheck="false">
+                        <button id="compare-add-btn" class="btn btn-primary">+ Add Station</button>
+                    </div>
+
+                    <div id="compare-slots-container" class="compare-slots-bar">
+                        <!-- Up to 5 selected station slots dynamically rendered -->
+                    </div>
+
+                    <div class="compare-table-container">
+                        <table id="compare-table" class="compare-matrix-table">
+                            <!-- Matrix comparison rows rendered dynamically -->
+                        </table>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button id="compare-clear-btn" class="btn btn-secondary">Clear List</button>
+                    <button id="compare-overlay-map-btn" class="btn btn-primary">Overlay Contours on Map</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="/static/js/map.js?v=6"></script>
+    <script src="/static/js/app.js?v=6"></script>
+</body>
+</html>
