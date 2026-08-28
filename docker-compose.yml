@@ -4,6 +4,10 @@ services:
     build: ./recorder
     restart: unless-stopped
     volumes:
+      - ./recorder/server.js:/app/server.js
+      - ./recorder/audio_dsp.js:/app/audio_dsp.js
+      - ./recorder/transcriber.js:/app/transcriber.js
+      - ./recorder/shazam_recognize.py:/app/shazam_recognize.py
       - recordings:/recordings
       - whisper_cache:/root/.cache/whisper
     networks:

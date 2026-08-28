@@ -1,6 +1,49 @@
-const { spawnSync } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+
+function captureStreamSample(streamUrl, duration, samplePath) {
+  return new Promise((resolve, reject) => {
+    const args = [
+      '-y',
+      '-user_agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      '-reconnect', '1',
+      '-reconnect_streamed', '1',
+      '-reconnect_delay_max', '5',
+      '-i', streamUrl,
+      '-t', String(duration),
+      '-vn',
+      '-acodec', 'libmp3lame',
+      '-ar', '44100',
+      '-ac', '2',
+      '-q:a', '2',
+      samplePath
+    ];
+
+    const proc = spawn('ffmpeg', args);
+    let stderr = '';
+    proc.stderr.on('data', (d) => { stderr += d.toString(); });
+
+    const timer = setTimeout(() => {
+      try { proc.kill('SIGKILL'); } catch (_) {}
+      reject(new Error('FFmpeg sample timeout'));
+    }, (duration + 12) * 1000);
+
+    proc.on('close', (code) => {
+      clearTimeout(timer);
+      if (fs.existsSync(samplePath) && fs.statSync(samplePath).size > 500) {
+        resolve();
+      } else {
+        reject(new Error(`FFmpeg failed (code ${code}): ${stderr.slice(-200)}`));
+      }
+    });
+
+    proc.on('error', (err) => {
+      clearTimeout(timer);
+      reject(err);
+    });
+  });
+}
 
 /**
  * Run FFmpeg silencedetect on an audio file to locate inter-commercial gaps.
@@ -135,6 +178,29 @@ function segmentCommercialBreak(audioPath, outputDir, segments) {
   return spotFiles;
 }
 
+function parseFpcalcOutput(stdout) {
+  if (!stdout || typeof stdout !== 'string') return null;
+  const str = stdout.trim();
+  if (str.startsWith('{')) {
+    try {
+      const data = JSON.parse(str);
+      return {
+        duration: parseFloat(data.duration) || 0,
+        fingerprint: typeof data.fingerprint === 'string' ? data.fingerprint : '',
+        raw: Array.isArray(data.fingerprint) ? data.fingerprint : (Array.isArray(data.raw) ? data.raw : [])
+      };
+    } catch (_) {}
+  }
+  const durMatch = str.match(/DURATION=(\d+(\.\d+)?)/i);
+  const fpMatch = str.match(/FINGERPRINT=([A-Za-z0-9_-]+)/i);
+  const rawMatch = str.match(/FINGERPRINT=([0-9,-]+)/i);
+  return {
+    duration: durMatch ? parseFloat(durMatch[1]) : 0,
+    fingerprint: fpMatch ? fpMatch[1] : '',
+    raw: rawMatch ? rawMatch[1].split(',').map(n => parseInt(n, 10)).filter(n => !isNaN(n)) : []
+  };
+}
+
 /**
  * Generate Chromaprint acoustic fingerprint using fpcalc binary.
  * @param {string} audioPath
@@ -144,26 +210,40 @@ function generateFingerprint(audioPath) {
   if (!fs.existsSync(audioPath)) return null;
 
   try {
-    const res = spawnSync('fpcalc', ['-raw', '-json', audioPath], { encoding: 'utf8', timeout: 20000 });
-    if (res.error || res.status !== 0) {
-      const resStd = spawnSync('fpcalc', ['-json', audioPath], { encoding: 'utf8', timeout: 20000 });
-      if (!resStd.error && resStd.status === 0) {
-        const data = JSON.parse(resStd.stdout);
-        return {
-          duration: data.duration || 0,
-          fingerprint: data.fingerprint || '',
-          raw: []
-        };
-      }
+    // 1. Standard base64 fingerprint (for AcoustID 100M+ cloud lookup)
+    let resStd = spawnSync('fpcalc', ['-json', audioPath], { encoding: 'utf8', timeout: 20000 });
+    let parsedStd = (resStd && resStd.stdout) ? parseFpcalcOutput(resStd.stdout) : null;
+    if (!parsedStd || !parsedStd.fingerprint) {
+      resStd = spawnSync('fpcalc', [audioPath], { encoding: 'utf8', timeout: 20000 });
+      parsedStd = (resStd && resStd.stdout) ? parseFpcalcOutput(resStd.stdout) : null;
+    }
+
+    if (!parsedStd || !parsedStd.fingerprint) {
+      console.warn('[audio_dsp] fpcalc stdout failed on:', audioPath);
       return null;
     }
-    const data = JSON.parse(res.stdout);
+
+    // 2. Raw integer array (for local bitwise XOR correlation)
+    let rawArr = [];
+    try {
+      let resRaw = spawnSync('fpcalc', ['-raw', '-json', audioPath], { encoding: 'utf8', timeout: 20000 });
+      let parsedRaw = (resRaw && resRaw.stdout) ? parseFpcalcOutput(resRaw.stdout) : null;
+      if (!parsedRaw || !parsedRaw.raw.length) {
+        resRaw = spawnSync('fpcalc', ['-raw', audioPath], { encoding: 'utf8', timeout: 20000 });
+        parsedRaw = (resRaw && resRaw.stdout) ? parseFpcalcOutput(resRaw.stdout) : null;
+      }
+      if (parsedRaw && parsedRaw.raw && parsedRaw.raw.length) {
+        rawArr = parsedRaw.raw;
+      }
+    } catch (_) {}
+
     return {
-      duration: data.duration || 0,
-      fingerprint: data.fingerprint || '',
-      raw: data.raw || []
+      duration: parsedStd.duration,
+      fingerprint: parsedStd.fingerprint,
+      raw: rawArr
     };
   } catch (e) {
+    console.error('[audio_dsp] generateFingerprint error:', e.message);
     return null;
   }
 }
@@ -445,63 +525,144 @@ function findMatchingMusicFingerprint(dbFile, queryRaw, threshold = 0.82) {
  * @returns {Promise<object>} { match: boolean, score: number, artist: string, songTitle: string, album: string, year: string, mbid: string }
  */
 async function lookupAcoustId(fingerprint, durationSeconds, clientKey) {
-  if (!fingerprint) return { match: false };
+  if (!fingerprint || typeof fingerprint !== 'string' || fingerprint.length < 10) {
+    return { match: false };
+  }
 
-  const key = clientKey || process.env.ACOUSTID_CLIENT_KEY || '8XaBELgH';
-  const duration = Math.round(durationSeconds || 15);
-  const url = `https://api.acoustid.org/v2/lookup?client=${key}&meta=recordings+releasegroups+compress&fingerprint=${encodeURIComponent(fingerprint)}&duration=${duration}`;
+  const key = clientKey || process.env.ACOUSTID_CLIENT_KEY;
+  if (!key) {
+    return { match: false, error: 'AcoustID API key not configured' };
+  }
+
+  const duration = Math.max(3, Math.round(durationSeconds || 10));
 
   try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
-    if (!res.ok) return { match: false };
+    const params = new URLSearchParams();
+    params.append('client', key);
+    params.append('meta', 'recordings releasegroups tracks');
+    params.append('fingerprint', fingerprint);
+    params.append('duration', String(duration));
 
-    const data = await res.json();
-    if (data.status !== 'ok' || !data.results || !data.results.length) {
+    const res = await fetch('https://api.acoustid.org/v2/lookup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString(),
+      signal: AbortSignal.timeout(8000)
+    });
+
+    const text = await res.text();
+    let data = {};
+    try { data = JSON.parse(text); } catch (_) {}
+
+    console.log(`[audio_dsp] AcoustID query HTTP ${res.status}: status=${data.status} results=${data.results ? data.results.length : 0}`);
+
+    if (!res.ok || data.status !== 'ok' || !data.results || !data.results.length) {
+      if (data.error) console.warn('[audio_dsp] AcoustID error:', data.error.message);
       return { match: false };
     }
 
     for (const result of data.results) {
-      if (result.score >= 0.75 && result.recordings && result.recordings.length) {
-        const rec = result.recordings[0];
-        const artist = rec.artists ? rec.artists.map(a => a.name).join(', ') : (rec.artist || '');
-        const songTitle = rec.title || '';
-        const rg = rec.releasegroups ? rec.releasegroups[0] : {};
-        const album = rg.title || null;
-        const year = rg.date ? rg.date.split('-')[0] : null;
-        const mbid = rec.id || null;
+      console.log(`[audio_dsp] Candidate match: score=${result.score} recordings=${result.recordings ? result.recordings.length : 0}`);
+      if (result.recordings && result.recordings.length) {
+        for (const rec of result.recordings) {
+          const artist = rec.artists ? rec.artists.map(a => a.name).join(', ') : (rec.artist || '');
+          const songTitle = rec.title || '';
+          const rg = rec.releasegroups ? rec.releasegroups[0] : {};
+          const album = rg.title || null;
+          const year = rg.date ? rg.date.split('-')[0] : null;
+          const mbid = rec.id || null;
 
-        if (artist && songTitle) {
-          return {
-            match: true,
-            score: result.score,
-            artist,
-            songTitle,
-            album,
-            year,
-            mbid,
-            acoustid: result.id
-          };
+          if (artist && songTitle) {
+            console.log(`[audio_dsp] AcoustID MATCH (score ${result.score}): ${artist} - ${songTitle}`);
+            return {
+              match: true,
+              score: result.score,
+              artist,
+              songTitle,
+              album,
+              year,
+              mbid,
+              acoustid: result.id
+            };
+          }
         }
       }
     }
   } catch (e) {
-    console.warn('[audio_dsp] AcoustID lookup error:', e.message);
+    console.warn('[audio_dsp] AcoustID query error:', e.message);
   }
 
   return { match: false };
+}
+
+/**
+ * Identify a song audio sample using Apple Shazam (150M+ tracks, 0 API key required).
+ * Uses Python shazamio worker in /opt/whisper-env/bin/python3 (or python3).
+ * @param {string} samplePath - Local path to MP3/WAV/AAC audio sample
+ * @returns {Promise<object>} { match: boolean, artist: string, songTitle: string, albumart: string, genre: string }
+ */
+function lookupShazam(samplePath) {
+  return new Promise((resolve) => {
+    if (!fs.existsSync(samplePath)) return resolve({ match: false });
+
+    const pyBin = fs.existsSync('/opt/whisper-env/bin/python3') ? '/opt/whisper-env/bin/python3' : 'python3';
+    const scriptPath = path.join(__dirname, 'shazam_recognize.py');
+
+    if (!fs.existsSync(scriptPath)) {
+      return resolve({ match: false, error: 'shazam_recognize.py missing' });
+    }
+
+    const proc = spawn(pyBin, [scriptPath, samplePath]);
+    let stdout = '';
+    let stderr = '';
+
+    proc.stdout.on('data', (d) => { stdout += d.toString(); });
+    proc.stderr.on('data', (d) => { stderr += d.toString(); });
+
+    const timer = setTimeout(() => {
+      try { proc.kill('SIGKILL'); } catch (_) {}
+      resolve({ match: false, error: 'Shazam lookup timeout' });
+    }, 12000);
+
+    proc.on('close', (code) => {
+      clearTimeout(timer);
+      try {
+        const res = JSON.parse(stdout.trim());
+        if (res && res.match && res.title && res.artist) {
+          console.log(`[audio_dsp] 🎧 SHAZAM MATCH: ${res.artist} - ${res.title}`);
+          return resolve({
+            match: true,
+            source: 'shazam',
+            score: res.score || 0.99,
+            artist: res.artist,
+            songTitle: res.title,
+            albumart: res.albumart || null,
+            genre: res.genre || null,
+            shazamId: res.shazamId || null
+          });
+        }
+      } catch (_) {}
+      resolve({ match: false });
+    });
+
+    proc.on('error', (err) => {
+      clearTimeout(timer);
+      resolve({ match: false, error: err.message });
+    });
+  });
 }
 
 // ── 4. Unified Live Stream Audio Identifier ─────────────────────────────────
 
 /**
  * Capture an audio sample from a stream URL (or local file) and identify whether
- * it is a Commercial Ad or a Music Song using local catalogs and AcoustID.
+ * it is a Commercial Ad or a Music Song using local catalogs, Apple Shazam, and AcoustID.
  * @param {string} source - Stream URL (http/https) or local file path
  * @param {object} opts - { adDbFile, musicDbFile, durationSeconds: 5, clientKey }
  * @returns {Promise<object>} { type: 'ad'|'music'|'unknown', match: boolean, score: number, details: object }
  */
 async function sampleAndIdentifyAudio(source, opts = {}) {
-  const duration = opts.durationSeconds || 5;
+  const duration = Math.max(8, opts.durationSeconds || 15);
   const adDbFile = opts.adDbFile;
   const musicDbFile = opts.musicDbFile;
   const clientKey = opts.clientKey;
@@ -515,7 +676,7 @@ async function sampleAndIdentifyAudio(source, opts = {}) {
 
     // Resolve TuneIn / RadioTime / PLS / M3U / ASX playlist wrapper if needed
     let streamUrl = source;
-    if (streamUrl.includes('opml.radiotime.com') || streamUrl.includes('.ashx') || streamUrl.endsWith('.pls') || streamUrl.endsWith('.asx') || (streamUrl.endsWith('.m3u') && !streamUrl.includes('.m3u8'))) {
+    if (streamUrl.includes('opml.radiotime.com') || streamUrl.includes('.ashx') || streamUrl.includes('/pls') || streamUrl.includes('.pls') || streamUrl.includes('.asx') || streamUrl.includes('streamtheworld.com') || (streamUrl.includes('.m3u') && !streamUrl.includes('.m3u8'))) {
       try {
         const res = await fetch(streamUrl, {
           headers: { 'User-Agent': 'Mozilla/5.0' },
@@ -523,34 +684,28 @@ async function sampleAndIdentifyAudio(source, opts = {}) {
         });
         if (res.ok) {
           const body = await res.text();
-          const lines = body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http'));
-          if (lines.length > 0) {
-            streamUrl = lines[0];
+          const fileMatch = body.match(/File\d+=(https?:\/\/[^\r\n]+)/i);
+          if (fileMatch) {
+            streamUrl = fileMatch[1].trim();
           } else {
-            const m = body.match(/url=["'](https?:\/\/[^"']+)["']/i) || body.match(/href=["'](https?:\/\/[^"']+)["']/i);
-            if (m) streamUrl = m[1];
+            const lines = body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http'));
+            if (lines.length > 0) {
+              streamUrl = lines[0];
+            } else {
+              const m = body.match(/url=["'](https?:\/\/[^"']+)["']/i) || body.match(/href=["'](https?:\/\/[^"']+)["']/i) || body.match(/(https?:\/\/[^\r\n"'>\s]+)/i);
+              if (m) streamUrl = m[1];
+            }
           }
         }
       } catch (_) {}
     }
 
     try {
-      spawnSync('ffmpeg', [
-        '-y',
-        '-user_agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        '-reconnect', '1',
-        '-reconnect_streamed', '1',
-        '-reconnect_delay_max', '5',
-        '-i', streamUrl,
-        '-t', String(duration),
-        '-vn',
-        '-acodec', 'libmp3lame',
-        '-q:a', '2',
-        samplePath
-      ], { timeout: 15000 });
+      await captureStreamSample(streamUrl, duration, samplePath);
     } catch (e) {
+      console.warn(`[audio_dsp] captureStreamSample error for ${streamUrl.slice(0, 45)}:`, e.message);
       if (isTemp && fs.existsSync(samplePath)) try { fs.unlinkSync(samplePath); } catch (_) {}
-      return { type: 'unknown', match: false, error: 'Could not sample stream' };
+      return { type: 'unknown', match: false, error: e.message };
     }
   }
 
@@ -564,6 +719,8 @@ async function sampleAndIdentifyAudio(source, opts = {}) {
       if (isTemp) try { fs.unlinkSync(samplePath); } catch (_) {}
       return { type: 'unknown', match: false, error: 'Could not generate fingerprint' };
     }
+
+    console.log(`[audio_dsp] Sampled ${source.slice(0, 45)}... duration=${fp.duration}s fpLength=${fp.fingerprint.length} rawCount=${fp.raw.length}`);
 
     // 1. Check Ad Catalog (Positive Commercial Recognition)
     if (adDbFile && fp.raw && fp.raw.length) {
@@ -595,7 +752,34 @@ async function sampleAndIdentifyAudio(source, opts = {}) {
       }
     }
 
-    // 3. Query AcoustID Global Database (100M+ songs)
+    // 3. Apple Shazam Cloud Recognition (150M+ songs, 0 API key required)
+    const shazamMatch = await lookupShazam(samplePath);
+    if (shazamMatch.match) {
+      // Auto-catalog this song into local music database
+      if (musicDbFile) {
+        catalogMusicFingerprint(musicDbFile, {
+          artist: shazamMatch.artist,
+          songTitle: shazamMatch.songTitle,
+          albumart: shazamMatch.albumart,
+          genre: shazamMatch.genre,
+          source: 'shazam',
+          duration: fp.duration,
+          fingerprint: fp.fingerprint,
+          raw: fp.raw
+        });
+      }
+
+      if (isTemp) try { fs.unlinkSync(samplePath); } catch (_) {}
+      return {
+        type: 'music',
+        match: true,
+        source: 'shazam',
+        score: 0.99,
+        details: shazamMatch
+      };
+    }
+
+    // 4. Query AcoustID Global Database (if API key configured)
     const acoustMatch = await lookupAcoustId(fp.fingerprint, fp.duration, clientKey);
     if (acoustMatch.match) {
       // Auto-catalog this song into local music database
@@ -620,6 +804,29 @@ async function sampleAndIdentifyAudio(source, opts = {}) {
         score: acoustMatch.score,
         details: acoustMatch
       };
+    }
+
+    // 4. If station metadata actively provides confirmed artist & songTitle, catalog this fingerprint
+    if (opts.currentArtist && opts.currentSongTitle && musicDbFile) {
+      const candidateTitle = `${opts.currentArtist} - ${opts.currentSongTitle}`;
+      if (candidateTitle.length > 3 && !candidateTitle.toLowerCase().includes('advert') && !candidateTitle.toLowerCase().includes('sponsor')) {
+        catalogMusicFingerprint(musicDbFile, {
+          artist: opts.currentArtist,
+          songTitle: opts.currentSongTitle,
+          station: opts.station || '',
+          duration: fp.duration,
+          fingerprint: fp.fingerprint,
+          raw: fp.raw
+        });
+        if (isTemp) try { fs.unlinkSync(samplePath); } catch (_) {}
+        return {
+          type: 'music',
+          match: true,
+          source: 'stream_cataloged',
+          score: 0.90,
+          details: { artist: opts.currentArtist, songTitle: opts.currentSongTitle }
+        };
+      }
     }
 
     if (isTemp) try { fs.unlinkSync(samplePath); } catch (_) {}

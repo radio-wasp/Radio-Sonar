@@ -502,12 +502,16 @@ async function fetchMetadata(url, metadataSource, callsign, network) {
       const res = await httpGet(url);
       const data = JSON.parse(res.body);
       const sec = data.Secondary || {};
-      const subtitle = sec.Title || (data.Header||{}).Subtitle || '';
+      const subtitle = (sec.Title || (data.Header||{}).Subtitle || '').trim();
       let artist = '', title = subtitle;
       const di = subtitle.indexOf(' - ');
-      if (di > 0) { artist = subtitle.substring(0,di).trim(); title = subtitle.substring(di+3).trim(); }
-      if (subtitle) return { title: subtitle, artist, songTitle: title, albumart: sec.Image || null, isJson: true };
-      return { title: null };
+      if (di > 0) {
+        artist = subtitle.substring(0, di).trim();
+        title = subtitle.substring(di + 3).trim();
+        return { title: subtitle, artist, songTitle: title, albumart: sec.Image || null, isJson: true };
+      }
+      // No " - " separator means it is a station slogan (e.g. "Surge 105 is where Halifax rocks...")
+      return { title: null, slogan: subtitle, isJson: true };
     } catch(e) { console.error('[tunein]', e.message); return { title: null }; }
   }
 
@@ -1033,13 +1037,19 @@ async function transcribeAndExtract(audioFile, stationName) {
 
 async function resolveDirectStreamUrl(url) {
   if (!url || typeof url !== 'string') return url;
-  if (url.includes('opml.radiotime.com') || url.includes('.ashx') || url.endsWith('.pls') || url.endsWith('.asx') || (url.endsWith('.m3u') && !url.includes('.m3u8'))) {
+  if (url.includes('opml.radiotime.com') || url.includes('.ashx') || url.includes('/pls') || url.includes('.pls') || url.includes('.asx') || url.includes('streamtheworld.com') || (url.includes('.m3u') && !url.includes('.m3u8'))) {
     try {
-      const res = await httpGet(url, { timeout: 4000 });
+      const res = await httpGet(url, { timeout: 5000 });
       if (res && res.body) {
+        // PLS File1=https://...
+        const fileMatch = res.body.match(/File\d+=(https?:\/\/[^\r\n]+)/i);
+        if (fileMatch) return fileMatch[1].trim();
+
+        // M3U / general URL lines
         const lines = res.body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http'));
         if (lines.length > 0) return lines[0];
-        const m = res.body.match(/url=["'](https?:\/\/[^"']+)["']/i) || res.body.match(/href=["'](https?:\/\/[^"']+)["']/i);
+
+        const m = res.body.match(/url=["'](https?:\/\/[^"']+)["']/i) || res.body.match(/href=["'](https?:\/\/[^"']+)["']/i) || res.body.match(/(https?:\/\/[^\r\n"'>\s]+)/i);
         if (m) return m[1];
       }
     } catch (_) {}
@@ -1082,50 +1092,55 @@ async function startMonitor(id, url, options = {}) {
       const meta = await fetchMetadata(pollUrl, state.options.metadataSource, state.options.callsign, state.options.network);
       if (!monitors[id]) return;
       state.station = meta.station || state.station;
-      // Albumart: use returned art, or fetch from MusicBrainz if missing
-      if (meta.albumart) {
-        state.currentAlbumart = meta.albumart;
-      } else if (meta.artist && meta.songTitle && !state.currentAlbumart) {
-        // Fire-and-forget MusicBrainz lookup — don't block the poll
-        fetchMusicBrainzArt(meta.artist, meta.songTitle).then(art => {
-          if (art && monitors[id]) monitors[id].currentAlbumart = art;
-        }).catch(()=>{});
-      }
-      state.currentArtist = meta.artist || null;
-      state.currentSongTitle = meta.songTitle || null;
-      state.currentCueType = meta.cueType || null;
-      state.currentDurationMs = meta.durationMs || null;
-      const title = meta.title;
-      state.currentTitle = title;
 
-      if (title !== state.lastTitle) {
-        state.lastTitle = title;
-        state.lastTitleChange = Date.now();
-        const historyEntry = { title, artist: meta.artist || null, songTitle: meta.songTitle || null, albumart: meta.albumart || null, time: new Date() };
-        state.titleHistory.unshift(historyEntry);
-        if (state.titleHistory.length > 20) state.titleHistory.pop();
-        if (state.options.metadataLogEnabled && title) appendMetadataLog(state.metadataLogFile, historyEntry, state.options.metadataRetentionHours);
+      const streamTitle = meta.title ? meta.title.trim() : '';
+      const isSong = streamTitle && ((meta.artist && meta.songTitle) || streamTitle.includes(' - '));
+
+      // If the stream sent a real song title with Artist - Song, update state from stream metadata
+      if (isSong) {
+        state.currentTitle = streamTitle;
+        state.currentArtist = meta.artist || null;
+        state.currentSongTitle = meta.songTitle || null;
+        state.currentCueType = meta.cueType || null;
+        state.currentDurationMs = meta.durationMs || null;
+        if (meta.albumart) {
+          state.currentAlbumart = meta.albumart;
+        } else if (meta.artist && meta.songTitle && !state.currentAlbumart) {
+          fetchMusicBrainzArt(meta.artist, meta.songTitle).then(art => {
+            if (art && monitors[id]) monitors[id].currentAlbumart = art;
+          }).catch(()=>{});
+        }
+
+        if (streamTitle !== state.lastTitle) {
+          state.lastTitle = streamTitle;
+          state.lastTitleChange = Date.now();
+          const historyEntry = { title: streamTitle, artist: meta.artist || null, songTitle: meta.songTitle || null, albumart: state.currentAlbumart, time: new Date() };
+          state.titleHistory.unshift(historyEntry);
+          if (state.titleHistory.length > 20) state.titleHistory.pop();
+          if (state.options.metadataLogEnabled && streamTitle) appendMetadataLog(state.metadataLogFile, historyEntry, state.options.metadataRetentionHours);
+        }
       }
 
-      // ── Acoustic Dual-Fingerprint Recognition for zero-metadata / automation / generic streams ──
-      const autoCue = parseAutomationCue(title);
-      const isMissingOrGeneric = !title || !title.trim() || autoCue || !title.includes(' - ');
+      // ── Acoustic Dual-Fingerprint Engine (Continuous across ALL stations) ──
       const now = Date.now();
       const timeSinceLastFpCheck = now - (state.lastFpCheck || 0);
 
-      const shouldRunAcoustic = !state.fpRunning && (
-        state.options.triggerMode === 'fingerprint' ||
-        (isMissingOrGeneric && timeSinceLastFpCheck > 15000) ||
-        (timeSinceLastFpCheck > 45000)
-      );
+      // Run acoustic fingerprinting continuously for EVERY station every 15 seconds
+      const shouldRunAcoustic = !state.fpRunning && (timeSinceLastFpCheck > 15000);
 
       if (shouldRunAcoustic) {
         state.fpRunning = true;
         state.lastFpCheck = now;
+        const aiSettings = loadJSON(SETTINGS_FILE, {});
+        const acoustKey = aiSettings.acoustidApiKey || process.env.ACOUSTID_CLIENT_KEY || '';
         audioDsp.sampleAndIdentifyAudio(state.directUrl || state.url, {
           adDbFile: FINGERPRINTS_FILE,
           musicDbFile: MUSIC_FINGERPRINTS_FILE,
-          durationSeconds: 5
+          currentArtist: state.currentArtist || meta.artist || null,
+          currentSongTitle: state.currentSongTitle || meta.songTitle || null,
+          station: state.options.stationName || state.station || '',
+          clientKey: acoustKey,
+          durationSeconds: 15
         }).then(res => {
           if (!monitors[id]) return;
           state.fpRunning = false;
@@ -1158,6 +1173,7 @@ async function startMonitor(id, url, options = {}) {
                   songTitle: det.songTitle,
                   albumart: state.currentAlbumart,
                   acousticMatch: true,
+                  source: res.source,
                   time: new Date()
                 };
                 state.titleHistory.unshift(hEntry);
@@ -2710,18 +2726,22 @@ app.delete('/api/fingerprints/music/:id', (req, res) => {
 });
 
 app.post('/api/tools/identify-audio', async (req, res) => {
-  const { url, filename, durationSeconds = 5 } = req.body;
+  const { url, filename, durationSeconds = 10, clientKey } = req.body;
   let target = url;
   if (!target && filename) {
     target = safeRecordingPath(filename);
   }
   if (!target) return res.status(400).json({ error: 'Stream URL or filename is required' });
 
+  const aiSettings = loadJSON(SETTINGS_FILE, {});
+  const key = clientKey || aiSettings.acoustidApiKey || process.env.ACOUSTID_CLIENT_KEY || '';
+
   try {
     const result = await audioDsp.sampleAndIdentifyAudio(target, {
       adDbFile: FINGERPRINTS_FILE,
       musicDbFile: MUSIC_FINGERPRINTS_FILE,
-      durationSeconds: Math.min(15, Math.max(3, parseInt(durationSeconds) || 5))
+      clientKey: key,
+      durationSeconds: Math.min(15, Math.max(3, parseInt(durationSeconds) || 10))
     });
     res.json(result);
   } catch (e) {
@@ -2737,6 +2757,7 @@ app.get('/api/settings/ai', (req, res) => {
     hasGroqKey: !!(settings.groqApiKey || process.env.GROQ_API_KEY),
     hasOpenaiKey: !!(settings.openaiApiKey || process.env.OPENAI_API_KEY),
     hasAnthropicKey: !!(settings.anthropicApiKey || process.env.ANTHROPIC_API_KEY),
+    hasAcoustidKey: !!(settings.acoustidApiKey || process.env.ACOUSTID_CLIENT_KEY),
     whisperModel: settings.whisperModel || process.env.WHISPER_MODEL || 'tiny',
     whisperLanguage: settings.whisperLanguage || process.env.WHISPER_LANGUAGE || 'en'
   });
@@ -2747,6 +2768,7 @@ app.post('/api/settings/ai', (req, res) => {
   if (req.body.groqApiKey !== undefined) settings.groqApiKey = req.body.groqApiKey.trim();
   if (req.body.openaiApiKey !== undefined) settings.openaiApiKey = req.body.openaiApiKey.trim();
   if (req.body.anthropicApiKey !== undefined) settings.anthropicApiKey = req.body.anthropicApiKey.trim();
+  if (req.body.acoustidApiKey !== undefined) settings.acoustidApiKey = req.body.acoustidApiKey.trim();
   if (req.body.whisperModel) settings.whisperModel = req.body.whisperModel.trim();
   if (req.body.whisperLanguage) settings.whisperLanguage = req.body.whisperLanguage.trim();
   saveJSON(SETTINGS_FILE, settings);

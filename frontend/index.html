@@ -1604,6 +1604,14 @@ select option { background: var(--surface); color: var(--text); }
         <input type="password" id="aiAnthropicKey" placeholder="sk-ant-... (leave blank to keep unchanged)"/>
         <div id="aiAnthropicStatus" style="font-size:10.5px;color:var(--muted);margin-top:3px;font-family:'JetBrains Mono',monospace"></div>
       </div>
+      <div style="border-top:1px solid var(--border);padding-top:12px;margin-top:2px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <label style="margin-bottom:0">🎧 AcoustID Client Key <span style="font-weight:400;color:var(--green)">(Music Fingerprinting)</span></label>
+          <a href="https://acoustid.org/new-application" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:underline">Get free key (instant) ↗</a>
+        </div>
+        <input type="password" id="aiAcoustidKey" placeholder="Enter AcoustID client API key (leave blank to keep unchanged)"/>
+        <div id="aiAcoustidStatus" style="font-size:10.5px;color:var(--muted);margin-top:3px;font-family:'JetBrains Mono',monospace"></div>
+      </div>
       <div class="form-row">
         <div class="form-col">
           <label>Local Whisper Model</label>
@@ -2368,7 +2376,7 @@ async function runAudioIdentification() {
             <span style="font-size:20px">❓</span>
             <div>
               <div style="font-size:13px;font-weight:600;color:var(--text)">No Exact Acoustic Match Found</div>
-              <div style="font-size:11px;color:var(--muted)">Audio sample (${data.duration ? data.duration.toFixed(1) + 's' : ''}) appears to be live speech, DJ talk, uncataloged commercial, or non-indexed indie track.</div>
+              <div style="font-size:11px;color:var(--muted)">Audio sample (${data.duration ? Number(data.duration).toFixed(1) + 's' : (durationSeconds ? durationSeconds + 's' : '10s')}) appears to be speech/DJ talk, an uncataloged commercial, or an unindexed song.</div>
             </div>
           </div>
         </div>
@@ -2643,7 +2651,7 @@ async function refreshStatus() {
                   : '📡 ICY stream'
                 } · ${m.options.triggerMode === 'hybrid' ? '✨ Hybrid' : (m.options.triggerMode || 'hybrid')}</span>
                 ${m.currentCueType ? `<span style="font-family:Space Mono,monospace;font-size:10px;padding:2px 7px;border-radius:4px;${m.currentCueType==='track' ? 'background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)' : 'background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)'}">TRITON: ${m.currentCueType.toUpperCase()}</span>` : ''}
-                ${m.acousticMatchInfo && m.acousticMatchInfo.type === 'music' ? `<span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 7px;border-radius:4px;background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)">🎧 ACOUSTID: ${esc(m.acousticMatchInfo.details.songTitle || 'Song')} (${Math.round((m.acousticMatchInfo.score||0.85)*100)}%)</span>` : ''}
+                ${m.acousticMatchInfo && m.acousticMatchInfo.type === 'music' ? `<span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 7px;border-radius:4px;background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)">🎧 ${m.acousticMatchInfo.source === 'shazam' ? 'SHAZAM' : 'ACOUSTIC'}: ${esc(m.acousticMatchInfo.details.songTitle || 'Song')} (${Math.round((m.acousticMatchInfo.score||0.99)*100)}%)</span>` : ''}
                 ${m.currentDurationMs && m.currentCueType === 'track' ? `<span style="font-size:10px;color:var(--muted)">${Math.floor(m.currentDurationMs/60000)}:${String(Math.round((m.currentDurationMs%60000)/1000)).padStart(2,'0')}</span>` : ''}
               </div>
             </div>
@@ -2887,6 +2895,7 @@ async function openAiSettingsModal() {
     const gEl = document.getElementById('aiGroqStatus');
     const oEl = document.getElementById('aiOpenaiStatus');
     const aEl = document.getElementById('aiAnthropicStatus');
+    const acEl = document.getElementById('aiAcoustidStatus');
     if (gEl) {
       gEl.textContent = data.hasGroqKey ? '✓ Active / Configured' : '— Not set';
       gEl.style.color = data.hasGroqKey ? 'var(--green)' : 'var(--muted)';
@@ -2899,6 +2908,10 @@ async function openAiSettingsModal() {
       aEl.textContent = data.hasAnthropicKey ? '✓ Active / Configured' : '— Not set';
       aEl.style.color = data.hasAnthropicKey ? 'var(--green)' : 'var(--muted)';
     }
+    if (acEl) {
+      acEl.textContent = data.hasAcoustidKey ? '✓ Active / Configured' : '— Not set (using local & open-source fallback)';
+      acEl.style.color = data.hasAcoustidKey ? 'var(--green)' : 'var(--muted)';
+    }
     if (data.whisperModel) document.getElementById('aiWhisperModel').value = data.whisperModel;
     if (data.whisperLanguage) document.getElementById('aiWhisperLang').value = data.whisperLanguage;
   } catch (e) {}
@@ -2908,6 +2921,7 @@ async function saveAiSettings() {
   const groqApiKey = document.getElementById('aiGroqKey').value.trim();
   const openaiApiKey = document.getElementById('aiOpenaiKey').value.trim();
   const anthropicApiKey = document.getElementById('aiAnthropicKey').value.trim();
+  const acoustidApiKey = document.getElementById('aiAcoustidKey').value.trim();
   const whisperModel = document.getElementById('aiWhisperModel').value;
   const whisperLanguage = document.getElementById('aiWhisperLang').value.trim() || 'en';
 
@@ -2915,6 +2929,7 @@ async function saveAiSettings() {
   if (groqApiKey) body.groqApiKey = groqApiKey;
   if (openaiApiKey) body.openaiApiKey = openaiApiKey;
   if (anthropicApiKey) body.anthropicApiKey = anthropicApiKey;
+  if (acoustidApiKey) body.acoustidApiKey = acoustidApiKey;
 
   try {
     const r = await fetch(`${API}/api/settings/ai`, {
@@ -2923,11 +2938,12 @@ async function saveAiSettings() {
       body: JSON.stringify(body)
     });
     const data = await r.json();
-    toast('AI settings saved', 'success');
+    toast('Settings saved', 'success');
     closeModal('aiSettingsModal');
     document.getElementById('aiGroqKey').value = '';
     document.getElementById('aiOpenaiKey').value = '';
     document.getElementById('aiAnthropicKey').value = '';
+    document.getElementById('aiAcoustidKey').value = '';
   } catch (e) {
     toast('Save failed', 'error');
   }
