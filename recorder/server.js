@@ -848,21 +848,24 @@ function isAdDetected(state, title, meta) {
   const now = Date.now();
   const net = (network || '').toLowerCase();
   const staleMs = now - (state.lastTitleChange || now);
-  const stallMs = (stallThreshold || 90) * 1000;
+  const stallMs = (stallThreshold || 60) * 1000;
 
-  // ── 1. In-band Digital Cues (Triton / HLS ad-store) ──────────────────────
+  // ── 1. Acoustic Commercial Recognition (Known Ad in Database) ──
+  if (state.fingerprintAdDetected === true) return true;
+
+  // ── 2. In-band Digital Cues (Triton / HLS ad-store) ──────────────────────
   if (meta && meta.isAd === true) return true;
   if (meta && meta.cueType === 'track') return false;
   if (meta && meta.cueType && meta.cueType !== 'track') return true;
 
-  // ── 2. Radio Automation System Tags (WideOrbit / ENCO / Pattison) ─────────
+  // ── 3. Radio Automation System Tags (WideOrbit / ENCO / Pattison) ─────────
   const auto = parseAutomationCue(title);
   if (auto) {
     if (auto.isAd) return true;
     if (auto.isMusic) return false;
   }
 
-  // ── 3. Specific Manual Override Modes ────────────────────────────────────
+  // ── 4. Specific Manual Override Modes ────────────────────────────────────
   if (triggerMode === 'cue') {
     return meta && meta.isAd === true;
   }
@@ -904,9 +907,10 @@ function isAdDetected(state, title, meta) {
     return !title || !title.trim();
   }
 
-  // ── 4. Hybrid Mode (Default across all stations) ─────────────────────────
-  const isBlank = !title || !title.trim();
-  const isMusic = titleIsMusic(title, meta?.artist, meta?.songTitle);
+  // ── 5. Hybrid Mode (Default across all stations) ─────────────────────────
+  const rawMetaTitle = meta?.title ? meta.title.trim() : '';
+  const isBlankMeta = !rawMetaTitle;
+  const isMusic = titleIsMusic(title, meta?.artist, meta?.songTitle) || state.fingerprintMusicDetected;
   const lowerTitle = (title || '').toLowerCase();
 
   // A. Network-specific rules (Acadia relies purely on HLS ad cues; blank stream title is normal)
@@ -914,13 +918,16 @@ function isAdDetected(state, title, meta) {
     return meta && meta.isAd === true;
   }
 
-  // B. Blank metadata is standard ad break indicator for other networks
-  if (isBlank) return true;
-
-  // C. Explicit Ad keywords in stream title
+  // B. Explicit Ad keywords in stream title
   if (AD_KEYWORDS.some(kw => lowerTitle.includes(kw))) return true;
 
-  // D. MUSIC PROTECTION: If a valid song is actively playing, DO NOT trigger ad!
+  // C. Blank metadata from stream:
+  // If the stream metadata title is blank/missing and NO music is actively playing
+  if (isBlankMeta && !state.fingerprintMusicDetected) {
+    return true;
+  }
+
+  // D. MUSIC PROTECTION: If a valid song is actively playing or verified by Shazam, DO NOT trigger ad!
   if (isMusic) {
     if (staleMs < 420000) {
       return false; // Confirmed song playing
@@ -928,12 +935,7 @@ function isAdDetected(state, title, meta) {
     return true; // Frozen on the same song title for > 7 minutes
   }
 
-  // E. Network-specific static slogan / identifier handling
-  if (net === 'bell' || net === 'pattison' || net === 'maritime broadcasting' || net === 'maritime' || net === 'vista') {
-    return false; // For these networks, commercial breaks are strictly blank titles or COM tags
-  }
-
-  // F. Fallback for static non-song titles past stall threshold
+  // E. Fallback for static non-song titles past stall threshold
   return staleMs > stallMs;
 }
 
@@ -1191,15 +1193,20 @@ async function startMonitor(id, url, options = {}) {
         });
       }
 
+      const title = streamTitle || state.currentTitle || '';
       const adDetected = isAdDetected(state, title, meta);
       if (adDetected && state.status === 'listening') {
+        console.log(`[monitor ${id}] 🔴 AD BREAK DETECTED (${state.options.stationName || state.station || id}) -> Starting commercial recording`);
         if (state.options.recordingEnabled) beginRecording(state);
         else state.status = 'monitoring-ad';
       } else if (!adDetected && (state.status === 'recording' || state.status === 'monitoring-ad')) {
+        console.log(`[monitor ${id}] 🟢 AD BREAK ENDED (${state.options.stationName || state.station || id}) -> Processing commercial break`);
         if (state.status === 'recording') endRecording(state);
         else state.status = 'listening';
       }
-    } catch(e) {}
+    } catch(e) {
+      console.error(`[poll ${id}] error:`, e.message);
+    }
   }
 
   poll();
