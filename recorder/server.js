@@ -20,13 +20,29 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const RECORDINGS_DIR = '/recordings';
+const DEFAULT_RECORDINGS_DIR = process.env.RECORDINGS_DIR || '/recordings';
 const LOGOS_DIR = '/recordings/logos';
 const STATIONS_FILE = '/recordings/stations.json';
 const SETTINGS_FILE = '/recordings/settings.json';
 const ADVERTISERS_FILE = '/recordings/advertisers.json';
 const FINGERPRINTS_FILE = '/recordings/ad_fingerprints.json';
 const MUSIC_FINGERPRINTS_FILE = '/recordings/music_fingerprints.json';
+
+function getRecordingsDir() {
+  try {
+    if (fs.existsSync(SETTINGS_FILE)) {
+      const s = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf8'));
+      if (s.recordingsDir && typeof s.recordingsDir === 'string' && s.recordingsDir.trim()) {
+        const d = s.recordingsDir.trim();
+        if (!fs.existsSync(d)) try { fs.mkdirSync(d, { recursive: true }); } catch(_) {}
+        return d;
+      }
+    }
+  } catch(_) {}
+  const d = DEFAULT_RECORDINGS_DIR;
+  if (!fs.existsSync(d)) try { fs.mkdirSync(d, { recursive: true }); } catch(_) {}
+  return d;
+}
 
 const audioDsp = require('./audio_dsp');
 const transcriber = require('./transcriber');
@@ -55,14 +71,14 @@ try {
 let monitors = {};
 
 // Ensure dirs exist
-[RECORDINGS_DIR, LOGOS_DIR].forEach(d => { if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true }); });
+[DEFAULT_RECORDINGS_DIR, LOGOS_DIR].forEach(d => { if (!fs.existsSync(d)) try { fs.mkdirSync(d, { recursive: true }); } catch(_) {} });
 
 // ── Path validation helpers (prevent path traversal) ──────────────────────────
 
 function safeRecordingPath(filename) {
   if (!filename || typeof filename !== 'string') return null;
   const clean = path.basename(filename).replace(/[^a-zA-Z0-9._-]/g, '_');
-  return path.join(RECORDINGS_DIR, clean);
+  return path.join(getRecordingsDir(), clean);
 }
 
 function safeLogoPath(filename) {
@@ -448,6 +464,25 @@ async function fetchMetadata(url, metadataSource, callsign, network) {
     return fetchRogersMetadata(callsign);
   }
 
+  // TuneIn nowPlaying — prioritize any TuneIn profile URL
+  if (url && url.includes('feed.tunein.com')) {
+    try {
+      const res = await httpGet(url);
+      const data = JSON.parse(res.body);
+      const sec = data.Secondary || {};
+      const subtitle = (sec.Title || (data.Header||{}).Subtitle || '').trim();
+      let artist = '', title = subtitle;
+      const di = subtitle.indexOf(' - ');
+      if (di > 0) {
+        artist = subtitle.substring(0, di).trim();
+        title = subtitle.substring(di + 3).trim();
+        return { title: subtitle, artist, songTitle: title, albumart: sec.Image || null, isJson: true };
+      }
+      // No " - " separator means it is a station slogan (e.g. "Surge 105 is where Halifax rocks...")
+      return { title: null, slogan: subtitle, isJson: true };
+    } catch(e) { console.error('[tunein]', e.message); return { title: null }; }
+  }
+
   // Triton Digital (Bell) — XML format
   if (metadataSource === 'triton' || (url && url.includes('tritondigital'))) {
     console.log('[fetchMetadata] -> triton');
@@ -455,7 +490,7 @@ async function fetchMetadata(url, metadataSource, callsign, network) {
       const res = await httpGet(url);
       const body = res.body;
       const typeMatch = body.match(/type="([^"]+)"/);
-      const cueType = typeMatch ? typeMatch[1].toLowerCase() : 'track';
+      const cueType = typeMatch ? typeMatch[1].toLowerCase() : null;
       const getProp = (name) => {
         const marker = 'name="' + name + '"';
         const mi = body.indexOf(marker);
@@ -469,10 +504,10 @@ async function fetchMetadata(url, metadataSource, callsign, network) {
       const artist = getProp('track_artist_name') || getProp('artist_name') || '';
       const duration = parseInt(getProp('cue_time_duration') || '0');
       const combined = artist && title ? artist + ' - ' + title : (title || artist || null);
-      const isAd = ['ad','break','spot','commercial'].includes(cueType);
-      console.log('[triton]', cueType, '|', combined || '(none)');
+      const isAd = cueType ? ['ad','break','spot','commercial'].includes(cueType) : false;
+      console.log('[triton]', cueType || '(none)', '|', combined || '(none)');
       return { title: isAd ? null : combined, artist, songTitle: title, albumart: null,
-               cueType, isAd, durationMs: duration, isJson: true };
+               cueType: combined ? 'track' : cueType, isAd, durationMs: duration, isJson: true };
     } catch(e) { console.error('[triton]', e.message); return { title: null }; }
   }
 
@@ -494,25 +529,6 @@ async function fetchMetadata(url, metadataSource, callsign, network) {
       if (combined) return { title: combined, artist, songTitle: title, albumart, isJson: true };
       return { title: null };
     } catch(e) { console.error('[corus-jsonp]', e.message); return { title: null }; }
-  }
-
-  // TuneIn nowPlaying
-  if (url && url.includes('feed.tunein.com')) {
-    try {
-      const res = await httpGet(url);
-      const data = JSON.parse(res.body);
-      const sec = data.Secondary || {};
-      const subtitle = (sec.Title || (data.Header||{}).Subtitle || '').trim();
-      let artist = '', title = subtitle;
-      const di = subtitle.indexOf(' - ');
-      if (di > 0) {
-        artist = subtitle.substring(0, di).trim();
-        title = subtitle.substring(di + 3).trim();
-        return { title: subtitle, artist, songTitle: title, albumart: sec.Image || null, isJson: true };
-      }
-      // No " - " separator means it is a station slogan (e.g. "Surge 105 is where Halifax rocks...")
-      return { title: null, slogan: subtitle, isJson: true };
-    } catch(e) { console.error('[tunein]', e.message); return { title: null }; }
   }
 
   // Vista / iHeart currentTrackMeta — ONLY when URL is actually an iHeart API endpoint
@@ -585,6 +601,9 @@ async function fetchMetadata(url, metadataSource, callsign, network) {
 // ── HLS/M3U8 metadata ────────────────────────────────────────────────────────
 
 async function fetchHlsMetadata(url) {
+  if (!url.includes('.m3u8') && (url.endsWith('.aac') || url.endsWith('.mp3') || url.includes('/stream') || url.includes('streamon.fm'))) {
+    return fetchIcyMetadata(url);
+  }
   try {
     // cdnstream/Futuri edge hosts (das-edge60-sa48-...) are session-bound and
     // time out under repeated polling. Log the host so we can see what's happening.
@@ -855,7 +874,7 @@ function isAdDetected(state, title, meta) {
 
   // ── 2. In-band Digital Cues (Triton / HLS ad-store) ──────────────────────
   if (meta && meta.isAd === true) return true;
-  if (meta && meta.cueType === 'track') return false;
+  if (meta && meta.cueType === 'track' && (meta.title || state.fingerprintMusicDetected)) return false;
   if (meta && meta.cueType && meta.cueType !== 'track') return true;
 
   // ── 3. Radio Automation System Tags (WideOrbit / ENCO / Pattison) ─────────
@@ -910,29 +929,24 @@ function isAdDetected(state, title, meta) {
   // ── 5. Hybrid Mode (Default across all stations) ─────────────────────────
   const rawMetaTitle = meta?.title ? meta.title.trim() : '';
   const isBlankMeta = !rawMetaTitle;
-  const isMusic = titleIsMusic(title, meta?.artist, meta?.songTitle) || state.fingerprintMusicDetected;
+  const isLiveStreamMusic = rawMetaTitle && titleIsMusic(rawMetaTitle, meta?.artist, meta?.songTitle);
+  const isMusic = state.fingerprintMusicDetected || isLiveStreamMusic;
   const lowerTitle = (title || '').toLowerCase();
 
-  // A. Network-specific rules (Acadia relies purely on HLS ad cues; blank stream title is normal)
-  if (net === 'acadia' || net === 'acadia broadcasting') {
-    return meta && meta.isAd === true;
-  }
-
-  // B. Explicit Ad keywords in stream title
+  // A. Explicit Ad keywords in stream title
   if (AD_KEYWORDS.some(kw => lowerTitle.includes(kw))) return true;
 
-  // C. Blank metadata from stream:
-  // If the stream metadata title is blank/missing and NO music is actively playing
-  if (isBlankMeta && !state.fingerprintMusicDetected) {
-    return true;
-  }
-
-  // D. MUSIC PROTECTION: If a valid song is actively playing or verified by Shazam, DO NOT trigger ad!
+  // B. MUSIC PROTECTION: If a valid song is actively playing or verified by Shazam, DO NOT trigger ad!
   if (isMusic) {
     if (staleMs < 420000) {
       return false; // Confirmed song playing
     }
     return true; // Frozen on the same song title for > 7 minutes
+  }
+
+  // D. Blank / Slogan metadata when NO music is playing -> Commercial break
+  if (!isMusic) {
+    return true;
   }
 
   // E. Fallback for static non-song titles past stall threshold
@@ -1039,23 +1053,61 @@ async function transcribeAndExtract(audioFile, stationName) {
 
 async function resolveDirectStreamUrl(url) {
   if (!url || typeof url !== 'string') return url;
-  if (url.includes('opml.radiotime.com') || url.includes('.ashx') || url.includes('/pls') || url.includes('.pls') || url.includes('.asx') || url.includes('streamtheworld.com') || (url.includes('.m3u') && !url.includes('.m3u8'))) {
+  url = url.trim();
+
+  // 1. TuneIn / RadioTime stream broker
+  if (url.includes('opml.radiotime.com') || url.includes('tunein.com/tune.ashx') || /Tune\.ashx\?id=(s?\d+)/i.test(url)) {
+    const idMatch = url.match(/id=(s?\d+)/i);
+    const guideId = idMatch ? idMatch[1] : '';
+    if (guideId) {
+      try {
+        const tuneUrl = `https://opml.radiotime.com/Tune.ashx?id=${guideId}&render=json&formats=mp3,aac,ogg`;
+        const res = await httpGet(tuneUrl, {
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' },
+          timeout: 6000
+        });
+        if (res && res.body) {
+          try {
+            const data = JSON.parse(res.body);
+            const items = Array.isArray(data.body) ? data.body : [data.body || {}];
+            for (const item of items) {
+              if (item && item.url && !item.url.includes('opml.radiotime.com')) {
+                return await resolveDirectStreamUrl(item.url);
+              }
+            }
+          } catch (_) {
+            const m = res.body.match(/"url"\s*:\s*"(https?:[^"]+)"/i) || res.body.match(/(https?:\/\/[^\r\n"'\s<>]+)/i);
+            if (m && !m[1].includes('opml.radiotime.com')) {
+              return await resolveDirectStreamUrl(m[1]);
+            }
+          }
+        }
+      } catch (_) {}
+    }
+  }
+
+  // 2. Playlists: PLS, M3U, ASX, StreamTheWorld
+  if (url.includes('/pls') || url.includes('.pls') || url.includes('.asx') || url.includes('streamtheworld.com') || (url.includes('.m3u') && !url.includes('.m3u8'))) {
     try {
-      const res = await httpGet(url, { timeout: 5000 });
+      const res = await httpGet(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' },
+        timeout: 6000
+      });
       if (res && res.body) {
         // PLS File1=https://...
-        const fileMatch = res.body.match(/File\d+=(https?:\/\/[^\r\n]+)/i);
-        if (fileMatch) return fileMatch[1].trim();
+        const fileMatch = res.body.match(/File\d+=(https?:\/\/[^\r\n\s]+)/i);
+        if (fileMatch) return await resolveDirectStreamUrl(fileMatch[1].trim());
 
         // M3U / general URL lines
-        const lines = res.body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http'));
-        if (lines.length > 0) return lines[0];
+        const lines = res.body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http') && !l.endsWith('.pls') && !l.endsWith('.m3u'));
+        if (lines.length > 0) return await resolveDirectStreamUrl(lines[0]);
 
         const m = res.body.match(/url=["'](https?:\/\/[^"']+)["']/i) || res.body.match(/href=["'](https?:\/\/[^"']+)["']/i) || res.body.match(/(https?:\/\/[^\r\n"'>\s]+)/i);
-        if (m) return m[1];
+        if (m && !m[1].includes('opml.radiotime.com')) return await resolveDirectStreamUrl(m[1]);
       }
     } catch (_) {}
   }
+
   return url;
 }
 
@@ -1081,7 +1133,7 @@ async function startMonitor(id, url, options = {}) {
     ffmpegRec: null, startTime: new Date(), interval: null,
     options: { pollInterval, stallThreshold, metadataUrl, metadataSource, stationName, callsign, network, triggerMode, triggerKeywords, recordingEnabled, transcribeEnabled, metadataLogEnabled, metadataRetentionHours },
     titleHistory: [],
-    metadataLogFile: path.join(RECORDINGS_DIR, (stationName ? stationName.trim().replace(/[^a-zA-Z0-9_-]/g, '_') : 'station') + '-metadata.json'),
+    metadataLogFile: path.join(getRecordingsDir(), (stationName ? stationName.trim().replace(/[^a-zA-Z0-9_-]/g, '_') : 'station') + '-metadata.json'),
     volumeAdDetected: false, silenceAdDetected: false,
   };
 
@@ -1187,6 +1239,12 @@ async function startMonitor(id, url, options = {}) {
             state.fingerprintAdDetected = false;
             state.fingerprintMusicDetected = false;
             state.acousticMatchInfo = null;
+            if (!isSong) {
+              state.currentTitle = null;
+              state.currentArtist = null;
+              state.currentSongTitle = null;
+              state.currentAlbumart = null;
+            }
           }
         }).catch(() => {
           if (monitors[id]) state.fpRunning = false;
@@ -1213,15 +1271,22 @@ async function startMonitor(id, url, options = {}) {
   state.interval = setInterval(poll, pollInterval * 1000);
 }
 
-function beginRecording(state) {
+async function beginRecording(state) {
   const slug = state.options.stationName ? state.options.stationName.trim().replace(/[^a-zA-Z0-9_-]/g, '_') : 'commercial';
   const filename = `${slug}-${ts()}.mp3`;
-  const outPath = path.join(RECORDINGS_DIR, filename);
+  const outPath = path.join(getRecordingsDir(), filename);
   state.recordingFile = filename;
   state.recordingStart = new Date();
   state.status = 'recording';
 
-  const streamUrl = state.directUrl || state.url;
+  let streamUrl = state.directUrl || state.url;
+  if (streamUrl.includes('opml.radiotime.com') || streamUrl.includes('.ashx') || streamUrl.includes('/pls') || streamUrl.includes('.pls') || streamUrl.includes('.asx')) {
+    try {
+      streamUrl = await resolveDirectStreamUrl(streamUrl);
+      state.directUrl = streamUrl;
+    } catch (_) {}
+  }
+
   const ffmpegArgs = [
     '-user_agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     '-reconnect', '1',
@@ -1260,7 +1325,7 @@ function processRecordedBreak(filename, stationName, transcribeEnabled) {
   let spots = [];
   if (silences.segments && silences.segments.length > 1) {
     console.log(`[audio_dsp] Detected ${silences.segments.length} commercial spots in ${filename}`);
-    spots = audioDsp.segmentCommercialBreak(audioPath, RECORDINGS_DIR, silences.segments);
+    spots = audioDsp.segmentCommercialBreak(audioPath, getRecordingsDir(), silences.segments);
   }
 
   // Save parent metadata with spots info
@@ -2317,9 +2382,10 @@ app.post('/api/monitor/:id/metalog', (req, res) => {
 
 app.get('/api/recordings', (req, res) => {
   try {
-    const files = fs.readdirSync(RECORDINGS_DIR)
+    const dir = getRecordingsDir();
+    const files = fs.readdirSync(dir)
       .filter(f => f.endsWith('.mp3') || f.endsWith('.aac') || f.endsWith('.ogg'))
-      .map(f => { const stat = fs.statSync(path.join(RECORDINGS_DIR, f)); return { name: f, size: stat.size, modified: stat.mtime }; })
+      .map(f => { const stat = fs.statSync(path.join(dir, f)); return { name: f, size: stat.size, modified: stat.mtime }; })
       .sort((a, b) => new Date(b.modified) - new Date(a.modified));
     res.json(files);
   } catch(e) { res.json([]); }
@@ -2336,10 +2402,11 @@ app.delete('/api/recordings/station/:station', (req, res) => {
   const slug = station.trim().replace(/[^a-zA-Z0-9_-]/g, '_');
   let deleted = 0;
   try {
-    const files = fs.readdirSync(RECORDINGS_DIR);
+    const dir = getRecordingsDir();
+    const files = fs.readdirSync(dir);
     for (const f of files) {
       if (f.startsWith(slug + '-') || (station && f.includes(station))) {
-        const fp = path.join(RECORDINGS_DIR, f);
+        const fp = path.join(dir, f);
         if (fs.existsSync(fp)) {
           fs.unlinkSync(fp);
           deleted++;
@@ -2355,10 +2422,11 @@ app.delete('/api/recordings/station/:station', (req, res) => {
 app.delete('/api/recordings/all', (req, res) => {
   let deleted = 0;
   try {
-    const files = fs.readdirSync(RECORDINGS_DIR);
+    const dir = getRecordingsDir();
+    const files = fs.readdirSync(dir);
     for (const f of files) {
       if (/\.(mp3|aac|ogg|json)$/i.test(f) && !f.endsWith('-metadata.json') && f !== 'stations.json' && f !== 'settings.json' && f !== 'advertisers.json' && f !== 'ad_fingerprints.json') {
-        const fp = path.join(RECORDINGS_DIR, f);
+        const fp = path.join(dir, f);
         if (fs.existsSync(fp)) {
           fs.unlinkSync(fp);
           deleted++;
@@ -2569,14 +2637,14 @@ app.get('/api/groups', (req, res) => {
 
 app.get('/api/metalog/:station', (req, res) => {
   const slug = req.params.station.replace(/[^a-zA-Z0-9_-]/g, '_');
-  const lf = path.join(RECORDINGS_DIR, slug + '-metadata.json');
+  const lf = path.join(getRecordingsDir(), slug + '-metadata.json');
   if (!fs.existsSync(lf)) return res.json([]);
   try { res.json(JSON.parse(fs.readFileSync(lf, 'utf8'))); } catch(_) { res.json([]); }
 });
 
 app.delete('/api/metalog/:station', (req, res) => {
   const slug = req.params.station.replace(/[^a-zA-Z0-9_-]/g, '_');
-  const lf = path.join(RECORDINGS_DIR, slug + '-metadata.json');
+  const lf = path.join(getRecordingsDir(), slug + '-metadata.json');
   if (fs.existsSync(lf)) fs.unlinkSync(lf);
   res.json({ message: 'Cleared' });
 });
@@ -2584,7 +2652,7 @@ app.delete('/api/metalog/:station', (req, res) => {
 // Apply MusicBrainz (or manual) metadata to a logged song entry, matched by time
 app.patch('/api/metalog/:station/entry', (req, res) => {
   const slug = req.params.station.replace(/[^a-zA-Z0-9_-]/g, '_');
-  const lf = path.join(RECORDINGS_DIR, slug + '-metadata.json');
+  const lf = path.join(getRecordingsDir(), slug + '-metadata.json');
   if (!fs.existsSync(lf)) return res.status(404).json({ error: 'No log for station' });
   const { time, artist, songTitle, album, year, albumart } = req.body;
   if (!time) return res.status(400).json({ error: 'time required to identify entry' });
@@ -2611,13 +2679,14 @@ app.post('/api/metalog/purge', (req, res) => {
   const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
   let filesProcessed = 0, entriesRemoved = 0;
   try {
-    const files = fs.readdirSync(RECORDINGS_DIR).filter(f => f.endsWith('-metadata.json'));
+    const dir = getRecordingsDir();
+    const files = fs.readdirSync(dir).filter(f => f.endsWith('-metadata.json'));
     for (const f of files) {
       if (station) {
         const slug = station.replace(/[^a-zA-Z0-9_-]/g, '_');
         if (f !== slug + '-metadata.json') continue;
       }
-      const lf = path.join(RECORDINGS_DIR, f);
+      const lf = path.join(dir, f);
       let entries;
       try { entries = JSON.parse(fs.readFileSync(lf, 'utf8')); } catch(_) { continue; }
       if (!Array.isArray(entries)) continue;
@@ -2664,7 +2733,13 @@ function scheduleAutoPurge(s) {
   if (!s.autoPurgeEnabled) return;
   autoPurgeTimer = setInterval(() => {
     const cutoff = Date.now() - (s.autoPurgeHours * 60 * 60 * 1000);
-    try { fs.readdirSync(RECORDINGS_DIR).filter(f => /\.(mp3|aac|ogg)$/i.test(f)).forEach(f => { const fp = path.join(RECORDINGS_DIR, f); if (fs.statSync(fp).mtimeMs < cutoff) fs.unlinkSync(fp); }); } catch(e) {}
+    try {
+      const dir = getRecordingsDir();
+      fs.readdirSync(dir).filter(f => /\.(mp3|aac|ogg)$/i.test(f)).forEach(f => {
+        const fp = path.join(dir, f);
+        if (fs.statSync(fp).mtimeMs < cutoff) fs.unlinkSync(fp);
+      });
+    } catch(e) {}
   }, s.autoPurgeHours * 60 * 60 * 1000);
 }
 try { scheduleAutoPurge(JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf8'))); } catch(_) {}
@@ -2766,7 +2841,8 @@ app.get('/api/settings/ai', (req, res) => {
     hasAnthropicKey: !!(settings.anthropicApiKey || process.env.ANTHROPIC_API_KEY),
     hasAcoustidKey: !!(settings.acoustidApiKey || process.env.ACOUSTID_CLIENT_KEY),
     whisperModel: settings.whisperModel || process.env.WHISPER_MODEL || 'tiny',
-    whisperLanguage: settings.whisperLanguage || process.env.WHISPER_LANGUAGE || 'en'
+    whisperLanguage: settings.whisperLanguage || process.env.WHISPER_LANGUAGE || 'en',
+    recordingsDir: settings.recordingsDir || getRecordingsDir()
   });
 });
 
@@ -2778,8 +2854,38 @@ app.post('/api/settings/ai', (req, res) => {
   if (req.body.acoustidApiKey !== undefined) settings.acoustidApiKey = req.body.acoustidApiKey.trim();
   if (req.body.whisperModel) settings.whisperModel = req.body.whisperModel.trim();
   if (req.body.whisperLanguage) settings.whisperLanguage = req.body.whisperLanguage.trim();
+  if (req.body.recordingsDir !== undefined) {
+    const d = req.body.recordingsDir.trim();
+    if (d) {
+      if (!fs.existsSync(d)) try { fs.mkdirSync(d, { recursive: true }); } catch(_) {}
+      settings.recordingsDir = d;
+    } else {
+      delete settings.recordingsDir;
+    }
+  }
   saveJSON(SETTINGS_FILE, settings);
-  res.json({ message: 'Settings saved' });
+  res.json({ message: 'Settings saved', recordingsDir: getRecordingsDir() });
+});
+
+app.get('/api/storage/info', (req, res) => {
+  const dir = getRecordingsDir();
+  let totalFiles = 0;
+  let totalBytes = 0;
+  try {
+    if (fs.existsSync(dir)) {
+      const files = fs.readdirSync(dir);
+      totalFiles = files.length;
+      for (const f of files) {
+        try { totalBytes += fs.statSync(path.join(dir, f)).size; } catch(_) {}
+      }
+    }
+  } catch(_) {}
+  res.json({
+    recordingsDir: dir,
+    totalFiles,
+    totalBytes,
+    totalFormatted: (totalBytes / (1024 * 1024)).toFixed(2) + ' MB'
+  });
 });
 
 app.post('/api/recordings/retranscribe/:name', async (req, res) => {

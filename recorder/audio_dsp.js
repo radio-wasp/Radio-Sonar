@@ -654,9 +654,63 @@ function lookupShazam(samplePath) {
 
 // ── 4. Unified Live Stream Audio Identifier ─────────────────────────────────
 
+async function resolveDirectStreamUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  url = url.trim();
+
+  // 1. TuneIn / RadioTime stream broker
+  if (url.includes('opml.radiotime.com') || url.includes('tunein.com/tune.ashx') || /Tune\.ashx\?id=(s?\d+)/i.test(url)) {
+    const idMatch = url.match(/id=(s?\d+)/i);
+    const guideId = idMatch ? idMatch[1] : '';
+    if (guideId) {
+      try {
+        const tuneUrl = `https://opml.radiotime.com/Tune.ashx?id=${guideId}&render=json&formats=mp3,aac,ogg`;
+        const res = await fetch(tuneUrl, {
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' },
+          signal: AbortSignal.timeout(6000)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const items = Array.isArray(data.body) ? data.body : [data.body || {}];
+          for (const item of items) {
+            if (item && item.url && !item.url.includes('opml.radiotime.com')) {
+              return await resolveDirectStreamUrl(item.url);
+            }
+          }
+        }
+      } catch (_) {}
+    }
+  }
+
+  // 2. Playlists: PLS, M3U, ASX, StreamTheWorld
+  if (url.includes('/pls') || url.includes('.pls') || url.includes('.asx') || url.includes('streamtheworld.com') || (url.includes('.m3u') && !url.includes('.m3u8'))) {
+    try {
+      const res = await fetch(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' },
+        signal: AbortSignal.timeout(6000)
+      });
+      if (res.ok) {
+        const body = await res.text();
+        // PLS File1=https://...
+        const fileMatch = body.match(/File\d+=(https?:\/\/[^\r\n\s]+)/i);
+        if (fileMatch) return await resolveDirectStreamUrl(fileMatch[1].trim());
+
+        // M3U / general URL lines
+        const lines = body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http') && !l.endsWith('.pls') && !l.endsWith('.m3u'));
+        if (lines.length > 0) return await resolveDirectStreamUrl(lines[0]);
+
+        const m = body.match(/url=["'](https?:\/\/[^"']+)["']/i) || body.match(/href=["'](https?:\/\/[^"']+)["']/i) || body.match(/(https?:\/\/[^\r\n"'>\s]+)/i);
+        if (m && !m[1].includes('opml.radiotime.com')) return await resolveDirectStreamUrl(m[1]);
+      }
+    } catch (_) {}
+  }
+
+  return url;
+}
+
 /**
- * Capture an audio sample from a stream URL (or local file) and identify whether
- * it is a Commercial Ad or a Music Song using local catalogs, Apple Shazam, and AcoustID.
+ * Capture a 10–15s sample of live stream audio (or read file) and run
+ * multi-tier acoustic fingerprinting against Ads -> Music -> Shazam -> AcoustID.
  * @param {string} source - Stream URL (http/https) or local file path
  * @param {object} opts - { adDbFile, musicDbFile, durationSeconds: 5, clientKey }
  * @returns {Promise<object>} { type: 'ad'|'music'|'unknown', match: boolean, score: number, details: object }
@@ -674,31 +728,8 @@ async function sampleAndIdentifyAudio(source, opts = {}) {
     samplePath = `/tmp/sample_${Date.now()}_${Math.random().toString(36).slice(2, 6)}.mp3`;
     isTemp = true;
 
-    // Resolve TuneIn / RadioTime / PLS / M3U / ASX playlist wrapper if needed
-    let streamUrl = source;
-    if (streamUrl.includes('opml.radiotime.com') || streamUrl.includes('.ashx') || streamUrl.includes('/pls') || streamUrl.includes('.pls') || streamUrl.includes('.asx') || streamUrl.includes('streamtheworld.com') || (streamUrl.includes('.m3u') && !streamUrl.includes('.m3u8'))) {
-      try {
-        const res = await fetch(streamUrl, {
-          headers: { 'User-Agent': 'Mozilla/5.0' },
-          signal: AbortSignal.timeout(5000)
-        });
-        if (res.ok) {
-          const body = await res.text();
-          const fileMatch = body.match(/File\d+=(https?:\/\/[^\r\n]+)/i);
-          if (fileMatch) {
-            streamUrl = fileMatch[1].trim();
-          } else {
-            const lines = body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http'));
-            if (lines.length > 0) {
-              streamUrl = lines[0];
-            } else {
-              const m = body.match(/url=["'](https?:\/\/[^"']+)["']/i) || body.match(/href=["'](https?:\/\/[^"']+)["']/i) || body.match(/(https?:\/\/[^\r\n"'>\s]+)/i);
-              if (m) streamUrl = m[1];
-            }
-          }
-        }
-      } catch (_) {}
-    }
+    // Resolve TuneIn / RadioTime / PLS / M3U / ASX playlist wrapper to direct audio feed
+    const streamUrl = await resolveDirectStreamUrl(source);
 
     try {
       await captureStreamSample(streamUrl, duration, samplePath);

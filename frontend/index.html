@@ -1612,6 +1612,11 @@ select option { background: var(--surface); color: var(--text); }
         <input type="password" id="aiAcoustidKey" placeholder="Enter AcoustID client API key (leave blank to keep unchanged)"/>
         <div id="aiAcoustidStatus" style="font-size:10.5px;color:var(--muted);margin-top:3px;font-family:'JetBrains Mono',monospace"></div>
       </div>
+      <div style="border-top:1px solid var(--border);padding-top:12px;margin-top:2px">
+        <label>📁 Audio Files Storage Directory <span style="font-weight:400;color:var(--muted)">(Custom storage path)</span></label>
+        <input type="text" id="aiRecordingsDir" placeholder="/recordings (default)"/>
+        <div id="aiStorageStatus" style="font-size:10.5px;color:var(--muted);margin-top:3px;font-family:'JetBrains Mono',monospace"></div>
+      </div>
       <div class="form-row">
         <div class="form-col">
           <label>Local Whisper Model</label>
@@ -1894,8 +1899,10 @@ function openModal(id) {
   document.getElementById(id).classList.add('open');
   document.getElementById('toolsDropdown').classList.remove('open');
   if (id === 'searchModal') {
-    showFindMode('library');
-    loadStationLibrary();
+    setTimeout(() => {
+      const q = document.getElementById('stationSearchQ');
+      if (q) q.focus();
+    }, 50);
   }
 }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
@@ -2896,6 +2903,7 @@ async function openAiSettingsModal() {
     const oEl = document.getElementById('aiOpenaiStatus');
     const aEl = document.getElementById('aiAnthropicStatus');
     const acEl = document.getElementById('aiAcoustidStatus');
+    const stEl = document.getElementById('aiStorageStatus');
     if (gEl) {
       gEl.textContent = data.hasGroqKey ? '✓ Active / Configured' : '— Not set';
       gEl.style.color = data.hasGroqKey ? 'var(--green)' : 'var(--muted)';
@@ -2909,11 +2917,20 @@ async function openAiSettingsModal() {
       aEl.style.color = data.hasAnthropicKey ? 'var(--green)' : 'var(--muted)';
     }
     if (acEl) {
-      acEl.textContent = data.hasAcoustidKey ? '✓ Active / Configured' : '— Not set (using local & open-source fallback)';
+      acEl.textContent = data.hasAcoustidKey ? '✓ Active / Configured' : '— Not set (using Shazam 150M+ engine)';
       acEl.style.color = data.hasAcoustidKey ? 'var(--green)' : 'var(--muted)';
     }
+    if (data.recordingsDir) document.getElementById('aiRecordingsDir').value = data.recordingsDir;
     if (data.whisperModel) document.getElementById('aiWhisperModel').value = data.whisperModel;
     if (data.whisperLanguage) document.getElementById('aiWhisperLang').value = data.whisperLanguage;
+
+    // Load storage stats
+    fetch(`${API}/api/storage/info`).then(res => res.json()).then(st => {
+      if (stEl && st) {
+        stEl.textContent = `✓ Storage path: ${st.recordingsDir} (${st.totalFiles} files · ${st.totalFormatted})`;
+        stEl.style.color = 'var(--green)';
+      }
+    }).catch(()=>{});
   } catch (e) {}
 }
 
@@ -2922,6 +2939,7 @@ async function saveAiSettings() {
   const openaiApiKey = document.getElementById('aiOpenaiKey').value.trim();
   const anthropicApiKey = document.getElementById('aiAnthropicKey').value.trim();
   const acoustidApiKey = document.getElementById('aiAcoustidKey').value.trim();
+  const recordingsDir = document.getElementById('aiRecordingsDir').value.trim();
   const whisperModel = document.getElementById('aiWhisperModel').value;
   const whisperLanguage = document.getElementById('aiWhisperLang').value.trim() || 'en';
 
@@ -2930,6 +2948,7 @@ async function saveAiSettings() {
   if (openaiApiKey) body.openaiApiKey = openaiApiKey;
   if (anthropicApiKey) body.anthropicApiKey = anthropicApiKey;
   if (acoustidApiKey) body.acoustidApiKey = acoustidApiKey;
+  if (recordingsDir !== undefined) body.recordingsDir = recordingsDir;
 
   try {
     const r = await fetch(`${API}/api/settings/ai`, {
