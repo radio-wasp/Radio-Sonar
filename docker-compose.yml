@@ -10,6 +10,8 @@ services:
       - ./recorder/shazam_recognize.py:/app/shazam_recognize.py
       - recordings:/recordings
       - whisper_cache:/root/.cache/whisper
+    labels:
+      net.unraid.docker.shell: "bash"
     networks:
       - internal
 
@@ -22,6 +24,9 @@ services:
       - "8090:80"
     volumes:
       - ./frontend:/usr/share/nginx/html:ro
+    labels:
+      net.unraid.docker.webui: "http://[IP]:[PORT:8090]/"
+      net.unraid.docker.shell: "sh"
     depends_on:
       - recorder
     networks:
