@@ -291,6 +291,36 @@ function compareRawFingerprints(raw1, raw2) {
   return Math.round(maxSimilarity * 1000) / 1000;
 }
 
+// ── In-Memory Fingerprint Cache (Zero-Disk-I/O Fast Matching) ────────────────
+const FP_CACHE = new Map();
+
+function getCachedFingerprintDb(dbFile) {
+  if (!fs.existsSync(dbFile)) return [];
+  try {
+    const stat = fs.statSync(dbFile);
+    const cached = FP_CACHE.get(dbFile);
+    if (cached && cached.mtimeMs === stat.mtimeMs) {
+      return cached.data;
+    }
+    const data = JSON.parse(fs.readFileSync(dbFile, 'utf8'));
+    const arr = Array.isArray(data) ? data : [];
+    FP_CACHE.set(dbFile, { mtimeMs: stat.mtimeMs, data: arr });
+    return arr;
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveFingerprintDb(dbFile, data) {
+  try {
+    fs.writeFileSync(dbFile, JSON.stringify(data, null, 2));
+    const stat = fs.statSync(dbFile);
+    FP_CACHE.set(dbFile, { mtimeMs: stat.mtimeMs, data });
+  } catch (e) {
+    console.error('[audio_dsp] saveFingerprintDb error:', e.message);
+  }
+}
+
 // ── 1. Commercial / Ad Fingerprint Catalog ───────────────────────────────────
 
 /**
@@ -300,11 +330,7 @@ function compareRawFingerprints(raw1, raw2) {
  */
 function catalogAdFingerprint(dbFile, entry) {
   try {
-    let db = [];
-    if (fs.existsSync(dbFile)) {
-      try { db = JSON.parse(fs.readFileSync(dbFile, 'utf8')); } catch (_) {}
-    }
-    if (!Array.isArray(db)) db = [];
+    let db = [...getCachedFingerprintDb(dbFile)];
 
     let matchedIndex = -1;
     if (entry.raw && entry.raw.length) {
@@ -333,7 +359,7 @@ function catalogAdFingerprint(dbFile, entry) {
       }
       if (!ex.stations) ex.stations = [];
       if (entry.station && !ex.stations.includes(entry.station)) ex.stations.push(entry.station);
-      fs.writeFileSync(dbFile, JSON.stringify(db, null, 2));
+      saveFingerprintDb(dbFile, db);
       return ex;
     } else {
       const newEntry = {
@@ -352,7 +378,7 @@ function catalogAdFingerprint(dbFile, entry) {
       };
       db.unshift(newEntry);
       if (db.length > 2500) db = db.slice(0, 2500);
-      fs.writeFileSync(dbFile, JSON.stringify(db, null, 2));
+      saveFingerprintDb(dbFile, db);
       return newEntry;
     }
   } catch (e) {
@@ -369,13 +395,13 @@ function catalogAdFingerprint(dbFile, entry) {
  * @returns {object} { match: boolean, score: number, entry: object|null }
  */
 function findMatchingFingerprint(dbFile, queryRaw, threshold = 0.82) {
-  if (!fs.existsSync(dbFile) || !Array.isArray(queryRaw) || queryRaw.length === 0) {
+  if (!Array.isArray(queryRaw) || queryRaw.length === 0) {
     return { match: false, score: 0, entry: null };
   }
 
   try {
-    const db = JSON.parse(fs.readFileSync(dbFile, 'utf8'));
-    if (!Array.isArray(db)) return { match: false, score: 0, entry: null };
+    const db = getCachedFingerprintDb(dbFile);
+    if (!Array.isArray(db) || db.length === 0) return { match: false, score: 0, entry: null };
 
     let bestScore = 0;
     let bestEntry = null;
@@ -411,16 +437,11 @@ function catalogMusicFingerprint(dbFile, entry) {
   if (!entry || !entry.artist || !entry.songTitle) return null;
 
   try {
-    let db = [];
-    if (fs.existsSync(dbFile)) {
-      try { db = JSON.parse(fs.readFileSync(dbFile, 'utf8')); } catch (_) {}
-    }
-    if (!Array.isArray(db)) db = [];
+    let db = [...getCachedFingerprintDb(dbFile)];
 
     const norm = (s) => (s || '').toLowerCase().trim();
     const songKey = `${norm(entry.artist)}|||${norm(entry.songTitle)}`;
 
-    // Check by song title or raw fingerprint similarity
     let matchedIndex = db.findIndex(m => `${norm(m.artist)}|||${norm(m.songTitle)}` === songKey);
 
     if (matchedIndex === -1 && entry.raw && entry.raw.length) {
@@ -447,7 +468,7 @@ function catalogMusicFingerprint(dbFile, entry) {
         if (!ex.stations) ex.stations = [];
         if (!ex.stations.includes(entry.station)) ex.stations.push(entry.station);
       }
-      fs.writeFileSync(dbFile, JSON.stringify(db, null, 2));
+      saveFingerprintDb(dbFile, db);
       return ex;
     } else {
       const newEntry = {
@@ -467,7 +488,7 @@ function catalogMusicFingerprint(dbFile, entry) {
       };
       db.unshift(newEntry);
       if (db.length > 5000) db = db.slice(0, 5000);
-      fs.writeFileSync(dbFile, JSON.stringify(db, null, 2));
+      saveFingerprintDb(dbFile, db);
       return newEntry;
     }
   } catch (e) {
@@ -484,13 +505,13 @@ function catalogMusicFingerprint(dbFile, entry) {
  * @returns {object} { match: boolean, score: number, entry: object|null }
  */
 function findMatchingMusicFingerprint(dbFile, queryRaw, threshold = 0.82) {
-  if (!fs.existsSync(dbFile) || !Array.isArray(queryRaw) || queryRaw.length === 0) {
+  if (!Array.isArray(queryRaw) || queryRaw.length === 0) {
     return { match: false, score: 0, entry: null };
   }
 
   try {
-    const db = JSON.parse(fs.readFileSync(dbFile, 'utf8'));
-    if (!Array.isArray(db)) return { match: false, score: 0, entry: null };
+    const db = getCachedFingerprintDb(dbFile);
+    if (!Array.isArray(db) || db.length === 0) return { match: false, score: 0, entry: null };
 
     let bestScore = 0;
     let bestEntry = null;
@@ -664,7 +685,7 @@ async function resolveDirectStreamUrl(url) {
     const guideId = idMatch ? idMatch[1] : '';
     if (guideId) {
       try {
-        const tuneUrl = `https://opml.radiotime.com/Tune.ashx?id=${guideId}&render=json&formats=mp3,aac,ogg`;
+        const tuneUrl = `https://opml.radiotime.com/Tune.ashx?id=${guideId}&render=json&partnerId=RadioTime&formats=mp3,aac,ogg`;
         const res = await fetch(tuneUrl, {
           headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' },
           signal: AbortSignal.timeout(6000)

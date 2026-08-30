@@ -161,7 +161,9 @@ async function transcribeAudio(audioPath, settings = {}) {
       '--model', model,
       '--output_format', 'txt',
       '--output_dir', tmpDir,
-      '--language', language
+      '--language', language,
+      '--fp16', 'False',
+      '--threads', '4'
     ], { timeout: 180000 });
 
     const txtFiles = fs.readdirSync(tmpDir).filter(f => f.endsWith('.txt'));

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,57 +9,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #f8fafc;
-  --surface: #ffffff;
-  --surface2: #f1f5f9;
-  --surface3: #e2e8f0;
-  --border: #e2e8f0;
-  --border-subtle: #edf2f7;
-  --text: #0f172a;
-  --text-secondary: #475569;
-  --muted: #64748b;
-  --accent: #e11d48;
-  --accent2: #f43f5e;
-  --accent-gradient: linear-gradient(135deg, #e11d48 0%, #f43f5e 100%);
+  --bg: #090e17;
+  --surface: #0e1726;
+  --surface2: #142033;
+  --surface3: #1c2d47;
+  --border: #1e324f;
+  --border-subtle: #132238;
+  --text: #ffffff;
+  --text-secondary: #f8fafc;
+  --muted: #e2e8f0;
+  --accent: #0ea5e9;
+  --accent2: #38bdf8;
+  --accent-gradient: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
   --primary: #2563eb;
-  --green: #10b981;
-  --green-bg: #ecfdf5;
-  --green-border: #a7f3d0;
-  --red: #ef4444;
-  --red-bg: #fef2f2;
-  --red-border: #fecaca;
-  --amber: #f59e0b;
-  --amber-bg: #fffbeb;
-  --amber-border: #fde68a;
-  --blue: #3b82f6;
-  --blue-bg: #eff6ff;
-  --blue-border: #bfdbfe;
-  --toggle-bg: #cbd5e1;
-  --grad1: #e11d48;
-  --grad2: #f43f5e;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
-}
-
-[data-theme="dark"] {
-  --bg: #090d16;
-  --surface: #0f172a;
-  --surface2: #1e293b;
-  --surface3: #334155;
-  --border: #1e293b;
-  --border-subtle: #162032;
-  --text: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --muted: #94a3b8;
-  --accent: #f43f5e;
-  --accent2: #fb7185;
-  --accent-gradient: linear-gradient(135deg, #f43f5e 0%, #fb7185 100%);
-  --primary: #3b82f6;
+  --primary-gradient: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
   --green: #10b981;
   --green-bg: rgba(16, 185, 129, 0.12);
   --green-border: rgba(16, 185, 129, 0.28);
@@ -69,15 +32,19 @@
   --amber: #fbbf24;
   --amber-bg: rgba(251, 191, 36, 0.12);
   --amber-border: rgba(251, 191, 36, 0.28);
-  --blue: #60a5fa;
-  --blue-bg: rgba(96, 165, 250, 0.12);
-  --blue-border: rgba(96, 165, 250, 0.28);
-  --toggle-bg: #334155;
-  --grad1: #f43f5e;
-  --grad2: #fb7185;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  --blue: #38bdf8;
+  --blue-bg: rgba(56, 189, 248, 0.12);
+  --blue-border: rgba(56, 189, 248, 0.28);
+  --toggle-bg: #1c2d47;
+  --grad1: #0284c7;
+  --grad2: #38bdf8;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -87,14 +54,13 @@ body {
   color: var(--text);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   min-height: 100vh;
-  transition: background .2s ease, color .2s ease;
   -webkit-font-smoothing: antialiased;
   letter-spacing: -0.01em;
 }
 
 /* Glassmorphism Header */
 .header {
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(14, 23, 38, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
@@ -106,10 +72,6 @@ body {
   top: 0;
   z-index: 50;
   height: 68px;
-  transition: background .2s ease, border-color .2s ease;
-}
-[data-theme="dark"] .header {
-  background: rgba(15, 23, 42, 0.82);
 }
 
 .brand-badge {
@@ -129,7 +91,7 @@ body {
   justify-content: center;
   font-size: 18px;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
 }
 .app-name {
   font-size: 18px;
@@ -162,7 +124,8 @@ body {
   border-radius: 8px;
   border: none;
   background: transparent;
-  color: var(--muted);
+  color: #ffffff;
+  opacity: 0.85;
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
@@ -171,16 +134,15 @@ body {
   white-space: nowrap;
 }
 .nav-tab:hover {
-  color: var(--text);
-  background: rgba(255,255,255,0.4);
-}
-[data-theme="dark"] .nav-tab:hover {
-  background: rgba(255,255,255,0.06);
+  color: #ffffff;
+  opacity: 1;
+  background: rgba(255,255,255,0.08);
 }
 .nav-tab.active {
-  color: var(--text);
-  background: var(--surface);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  color: #ffffff;
+  opacity: 1;
+  background: var(--surface3);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
 .header-right {
@@ -190,13 +152,13 @@ body {
   gap: 12px;
 }
 
-/* Theme Toggle */
+/* Switch / Toggle Element */
 .theme-toggle {
   width: 44px;
   height: 24px;
   background: var(--toggle-bg);
   border-radius: 980px;
-  border: none;
+  border: 1px solid var(--border);
   cursor: pointer;
   position: relative;
   transition: background .2s ease;
@@ -205,20 +167,20 @@ body {
 .theme-toggle::after {
   content: '';
   position: absolute;
-  top: 3px;
-  left: 3px;
+  top: 2px;
+  left: 2px;
   width: 18px;
   height: 18px;
   border-radius: 50%;
   background: #ffffff;
   transition: transform .2s ease;
-  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
 }
-[data-theme="dark"] .theme-toggle::after {
+.theme-toggle.active {
+  background: var(--blue);
+}
+.theme-toggle.active::after {
   transform: translateX(20px);
-}
-[data-theme="dark"] .theme-toggle {
-  background: var(--green);
 }
 
 /* Tools Menu */
@@ -231,7 +193,7 @@ body {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  color: var(--text);
+  color: #ffffff;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -263,6 +225,7 @@ body {
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
+  color: #ffffff;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -300,7 +263,7 @@ body {
   text-transform: none;
   letter-spacing: -0.02em;
   font-weight: 700;
-  color: var(--text);
+  color: #ffffff;
   margin-bottom: 18px;
   display: flex;
   align-items: center;
@@ -324,7 +287,7 @@ body {
 label {
   display: block;
   font-size: 12px;
-  color: var(--muted);
+  color: #ffffff;
   margin-bottom: 6px;
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -334,7 +297,7 @@ input[type=text], input[type=number], input[type=url], select, textarea {
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  color: var(--text);
+  color: #ffffff;
   font-family: inherit;
   font-size: 13.5px;
   padding: 10px 14px;
@@ -347,11 +310,11 @@ input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 input::placeholder, textarea::placeholder {
-  color: var(--muted);
-  opacity: 0.6;
+  color: #cbd5e1;
+  opacity: 0.85;
 }
-select option { background: var(--surface); color: var(--text); }
-.tuning-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+select option { background: var(--surface); color: #ffffff; }
+.tuning-hint { font-size: 11px; color: #e2e8f0; margin-top: 4px; }
 
 /* Professional Buttons */
 .btn {
@@ -374,11 +337,11 @@ select option { background: var(--surface); color: var(--text); }
   color: #ffffff;
   padding: 10px 22px;
   border: none;
-  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.28);
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.32);
 }
 .btn-start:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(225, 29, 72, 0.38);
+  box-shadow: 0 6px 18px rgba(14, 165, 233, 0.45);
 }
 .btn-stop {
   background: var(--red-bg);
@@ -586,6 +549,10 @@ select option { background: var(--surface); color: var(--text); }
   transform: translateY(-2px);
   box-shadow: var(--shadow);
 }
+.station-card.station-card-active {
+  border-color: var(--green);
+  box-shadow: 0 0 0 1px var(--green), var(--shadow);
+}
 
 .station-card-logo {
   width: 80px;
@@ -613,14 +580,14 @@ select option { background: var(--surface); color: var(--text); }
   font-family: 'JetBrains Mono', monospace;
   font-size: 18px;
   font-weight: 700;
-  color: var(--muted);
+  color: #ffffff;
   margin-bottom: 12px;
 }
 
 .station-card-name {
   font-size: 14px;
   font-weight: 700;
-  color: var(--text);
+  color: #ffffff;
   margin-bottom: 4px;
   width: 100%;
   overflow: hidden;
@@ -631,7 +598,7 @@ select option { background: var(--surface); color: var(--text); }
 .station-card-meta {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: var(--muted);
+  color: #e2e8f0;
   margin-bottom: 8px;
 }
 
@@ -641,7 +608,7 @@ select option { background: var(--surface); color: var(--text); }
   text-transform: uppercase;
   letter-spacing: 0.05em;
   background: var(--surface2);
-  color: var(--muted);
+  color: #ffffff;
   border: 1px solid var(--border);
   border-radius: 9999px;
   padding: 2px 8px;
@@ -769,6 +736,40 @@ select option { background: var(--surface); color: var(--text); }
 }
 .monitor-btns { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 
+/* RF Signal Meter Gauge for Off-Air SDR */
+.rf-signal-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.rf-signal-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+  padding-bottom: 1px;
+}
+.rf-bar {
+  width: 3.5px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.18);
+  transition: all 0.2s ease;
+}
+.rf-b1 { height: 3px; }
+.rf-b2 { height: 6px; }
+.rf-b3 { height: 9px; }
+.rf-b4 { height: 11px; }
+.rf-b5 { height: 14px; }
+.rf-bar.lit-green { background: #22c55e; box-shadow: 0 0 5px rgba(34, 197, 94, 0.7); }
+.rf-bar.lit-cyan  { background: #06b6d4; box-shadow: 0 0 5px rgba(6, 182, 212, 0.7); }
+.rf-bar.lit-amber { background: #f59e0b; box-shadow: 0 0 5px rgba(245, 158, 11, 0.7); }
+.rf-bar.lit-red   { background: #ef4444; box-shadow: 0 0 5px rgba(239, 68, 68, 0.7); }
+
 /* Metadata & Now Playing Panel */
 .meta-panel {
   background: var(--surface2);
@@ -785,7 +786,7 @@ select option { background: var(--surface); color: var(--text); }
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--muted);
+  color: #e2e8f0;
   margin-bottom: 4px;
   font-weight: 700;
   font-family: 'JetBrains Mono', monospace;
@@ -793,6 +794,7 @@ select option { background: var(--surface); color: var(--text); }
 .meta-val {
   font-size: 14.5px;
   font-weight: 600;
+  color: #ffffff;
   letter-spacing: -0.02em;
   white-space: nowrap;
   overflow: hidden;
@@ -819,7 +821,7 @@ select option { background: var(--surface); color: var(--text); }
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--muted);
+  color: #e2e8f0;
   margin-bottom: 6px;
   font-weight: 600;
 }
@@ -829,6 +831,7 @@ select option { background: var(--surface); color: var(--text); }
   align-items: center;
   gap: 10px;
   font-size: 12px;
+  color: #ffffff;
   padding: 4px 8px;
   border-radius: var(--radius-sm);
   background: var(--surface2);
@@ -836,10 +839,11 @@ select option { background: var(--surface); color: var(--text); }
 .history-time {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10.5px;
-  color: var(--muted);
+  color: #e2e8f0;
   flex-shrink: 0;
 }
 .history-title {
+  color: #ffffff;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -880,6 +884,7 @@ select option { background: var(--surface); color: var(--text); }
 .rec-name {
   font-size: 13.5px;
   font-weight: 600;
+  color: #ffffff;
   letter-spacing: -0.01em;
   white-space: nowrap;
   overflow: hidden;
@@ -888,7 +893,7 @@ select option { background: var(--surface); color: var(--text); }
 .rec-meta {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: var(--muted);
+  color: #e2e8f0;
   margin-top: 3px;
 }
 .rec-actions { display: flex; gap: 6px; flex-shrink: 0; }
@@ -1050,7 +1055,7 @@ select option { background: var(--surface); color: var(--text); }
 .log-time {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10.5px;
-  color: var(--muted);
+  color: #e2e8f0;
   width: 70px;
   flex-shrink: 0;
   line-height: 1.3;
@@ -1073,6 +1078,7 @@ select option { background: var(--surface); color: var(--text); }
   align-items: center;
   justify-content: center;
   font-size: 16px;
+  color: #ffffff;
   flex-shrink: 0;
 }
 .log-info {
@@ -1082,13 +1088,14 @@ select option { background: var(--surface); color: var(--text); }
 .log-title {
   font-size: 13.5px;
   font-weight: 600;
+  color: #ffffff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .log-artist {
   font-size: 11.5px;
-  color: var(--muted);
+  color: #e2e8f0;
   margin-top: 2px;
   white-space: nowrap;
   overflow: hidden;
@@ -1138,7 +1145,7 @@ select option { background: var(--surface); color: var(--text); }
 .commercial-date {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: var(--muted);
+  color: #e2e8f0;
   margin-top: 2px;
 }
 .commercial-transcript {
@@ -1148,7 +1155,7 @@ select option { background: var(--surface); color: var(--text); }
   padding: 10px 14px;
   font-size: 12.5px;
   line-height: 1.6;
-  color: var(--text-secondary);
+  color: #ffffff;
   margin-top: 10px;
 }
 
@@ -1156,7 +1163,7 @@ select option { background: var(--surface); color: var(--text); }
 .date-header {
   font-size: 13px;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--accent2);
   margin: 20px 0 10px 0;
   letter-spacing: -0.01em;
 }
@@ -1175,7 +1182,7 @@ select option { background: var(--surface); color: var(--text); }
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--muted);
+  color: #ffffff;
   padding: 10px 16px;
   border-bottom: 1px solid var(--border);
   text-align: left;
@@ -1184,6 +1191,7 @@ select option { background: var(--surface); color: var(--text); }
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
   font-size: 13px;
+  color: #ffffff;
 }
 .advertiser-table tr:last-child td {
   border-bottom: none;
@@ -1322,12 +1330,14 @@ select option { background: var(--surface); color: var(--text); }
 <body>
 <header class="header">
   <div class="brand-badge">
-    <img src="/sonar-logo.png" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex-shrink:0" alt="Radio SONAR v2" onerror="this.style.display='none'">
+    <img src="/sonar-logo.png" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex-shrink:0" alt="Radio SONAR v3.0" onerror="this.style.display='none'">
     <div>
       <div class="app-name" style="display:flex;align-items:center;gap:6px">
-        Radio SONAR <span style="font-size:10px;font-weight:700;padding:2px 7px;background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);border-radius:999px">v2.0</span>
+        Radio SONAR <span style="font-size:10px;font-weight:700;padding:2px 7px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);border-radius:999px">v3.0</span>
+        <span style="font-size:9.5px;font-weight:700;padding:2px 6px;background:rgba(234,179,8,0.15);color:var(--amber);border:1px solid rgba(234,179,8,0.3);border-radius:999px">📻 RTL-SDR</span>
+        <span style="font-size:9.5px;font-weight:700;padding:2px 6px;background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.3);border-radius:999px">🔌 MCP ON</span>
       </div>
-      <div class="app-tag">Broadcast Intelligence Console · TuneIn & Acoustic AI</div>
+      <div class="app-tag">Broadcast Intelligence Console · Off-Air RTL-SDR, TuneIn & Whisper AI</div>
     </div>
   </div>
   <nav class="nav-tabs" id="navTabs">
@@ -1344,13 +1354,14 @@ select option { background: var(--surface); color: var(--text); }
     <div class="tools-menu-wrap">
       <button class="tools-btn" onclick="toggleToolsMenu()">🔧 Tools</button>
       <div class="tools-dropdown" id="toolsDropdown">
+        <div class="tools-item" onclick="openSdrModal()">📻 RTL-SDR Receiver & Diagnostics</div>
+        <div class="tools-item" onclick="openMcpModal()">🔌 MCP Server & AI Telemetry</div>
         <div class="tools-item" onclick="openIdentifyModal()">🎧 Acoustic Audio Identifier</div>
         <div class="tools-item" onclick="openModal('probeModal')">📡 Probe Stream URL</div>
         <div class="tools-item" onclick="openAiSettingsModal()">🤖 AI & Transcription Settings</div>
         <div class="tools-item" onclick="refreshAllLogos()">🖼 Refresh All Logos</div>
       </div>
     </div>
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode"></button>
   </div>
 </header>
 
@@ -1367,15 +1378,26 @@ select option { background: var(--surface); color: var(--text); }
 
   <!-- MONITOR TAB -->
   <div class="tab-panel active" id="tab-monitor">
-    <div class="quick-launch" id="quickLaunch" style="display:none">
-      <div class="quick-label">Saved Stations</div>
-      <div id="quickStationList"></div>
+    <div class="card" id="noMonitorsCard" style="display:none;text-align:center;padding:48px 24px">
+      <div style="font-size:36px;margin-bottom:12px">📡</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:6px">No Active Station Monitors</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:20px;max-width:440px;margin-left:auto;margin-right:auto">
+        Go to the <strong>Stations</strong> tab to start monitoring your saved broadcast feeds, or search for a new station.
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button class="btn btn-start" onclick="switchTab('stations')">📻 Go to Stations Tab</button>
+        <button class="btn btn-secondary" onclick="openModal('searchModal')">🔍 Find Station</button>
+      </div>
     </div>
 
     <div class="card" id="monitorsCard" style="display:none">
       <div class="section-header">
         <div class="card-label" style="margin:0">Active Monitors</div>
-        <button class="btn btn-sm" onclick="stopAll()">STOP ALL</button>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-sm btn-rec-off" id="btnRecAll" onclick="toggleRecAll()" title="Enable or pause commercial recording across all active stations">⏺ REC ALL</button>
+          <button class="btn btn-sm btn-rec-off" id="btnAiAll" onclick="toggleAiAll()" title="Enable or pause AI Whisper transcription across all active stations">🎙 AI ALL</button>
+          <button class="btn btn-sm btn-delete" onclick="stopAll()" style="padding:6px 12px;font-size:11px">STOP ALL</button>
+        </div>
       </div>
       <div class="monitor-list" id="monitorList"></div>
     </div>
@@ -1400,12 +1422,14 @@ select option { background: var(--surface); color: var(--text); }
     <div class="card">
       <div class="section-header">
         <div class="card-label" style="margin:0">Captured Commercials</div>
-        <div style="display:flex;gap:8px">
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="text" id="recSearchInput" placeholder="Filter recordings..." oninput="onRecSearchInput()" style="width:180px;padding:6px 10px;font-size:12px;border-radius:8px;border:1px solid var(--border)"/>
           <button class="btn btn-sm" onclick="loadRecordings()">↻ REFRESH</button>
           <button class="btn btn-delete" style="padding:5px 10px;font-size:10px" onclick="clearAllRecordings()">CLEAR ALL</button>
         </div>
       </div>
       <div class="rec-list" id="recList"><div class="empty"><div class="empty-icon">📭</div>No commercials captured yet</div></div>
+      <div id="recLoadMoreWrap" style="text-align:center;margin-top:14px;display:none"></div>
     </div>
   </div>
 
@@ -1461,24 +1485,76 @@ select option { background: var(--surface); color: var(--text); }
       <hr class="divider">
       <div class="card-label" id="stationFormLabel">Add Station</div>
       <input type="hidden" id="editingStation" value="">
+      
+      <div style="margin-bottom:14px">
+        <label>Audio Source Type</label>
+        <div style="display:flex;gap:10px">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:600;font-size:13px;color:#ffffff">
+            <input type="radio" name="stationSourceType" value="web" checked onchange="toggleStationSourceType()"> 🌐 Web Stream URL
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:600;font-size:13px;color:#ffffff">
+            <input type="radio" name="stationSourceType" value="sdr" onchange="toggleStationSourceType()"> 📻 Off-Air RTL-SDR
+          </label>
+        </div>
+      </div>
+
       <div class="form-row" style="margin-bottom:12px">
-        <div class="form-col"><label>Station Name</label><input type="text" id="newStationName" placeholder="Name"/></div>
+        <div class="form-col"><label>Station Name</label><input type="text" id="newStationName" placeholder="Station Name (e.g. Surge 105 or Q104)"/></div>
         <div class="form-col-xs"><label>Callsign</label><div style="display:flex;gap:6px">
-          <input type="text" id="newCallsign" placeholder="CKFM" onblur="checkBellCallsign(this.value)" style="flex:1"/>
+          <input type="text" id="newCallsign" placeholder="CKHY" onblur="checkBellCallsign(this.value)" style="flex:1"/>
           <button class="btn btn-sm" style="flex-shrink:0;padding:5px 9px;font-size:10px" onclick="lookupTuneIn()" title="Look up station on TuneIn">📻</button>
         </div></div>
         <div class="form-col-sm"><label>Network Group</label>
           <select id="newGroup"><option value="Other">Other</option><option>Rogers</option><option>Stingray</option><option>Corus</option><option>Bell</option><option>Acadia</option><option>Maritime Broadcasting</option><option>Vista</option><option>Golden West</option><option>Pattison</option></select>
         </div>
       </div>
-      <div class="form-row" style="margin-bottom:12px">
+
+      <!-- Off-Air RTL-SDR Options -->
+      <div id="sdrStationOptions" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:14px">
+        <div style="font-size:11.5px;font-weight:700;text-transform:uppercase;color:var(--accent2);letter-spacing:0.05em;margin-bottom:10px">📻 RTL-SDR Off-Air RF Parameters</div>
+        <div class="form-row" style="margin-bottom:10px">
+          <div class="form-col"><label>Tuning Frequency (MHz)</label><input type="number" id="newSdrFreq" value="105.1" step="0.1" min="76" max="108" oninput="updateSdrUrlPreview()"/></div>
+          <div class="form-col"><label>Modulation</label>
+            <select id="newSdrMode" onchange="toggleNewSdrMode(); updateSdrUrlPreview()">
+              <option value="fm">Analog FM + Real-time RDS</option>
+              <option value="hd">NRSC-5 Digital HD Radio</option>
+            </select>
+          </div>
+          <div class="form-col" id="newSdrProgCol" style="display:none;width:90px"><label>HD Subchannel</label>
+            <select id="newSdrProg" onchange="updateSdrUrlPreview()">
+              <option value="0">HD1</option>
+              <option value="1">HD2</option>
+              <option value="2">HD3</option>
+              <option value="3">HD4</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row" style="margin-bottom:10px">
+          <div class="form-col"><label>SDR Tuner / Dongle Assignment</label>
+            <select id="newSdrDevice" onchange="updateSdrUrlPreview()">
+              <option value="auto">✨ Auto-Assign (Next Available USB Dongle)</option>
+              <option value="wideband">⚡ Wideband Channelizer (Share with nearby stations within 2.4 MHz)</option>
+              <option value="0">📻 Physical Dongle #0</option>
+              <option value="1">📻 Physical Dongle #1</option>
+              <option value="2">📻 Physical Dongle #2</option>
+              <option value="3">📻 Physical Dongle #3</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col"><label>SDR Gain (dB)</label><input type="number" id="newSdrGain" placeholder="Auto (recommended)" step="0.5" min="0" max="49.6"/></div>
+          <div class="form-col"><label>PPM Correction</label><input type="number" id="newSdrPpm" value="0" step="1"/></div>
+        </div>
+      </div>
+
+      <div class="form-row" id="webStreamUrlRow" style="margin-bottom:12px">
         <div class="form-col"><label>Stream URL</label>
         <div style="display:flex;gap:6px">
-          <input type="text" id="newStreamUrl" placeholder="URL" style="flex:1"/>
+          <input type="text" id="newStreamUrl" placeholder="https://stream.mp3 or fm://105.1" style="flex:1"/>
           <button class="btn btn-sm" style="flex-shrink:0;padding:5px 9px;font-size:10px" onclick="detectMetaFromForm()" title="Detect metadata sources">🔍</button>
         </div></div>
         <div class="form-col-sm"><label>Metadata Source</label>
-          <select id="newMetadataSource" onchange="toggleNewMetaSource()"><option value="auto">Auto-detect</option><option value="stream">ICY Stream</option><option value="json">JSON API</option><option value="tunein">TuneIn nowPlaying</option><option value="hls">HLS/M3U8</option><option value="rogers">Rogers API (auto)</option></select>
+          <select id="newMetadataSource" onchange="toggleNewMetaSource()"><option value="auto">Auto-detect</option><option value="rds">Off-Air RDS / HD</option><option value="stream">ICY Stream</option><option value="json">JSON API</option><option value="tunein">TuneIn nowPlaying</option><option value="hls">HLS/M3U8</option><option value="rogers">Rogers API (auto)</option></select>
         </div>
       </div>
       <div id="newMetadataUrlRow" style="margin-bottom:12px">
@@ -1572,9 +1648,9 @@ select option { background: var(--surface); color: var(--text); }
         <img src="/sonar-logo.png" style="width:72px;height:72px;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.12)">
         <div>
           <div style="font-size:26px;font-weight:800;letter-spacing:-.5px;display:flex;align-items:center;gap:8px">
-            Radio SONAR <span style="font-size:12px;font-weight:700;padding:2px 8px;background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);border-radius:999px">v2.0</span>
+            Radio SONAR <span style="font-size:12px;font-weight:700;padding:2px 8px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);border-radius:999px">v3.0</span>
           </div>
-          <div style="font-size:14px;color:var(--muted);margin-top:2px">Radio Intelligence Platform · Pure TuneIn & Acoustic AI Engine</div>
+          <div style="font-size:14px;color:var(--muted);margin-top:2px">Radio Intelligence Platform · Off-Air RTL-SDR, TuneIn & Acoustic AI Engine</div>
         </div>
       </div>
       <div id="readmeContent" style="font-size:14px;line-height:1.7;color:var(--text)">Loading README...</div>
@@ -1639,6 +1715,99 @@ select option { background: var(--surface); color: var(--text); }
   </div>
 </div>
 
+<!-- MCP Server & AI Telemetry Modal -->
+<div class="modal-overlay" id="mcpModal">
+  <div class="modal" style="max-width:720px">
+    <div class="modal-title" style="display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span>🔌 Model Context Protocol (MCP) Server</span>
+        <span style="font-size:10px;font-weight:700;padding:2px 7px;background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.3);border-radius:999px">v2.1 Beta</span>
+      </div>
+      <button class="modal-close" onclick="closeModal('mcpModal')">✕</button>
+    </div>
+    
+    <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:18px">
+      <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;color:var(--green);margin-bottom:6px">
+        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)"></span>
+        Built-in MCP Server Active · 10 AI Tools & 4 Resources Ready
+      </div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.5">
+        Connect Antigravity, Claude Desktop, Cursor, or your custom LLM assistant directly to Radio SONAR. Your AI assistant will have full visibility into live station streams, on-air songs, silence markers, commercial break recordings, advertiser databases, and Whisper transcripts.
+      </div>
+    </div>
+
+    <!-- MCP Config Snippet Tabs -->
+    <div style="margin-bottom:14px">
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <button class="btn btn-sm btn-start" id="mcpTabClaude" onclick="switchMcpTab('claude')">Claude Desktop</button>
+        <button class="btn btn-sm btn-secondary" id="mcpTabAntigravity" onclick="switchMcpTab('antigravity')">Antigravity / Local CLI</button>
+        <button class="btn btn-sm btn-secondary" id="mcpTabDocker" onclick="switchMcpTab('docker')">Docker / Unraid</button>
+        <button class="btn btn-sm btn-secondary" id="mcpTabRemote" onclick="switchMcpTab('remote')">Remote SSE / HTTP</button>
+      </div>
+
+      <div style="position:relative">
+        <pre id="mcpConfigSnippet" style="background:#0d1117;color:#c9d1d9;padding:14px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.5;overflow-x:auto;max-height:160px;margin:0"></pre>
+        <button class="btn btn-sm btn-secondary" onclick="copyMcpSnippet()" style="position:absolute;top:8px;right:8px;padding:4px 10px;font-size:11px">📋 COPY CONFIG</button>
+      </div>
+    </div>
+
+    <!-- Live Available Tools Accordion -->
+    <div style="margin-bottom:18px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:12px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.5px">Available AI Tools (10)</div>
+        <button class="btn btn-sm btn-primary" onclick="testMcpOverview()" id="mcpTestBtn" style="padding:4px 10px;font-size:11px">⚡ TEST AI OVERVIEW</button>
+      </div>
+      <div id="mcpToolsList" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:220px;overflow-y:auto;padding-right:4px">
+        <div style="padding:8px 10px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;font-size:11.5px">
+          <code style="color:var(--blue);font-weight:700">barracuda_get_overview</code>
+          <div style="color:var(--muted);font-size:10.5px;margin-top:2px">Live snapshot of monitors, recordings, and AI engine status.</div>
+        </div>
+        <div style="padding:8px 10px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;font-size:11.5px">
+          <code style="color:var(--blue);font-weight:700">barracuda_list_monitors</code>
+          <div style="color:var(--muted);font-size:10.5px;margin-top:2px">Detailed list of stations, on-air titles, and DSP triggers.</div>
+        </div>
+        <div style="padding:8px 10px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;font-size:11.5px">
+          <code style="color:var(--blue);font-weight:700">barracuda_manage_monitor</code>
+          <div style="color:var(--muted);font-size:10.5px;margin-top:2px">Start, stop, restart, delete, or add station monitors.</div>
+        </div>
+        <div style="padding:8px 10px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;font-size:11.5px">
+          <code style="color:var(--blue);font-weight:700">barracuda_get_recent_commercials</code>
+          <div style="color:var(--muted);font-size:10.5px;margin-top:2px">Retrieve sliced commercial spots & Whisper transcripts.</div>
+        </div>
+        <div style="padding:8px 10px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;font-size:11.5px">
+          <code style="color:var(--blue);font-weight:700">barracuda_search_advertisers</code>
+          <div style="color:var(--muted);font-size:10.5px;margin-top:2px">Search brand database across all radio stations.</div>
+        </div>
+        <div style="padding:8px 10px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;font-size:11.5px">
+          <code style="color:var(--blue);font-weight:700">barracuda_get_station_playlist</code>
+          <div style="color:var(--muted);font-size:10.5px;margin-top:2px">Real-time music log & song history per station.</div>
+        </div>
+        <div style="padding:8px 10px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;font-size:11.5px">
+          <code style="color:var(--blue);font-weight:700">barracuda_sample_and_identify</code>
+          <div style="color:var(--muted);font-size:10.5px;margin-top:2px">Capture 15s stream audio and identify via Shazam.</div>
+        </div>
+        <div style="padding:8px 10px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;font-size:11.5px">
+          <code style="color:var(--blue);font-weight:700">barracuda_get_system_logs</code>
+          <div style="color:var(--muted);font-size:10.5px;margin-top:2px">Live diagnostic logs, DSP transitions, and errors.</div>
+        </div>
+        <div style="padding:8px 10px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;font-size:11.5px">
+          <code style="color:var(--blue);font-weight:700">barracuda_retranscribe_recording</code>
+          <div style="color:var(--muted);font-size:10.5px;margin-top:2px">Re-run Whisper or Groq transcription on any spot.</div>
+        </div>
+        <div style="padding:8px 10px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;font-size:11.5px">
+          <code style="color:var(--blue);font-weight:700">barracuda_get_storage_info</code>
+          <div style="color:var(--muted);font-size:10.5px;margin-top:2px">Storage disk capacity, file inventory, and size stats.</div>
+        </div>
+      </div>
+      <div id="mcpTestOutput" style="display:none;margin-top:10px;background:#0d1117;color:#58a6ff;padding:10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:11px;max-height:120px;overflow-y:auto;white-space:pre-wrap"></div>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeModal('mcpModal')">CLOSE</button>
+    </div>
+  </div>
+</div>
+
 <!-- Tools: Search Modal -->
 <div class="modal-overlay" id="musicBrainzModal">
   <div class="modal" style="max-width:560px">
@@ -1657,7 +1826,7 @@ select option { background: var(--surface); color: var(--text); }
     <div class="modal-title" style="display:flex;align-items:center;justify-content:space-between">
       <div style="display:flex;align-items:center;gap:8px">
         <span>📻 Find Radio Station</span>
-        <span style="font-size:10px;font-weight:700;padding:2px 7px;background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);border-radius:999px">TuneIn v2</span>
+        <span style="font-size:10px;font-weight:700;padding:2px 7px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);border-radius:999px">TuneIn v2</span>
       </div>
       <button class="modal-close" onclick="closeModal('searchModal')">✕</button>
     </div>
@@ -1718,6 +1887,85 @@ select option { background: var(--surface); color: var(--text); }
       <button class="btn btn-start" style="align-self:flex-end" onclick="probeStream()">PROBE</button>
     </div>
     <div id="probeResults"></div>
+  </div>
+</div>
+
+<!-- Tools: RTL-SDR Modal -->
+<div class="modal-overlay" id="sdrModal">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-title">📻 RTL-SDR Receiver & Diagnostics <button class="modal-close" onclick="closeModal('sdrModal')">✕</button></div>
+    
+    <div style="margin-bottom:16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;color:var(--accent2);letter-spacing:0.05em">USB Dongle Hardware</div>
+        <button class="btn btn-sm" onclick="scanSdrDevices()" style="padding:4px 8px;font-size:10.5px">↻ SCAN DONGLES</button>
+      </div>
+      <div id="sdrDeviceOutput" style="font-size:12px;font-family:'JetBrains Mono',monospace;color:#ffffff">Checking USB hardware...</div>
+      
+      <!-- EEPROM Serial Manager -->
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text-secondary);letter-spacing:0.05em">🆔 Onboard Serial Number Manager</div>
+          <button class="btn btn-sm" onclick="autoSerializeAll()" style="padding:3px 8px;font-size:10px;background:rgba(59,130,246,0.15);color:var(--blue);border:1px solid rgba(59,130,246,0.3)" title="Automatically assign 00000001, 00000002... to all sticks">⚡ AUTO-ASSIGN UNIQUE SERIALS</button>
+        </div>
+        <div id="sdrSerialManagerList" style="font-size:11.5px"></div>
+        <div style="font-size:10.5px;color:var(--muted);margin-top:6px;line-height:1.4">
+          💡 <em>Tip: Unique serial numbers lock your station bindings so USB ports never swap upon reboot.</em>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;text-transform:uppercase;color:var(--accent2);letter-spacing:0.05em;margin-bottom:10px">Quick RF Signal Tuner</div>
+    <div class="form-row" style="margin-bottom:12px">
+      <div class="form-col"><label>Frequency (MHz)</label><input type="number" id="sdrTestFreq" value="105.1" step="0.1" min="76" max="108"/></div>
+      <div class="form-col"><label>Modulation</label>
+        <select id="sdrTestMode" onchange="toggleSdrTestMode()">
+          <option value="fm">Analog FM + RDS</option>
+          <option value="hd">NRSC-5 Digital HD Radio</option>
+        </select>
+      </div>
+      <div class="form-col" id="sdrTestProgCol" style="display:none;width:90px"><label>HD Program</label>
+        <select id="sdrTestProgram">
+          <option value="0">HD1</option>
+          <option value="1">HD2</option>
+          <option value="2">HD3</option>
+          <option value="3">HD4</option>
+        </select>
+      </div>
+      <div class="form-col" style="width:130px"><label>Tuner Stick</label>
+        <select id="sdrTestDevice">
+          <option value="auto">Auto-Assign</option>
+          <option value="0">Dongle #0</option>
+          <option value="1">Dongle #1</option>
+          <option value="wideband">Wideband</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row" style="margin-bottom:14px">
+      <div class="form-col"><label>SDR Gain (dB)</label><input type="number" id="sdrTestGain" placeholder="Auto (default)" step="0.5" min="0" max="49.6"/></div>
+      <div class="form-col"><label>PPM Correction</label><input type="number" id="sdrTestPpm" value="0" step="1"/></div>
+      <div style="display:flex;gap:8px;align-self:flex-end">
+        <button class="btn btn-start" onclick="tuneSdrTest()" style="padding:9px 14px">▶ TUNE</button>
+        <button class="btn btn-stop" onclick="stopSdrTest()" style="padding:9px 12px">⏹ STOP</button>
+      </div>
+    </div>
+
+    <div id="sdrTelemetryPanel" style="display:none;margin-top:14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:12px;font-weight:700;color:var(--green)" id="sdrTelemetryStatus">● LIVE RECEIVING</div>
+        <div id="sdrSignalBadge" style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:2px 7px;background:var(--surface3);border-radius:4px;color:#ffffff"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;margin-bottom:12px">
+        <div><span style="color:var(--muted)">RDS PS:</span> <strong id="sdrRdsPs" style="color:#ffffff">—</strong></div>
+        <div><span style="color:var(--muted)">Title/RT+:</span> <strong id="sdrRdsTitle" style="color:#ffffff">—</strong></div>
+        <div style="grid-column:1/-1"><span style="color:var(--muted)">RadioText:</span> <span id="sdrRdsRt" style="color:#ffffff">—</span></div>
+      </div>
+      <div class="stream-player" style="margin:0">
+        <span style="font-size:11px;color:var(--muted)">🔊 Live Audio:</span>
+        <audio id="sdrLiveAudio" controls autoplay style="width:100%;height:32px;outline:none"></audio>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1810,13 +2058,6 @@ async function loadReadme() {
     el.innerHTML = '<p style="color:var(--muted)">README not found.</p>';
     el.dataset.loaded = '1';
   }
-}
-
-function toggleTheme() {
-  const html = document.documentElement;
-  const isDark = html.getAttribute('data-theme') === 'dark';
-  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  localStorage.setItem('theme', isDark ? 'light' : 'dark');
 }
 
 function fmtSize(b) {
@@ -2508,13 +2749,24 @@ async function launchStation(name) {
     metadataUrl = null;
   }
   try {
+    const isSdr = s.sourceType === 'sdr' || s.sourceType === 'wideband' || (s.streamUrl && (s.streamUrl.startsWith('fm://') || s.streamUrl.startsWith('hd://') || s.streamUrl.startsWith('sdr://')));
     const r = await fetch(`${API}/api/monitor/start`, {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ url:s.streamUrl, metadataUrl, metadataSource, stationName:s.name, callsign:s.callsign||'', network:s.network||'', pollInterval:s.pollInterval, stallThreshold:s.stallThreshold, triggerMode:s.triggerMode, triggerKeywords:s.triggerKeywords||'' })
+      body:JSON.stringify({
+        url:s.streamUrl, metadataUrl, metadataSource: isSdr ? 'rds' : metadataSource,
+        stationName:s.name, callsign:s.callsign||'', network:s.network||'',
+        pollInterval:s.pollInterval, stallThreshold:s.stallThreshold,
+        triggerMode:s.triggerMode, triggerKeywords:s.triggerKeywords||'',
+        sourceType: isSdr ? (s.sourceType || 'sdr') : 'web', freq: s.freq, sdrMode: s.sdrMode,
+        gain: s.gain, ppm: s.ppm, program: s.program,
+        preferredDevice: s.preferredDevice !== undefined ? s.preferredDevice : s.sdrDeviceIndex,
+        sdrDeviceIndex: s.sdrDeviceIndex,
+        isWideband: s.isWideband || s.preferredDevice === 'wideband' || s.sourceType === 'wideband'
+      })
     });
     const data = await r.json();
     if (data.error) return toast(data.error, 'error');
-    toast(s.name + ' started', 'success');
+    toast(s.name + ' started' + (isSdr ? ' (Off-Air SDR)' : ''), 'success');
     refreshStatus();
   } catch(e) { toast('Could not connect', 'error'); }
 }
@@ -2527,6 +2779,36 @@ async function stopMonitor(id) {
 async function stopAll() {
   await fetch(`${API}/api/monitor/stopall`, {method:'POST'});
   toast('All stopped'); refreshStatus();
+}
+
+let _activeMonitorsCache = [];
+
+async function toggleRecAll() {
+  const anyOff = _activeMonitorsCache.length === 0 || _activeMonitorsCache.some(m => !m.recordingEnabled);
+  const targetState = anyOff;
+  try {
+    await fetch(`${API}/api/monitor/recordall`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ enabled: targetState })
+    });
+    toast(targetState ? '⏺ Commercial recording enabled on ALL stations' : '⏸ Commercial recording paused on ALL stations', targetState ? 'success' : '');
+    refreshStatus();
+  } catch(e) { toast('Failed to update recordings: ' + e.message, 'error'); }
+}
+
+async function toggleAiAll() {
+  const anyOff = _activeMonitorsCache.length === 0 || _activeMonitorsCache.some(m => !m.transcribeEnabled);
+  const targetState = anyOff;
+  try {
+    await fetch(`${API}/api/monitor/transcribeall`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ enabled: targetState })
+    });
+    toast(targetState ? '🎙 AI transcription enabled on ALL stations' : '🎙 AI transcription paused on ALL stations', targetState ? 'success' : '');
+    refreshStatus();
+  } catch(e) { toast('Failed to update AI transcription: ' + e.message, 'error'); }
 }
 
 async function toggleRecording(id, cur) {
@@ -2547,32 +2829,10 @@ async function toggleMetaLog(id, cur) {
   refreshStatus();
 }
 
-// ── Quick launch ──────────────────────────────────────────────────────────────
+// ── Quick launch (removed from monitor tab) ──────────────────────────────────
+function renderQuickLaunch() {}
 
-function renderQuickLaunch() {
-  const wrap = document.getElementById('quickLaunch');
-  const list = document.getElementById('quickStationList');
-  if (!savedStations.length) { wrap.style.display = 'none'; return; }
-  wrap.style.display = 'block';
-  // Group by network
-  const groups = {};
-  savedStations.forEach(s => { const g = s.group || 'Other'; if (!groups[g]) groups[g] = []; groups[g].push(s); });
-  list.innerHTML = Object.entries(groups).map(([g, stations]) => `
-    <div class="group-label">${g}</div>
-    <div class="station-list">${stations.map(s => {
-      const logoUrl = getLogoUrl(s.name) || getLogoUrl(s.callsign);
-      const letters = (s.name || '?').substring(0,4);
-      return `<button class="station-btn" onclick="launchStation(${JSON.stringify(s.name).replace(/"/g,'&quot;')})">
-        ${logoUrl ? `<img src="${logoUrl}" class="station-btn-logo" onerror="logoError(this,&quot;${letters}&quot;,'station-btn-placeholder')">` : `<div class="station-btn-placeholder">${letters}</div>`}
-        <div class="station-btn-info">
-          <div class="station-btn-name">${s.name}</div>
-          <div class="station-btn-sub">${s.callsign || ''} ${s.network ? '· ' + s.network : ''}</div>
-        </div>
-      </button>`;
-    }).join('')}</div>`).join('');
-}
-
-// ── Live player (removed — stream URL shown as link instead) ─────────────────
+// ── Live player ──────────────────────────────────────────────────────────────
 const livePlayers = {};
 function toggleLivePlayer() {}
 function preserveLivePlayers() {}
@@ -2580,19 +2840,129 @@ function preserveLivePlayers() {}
 // ── Status polling ────────────────────────────────────────────────────────────
 
 let prevStates = {};
+let _lastStatusSig = '';
+let _activeMonitorStationNames = new Set();
 
 async function refreshStatus() {
   try {
     const r = await fetch(`${API}/api/status`);
     const { active } = await r.json();
+    _activeMonitorsCache = active || [];
+    const noMonCard = document.getElementById('noMonitorsCard');
     const card = document.getElementById('monitorsCard');
     const list = document.getElementById('monitorList');
-    if (!active.length) { card.style.display = 'none'; return; }
-    card.style.display = 'block';
+    if (!active || !active.length) { 
+      if (card) card.style.display = 'none'; 
+      if (noMonCard) noMonCard.style.display = 'block';
+      _lastStatusSig = '';
+      _activeMonitorStationNames = new Set();
+      return; 
+    }
+    if (noMonCard) noMonCard.style.display = 'none';
+    if (card) card.style.display = 'block';
+
+    // Update Rec All and Ai All header button states
+    const btnRecAll = document.getElementById('btnRecAll');
+    if (btnRecAll) {
+      const allRecOn = active.length > 0 && active.every(m => m.recordingEnabled);
+      btnRecAll.className = `btn btn-sm ${allRecOn ? 'btn-rec-on' : 'btn-rec-off'}`;
+      btnRecAll.innerHTML = allRecOn ? '⏺ REC ALL (ON)' : '⏺ REC ALL';
+    }
+    const btnAiAll = document.getElementById('btnAiAll');
+    if (btnAiAll) {
+      const allAiOn = active.length > 0 && active.every(m => m.transcribeEnabled);
+      btnAiAll.className = `btn btn-sm ${allAiOn ? 'btn-rec-on' : 'btn-rec-off'}`;
+      btnAiAll.innerHTML = allAiOn ? '🎙 AI ALL (ON)' : '🎙 AI ALL';
+    }
+
+    _activeMonitorStationNames = new Set(active.map(m => (m.options && m.options.stationName) || m.station || ''));
+
     active.forEach(m => {
       if (prevStates[m.id] === 'recording' && m.status === 'listening') setTimeout(loadRecordings, 1500);
       prevStates[m.id] = m.status;
     });
+
+    const statusSig = JSON.stringify(active.map(m => [
+      m.id, m.status, m.currentTitle, m.currentArtist, m.currentSongTitle,
+      m.recordingEnabled, m.transcribeEnabled, m.metadataLogEnabled,
+      m.currentCueType, m.acousticMatchInfo ? m.acousticMatchInfo.details : null,
+      m.sdrTelemetry ? [m.sdrTelemetry.syncState, m.sdrTelemetry.signalPercent, m.sdrTelemetry.mer, m.sdrTelemetry.ps] : null,
+      m.titleHistory ? m.titleHistory.length : 0
+    ]));
+
+    // If monitor state didn't change, only update dynamic elapsed/stall labels without re-rendering entire DOM
+    if (statusSig === _lastStatusSig && list.children.length === active.length) {
+      active.forEach((m, i) => {
+        const el = list.children[i];
+        if (!el) return;
+        const elElapsed = el.querySelector('.monitor-elapsed');
+        if (elElapsed) elElapsed.textContent = 'up ' + elapsed(m.startTime);
+        const elStall = el.querySelector('.meta-val-stall');
+        if (elStall) {
+          const staleSeconds = Math.floor((Date.now() - m.lastTitleChange) / 1000);
+          const stallPct = Math.min(100, (staleSeconds / m.options.stallThreshold) * 100);
+          const stallColor = stallPct > 80 ? 'var(--red)' : stallPct > 50 ? 'var(--amber)' : 'var(--green)';
+          elStall.style.color = stallColor;
+          elStall.textContent = staleFor(m.lastTitleChange) + (m.status === 'recording' ? ' — recording' : '');
+        }
+      });
+      return;
+    }
+
+    _lastStatusSig = statusSig;
+
+    function renderRfSignalMeter(tel) {
+      if (!tel) return '';
+      const pct = tel.signalPercent !== undefined && tel.signalPercent !== null
+        ? tel.signalPercent
+        : (tel.mer ? Math.min(100, Math.round((tel.mer / 22) * 100)) : (tel.syncState === 'LOCKED' ? 85 : (tel.syncState === 'RECEIVING' ? 60 : 25)));
+      const mer = tel.mer !== undefined && tel.mer !== null ? tel.mer : null;
+      const dbfs = tel.dbfs !== undefined && tel.dbfs !== null ? tel.dbfs : null;
+      
+      let litBars = 1;
+      let barColorClass = 'lit-red';
+      let badgeColor = 'var(--red)';
+
+      if (pct >= 75) {
+        litBars = 5;
+        barColorClass = 'lit-green';
+        badgeColor = 'var(--green)';
+      } else if (pct >= 55) {
+        litBars = 4;
+        barColorClass = 'lit-cyan';
+        badgeColor = 'var(--blue)';
+      } else if (pct >= 35) {
+        litBars = 3;
+        barColorClass = 'lit-amber';
+        badgeColor = 'var(--amber)';
+      } else if (pct >= 20) {
+        litBars = 2;
+        barColorClass = 'lit-amber';
+        badgeColor = 'var(--amber)';
+      } else {
+        litBars = 1;
+        barColorClass = 'lit-red';
+        badgeColor = 'var(--red)';
+      }
+
+      const labelText = mer !== null ? `+${mer} dB` : (dbfs !== null ? `${dbfs} dB` : `${pct}%`);
+      const fullTitle = `RF Signal Quality: ${pct}%${mer !== null ? ` | MER: ${mer} dB` : ''}${dbfs !== null ? ` | Level: ${dbfs} dBFS` : ''}${tel.ps ? ` | RDS: ${tel.ps}` : ''}`;
+
+      return `
+        <div class="rf-signal-container" title="${esc(fullTitle)}">
+          <span style="font-size:9.5px;color:var(--text-secondary);font-weight:700;letter-spacing:0.04em">RF</span>
+          <div class="rf-signal-bars">
+            <div class="rf-bar rf-b1 ${litBars >= 1 ? barColorClass : ''}"></div>
+            <div class="rf-bar rf-b2 ${litBars >= 2 ? barColorClass : ''}"></div>
+            <div class="rf-bar rf-b3 ${litBars >= 3 ? barColorClass : ''}"></div>
+            <div class="rf-bar rf-b4 ${litBars >= 4 ? barColorClass : ''}"></div>
+            <div class="rf-bar rf-b5 ${litBars >= 5 ? barColorClass : ''}"></div>
+          </div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;color:${badgeColor}">${labelText}</span>
+        </div>
+      `;
+    }
+
     list.innerHTML = active.map(m => {
       const staleSeconds = Math.floor((Date.now() - m.lastTitleChange) / 1000);
       const stallPct = Math.min(100, (staleSeconds / m.options.stallThreshold) * 100);
@@ -2600,7 +2970,7 @@ async function refreshStatus() {
       const artSrc = m.currentAlbumart
         ? (m.currentAlbumart.startsWith('//') ? 'https:' + m.currentAlbumart : m.currentAlbumart)
         : (getLogoUrl(m.options && (m.options.callsign || m.options.stationName)) || getLogoUrl(m.station));
-      const albumArtHtml = artSrc ? `<img src="${artSrc}" style="width:88px;height:88px;border-radius:12px;object-fit:cover;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.15)" onerror="this.style.display='none'">` : '';
+      const albumArtHtml = artSrc ? `<img src="${artSrc}" loading="lazy" style="width:88px;height:88px;border-radius:12px;object-fit:cover;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.15)" onerror="this.style.display='none'">` : '';
       const artCols = albumArtHtml ? 'auto 1fr 1fr' : '1fr 1fr';
       const networkBadge = m.options.network ? `<span style="background:var(--surface2);color:var(--muted);border-radius:980px;padding:2px 9px;font-size:10px;font-weight:600">${m.options.network}</span>` : '';
       const historyHtml = m.titleHistory.length ? `
@@ -2623,6 +2993,7 @@ async function refreshStatus() {
               <div class="monitor-url">${networkBadge} <strong>${esc(m.options.stationName || '')}</strong>${m.options.callsign ? ' (' + esc(m.options.callsign) + ')' : ''} ${m.options.stationName ? '—' : ''} ${esc(m.url)}</div>
               <div class="monitor-status-line">${stateLabel(m)}</div>
             </div>
+            ${m.isSdr ? renderRfSignalMeter(m.sdrTelemetry) : ''}
             <div class="monitor-elapsed">up ${elapsed(m.startTime)}</div>
             <div class="monitor-btns">
               <button class="btn ${m.recordingEnabled ? 'btn-rec-on' : 'btn-rec-off'}" onclick="toggleRecording('${m.id}',${m.recordingEnabled})" style="font-size:9px">${m.recordingEnabled ? '⏺ REC' : '○ REC'}</button>
@@ -2644,19 +3015,33 @@ async function refreshStatus() {
             </div>
             <div class="meta-item">
               <div class="meta-key">Title unchanged</div>
-              <div class="meta-val" style="color:${stallColor}">${staleFor(m.lastTitleChange)}${m.status==='recording' ? ' — recording' : ''}</div>
+              <div class="meta-val meta-val-stall" style="color:${stallColor}">${staleFor(m.lastTitleChange)}${m.status==='recording' ? ' — recording' : ''}</div>
             </div>
             <div class="meta-item" style="grid-column:1/-1">
               <div class="meta-key">Source / trigger</div>
               <div class="meta-val" style="font-size:11px;white-space:normal;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                 <span title="${m.options.metadataUrl || ''}">${
-                  m.metadataSource === 'json' ? '🔗 ' + (m.options.metadataUrl || '').replace(/https?:\/\//, '').substring(0,55) + ((m.options.metadataUrl || '').length > 60 ? '...' : '')
+                  m.isSdr ? '📻 RTL-SDR Off-Air'
+                  : m.metadataSource === 'json' ? '🔗 ' + (m.options.metadataUrl || '').replace(/https?:\/\//, '').substring(0,55) + ((m.options.metadataUrl || '').length > 60 ? '...' : '')
                   : m.metadataSource === 'hls' ? '🎵 HLS stream'
                   : m.metadataSource === 'triton' ? '🔔 Triton'
                   : m.metadataSource === 'corus-jsonp' ? '🔗 Corus'
                   : m.metadataSource === 'iheart' ? '❤️ iHeart'
                   : '📡 ICY stream'
                 } · ${m.options.triggerMode === 'hybrid' ? '✨ Hybrid' : (m.options.triggerMode || 'hybrid')}</span>
+                ${m.isSdr ? `
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(234,179,8,0.15);color:var(--amber);border:1px solid rgba(234,179,8,0.3)">
+                    ${m.sdrTelemetry && m.sdrTelemetry.isWideband ? '⚡ WIDEBAND CH' : `📻 STICK #${m.sdrTelemetry ? (m.sdrTelemetry.deviceIndex !== undefined ? m.sdrTelemetry.deviceIndex : 0) : 0}`}
+                  </span>
+                  ${m.sdrTelemetry && m.sdrTelemetry.syncState ? `
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 7px;border-radius:4px;${m.sdrTelemetry.syncState==='LOCKED' ? 'background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)' : 'background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)'}">
+                      ${m.sdrTelemetry.syncState === 'LOCKED' ? '🔒 LOCKED' : m.sdrTelemetry.syncState}
+                    </span>
+                  ` : ''}
+                  ${m.sdrTelemetry && (m.sdrTelemetry.signalPercent || m.sdrTelemetry.signal) ? `<span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 7px;border-radius:4px;background:var(--surface3);color:#fff">📶 ${esc(m.sdrTelemetry.signal || m.sdrTelemetry.signalPercent + '%')}</span>` : ''}
+                  ${m.sdrTelemetry && m.sdrTelemetry.mer !== null && m.sdrTelemetry.mer !== undefined ? `<span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 7px;border-radius:4px;background:var(--surface3);color:#fff">MER: ${m.sdrTelemetry.mer >= 0 ? '+' : ''}${m.sdrTelemetry.mer} dB</span>` : ''}
+                  ${m.sdrTelemetry && m.sdrTelemetry.ps ? `<span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 7px;border-radius:4px;background:var(--surface3);color:#fff">RDS PS: ${esc(m.sdrTelemetry.ps)}</span>` : ''}
+                ` : ''}
                 ${m.currentCueType ? `<span style="font-family:Space Mono,monospace;font-size:10px;padding:2px 7px;border-radius:4px;${m.currentCueType==='track' ? 'background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)' : 'background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)'}">TRITON: ${m.currentCueType.toUpperCase()}</span>` : ''}
                 ${m.acousticMatchInfo && m.acousticMatchInfo.type === 'music' ? `<span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 7px;border-radius:4px;background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)">🎧 ${m.acousticMatchInfo.source === 'shazam' ? 'SHAZAM' : 'ACOUSTIC'}: ${esc(m.acousticMatchInfo.details.songTitle || 'Song')} (${Math.round((m.acousticMatchInfo.score||0.99)*100)}%)</span>` : ''}
                 ${m.currentDurationMs && m.currentCueType === 'track' ? `<span style="font-size:10px;color:var(--muted)">${Math.floor(m.currentDurationMs/60000)}:${String(Math.round((m.currentDurationMs%60000)/1000)).padStart(2,'0')}</span>` : ''}
@@ -2705,44 +3090,84 @@ async function deleteRec(name) {
   toast('Deleted'); loadRecordings();
 }
 
+let _allRecFiles = [];
+let _recVisibleCount = 35;
+const _metaCache = {};
+const _recordingBrands = {};
+
 async function loadRecordings() {
   try {
     const r = await fetch(`${API}/api/recordings`);
-    const files = await r.json();
-    const list = document.getElementById('recList');
-    if (!files.length) { list.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>No commercials captured yet</div>'; return; }
-    list.innerHTML = files.map(f => {
-      const safeId = 'player_' + f.name.replace(/[^a-zA-Z0-9]/g,'_');
-      const stationSlug = f.name.split('-')[0];
-      const logoUrl = logos[stationSlug];
-      const iconHtml = logoUrl ? `<img src="${logoUrl}" style="width:100%;height:100%;object-fit:contain;padding:3px">` : '<span style="font-size:15px">📢</span>';
-      return `
-        <div class="rec-item">
-          <div class="rec-icon">${iconHtml}</div>
-          <div class="rec-info"><div class="rec-name">${f.name}</div><div class="rec-meta">${fmtSize(f.size)} · ${timeAgo(f.modified)}</div></div>
-          <div class="rec-actions">
-            <button class="btn btn-play" id="btn_${safeId}" onclick="togglePlay('${f.name}','${safeId}')">▶ PLAY</button>
-            <button class="btn btn-sm" onclick="retranscribe('${f.name}')" title="Re-run Whisper AI and advertiser extraction">🎙 AI</button>
-            <button class="btn btn-download" onclick="downloadRec('${f.name}')">⬇ DL</button>
-            <button class="btn btn-delete" onclick="deleteRec('${f.name}')">DEL</button>
-          </div>
-          <div class="audio-player" id="${safeId}"><audio controls preload="none" onended="onAudioEnded('${safeId}')" data-src="${API}/api/recordings/download/${encodeURIComponent(f.name)}"></audio></div>
-          <div class="brands-panel" id="brands_${safeId}">
-            <div class="brands-label">🏢 Advertisers <span class="brands-status" id="brandsstatus_${safeId}">Loading...</span><span class="transcript-toggle" onclick="toggleTranscriptView('${safeId}')">show transcript</span></div>
-            <div id="brandswrap_${safeId}"></div>
-            <textarea class="transcript-box" id="transcript_${safeId}" readonly placeholder="Transcript will appear here..."></textarea>
-          </div>
-        </div>`;
-    }).join('');
-    files.forEach(f => {
-      const safeId = 'player_' + f.name.replace(/[^a-zA-Z0-9]/g,'_');
-      const stName = f.name.split('-')[0].replace(/_/g, ' ');
-      loadBrandsMeta(f.name, safeId, stName);
-    });
+    _allRecFiles = await r.json();
+    _recVisibleCount = 35;
+    renderRecordingsList();
   } catch(e) {}
 }
 
-const _recordingBrands = {};
+function onRecSearchInput() {
+  _recVisibleCount = 35;
+  renderRecordingsList();
+}
+
+function loadMoreRecordings() {
+  _recVisibleCount += 35;
+  renderRecordingsList();
+}
+
+function renderRecordingsList() {
+  const list = document.getElementById('recList');
+  const loadMoreWrap = document.getElementById('recLoadMoreWrap');
+  if (!list) return;
+
+  const q = (document.getElementById('recSearchInput') ? document.getElementById('recSearchInput').value : '').toLowerCase().trim();
+  const filtered = q ? _allRecFiles.filter(f => f.name.toLowerCase().includes(q)) : _allRecFiles;
+
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">📭</div>${q ? 'No matching commercials found' : 'No commercials captured yet'}</div>`;
+    if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+    return;
+  }
+
+  const visibleFiles = filtered.slice(0, _recVisibleCount);
+  list.innerHTML = visibleFiles.map(f => {
+    const safeId = 'player_' + f.name.replace(/[^a-zA-Z0-9]/g,'_');
+    const stationSlug = f.name.split('-')[0];
+    const logoUrl = logos[stationSlug];
+    const iconHtml = logoUrl ? `<img src="${logoUrl}" loading="lazy" style="width:100%;height:100%;object-fit:contain;padding:3px">` : '<span style="font-size:15px">📢</span>';
+    return `
+      <div class="rec-item">
+        <div class="rec-icon">${iconHtml}</div>
+        <div class="rec-info"><div class="rec-name">${f.name}</div><div class="rec-meta">${fmtSize(f.size)} · ${timeAgo(f.modified)}</div></div>
+        <div class="rec-actions">
+          <button class="btn btn-play" id="btn_${safeId}" onclick="togglePlay('${f.name}','${safeId}')">▶ PLAY</button>
+          <button class="btn btn-sm" onclick="retranscribe('${f.name}')" title="Re-run Whisper AI and advertiser extraction">🎙 AI</button>
+          <button class="btn btn-download" onclick="downloadRec('${f.name}')">⬇ DL</button>
+          <button class="btn btn-delete" onclick="deleteRec('${f.name}')">DEL</button>
+        </div>
+        <div class="audio-player" id="${safeId}"><audio controls preload="none" onended="onAudioEnded('${safeId}')" data-src="${API}/api/recordings/download/${encodeURIComponent(f.name)}"></audio></div>
+        <div class="brands-panel" id="brands_${safeId}">
+          <div class="brands-label">🏢 Advertisers <span class="brands-status" id="brandsstatus_${safeId}">Loading...</span><span class="transcript-toggle" onclick="toggleTranscriptView('${safeId}')">show transcript</span></div>
+          <div id="brandswrap_${safeId}"></div>
+          <textarea class="transcript-box" id="transcript_${safeId}" readonly placeholder="Transcript will appear here..."></textarea>
+        </div>
+      </div>`;
+  }).join('');
+
+  if (loadMoreWrap) {
+    if (filtered.length > _recVisibleCount) {
+      loadMoreWrap.style.display = 'block';
+      loadMoreWrap.innerHTML = `<button class="btn btn-start" onclick="loadMoreRecordings()" style="padding:9px 22px;font-size:12px">⚡ SHOW MORE (${visibleFiles.length} of ${filtered.length})</button>`;
+    } else {
+      loadMoreWrap.style.display = 'none';
+    }
+  }
+
+  visibleFiles.forEach(f => {
+    const safeId = 'player_' + f.name.replace(/[^a-zA-Z0-9]/g,'_');
+    const stName = f.name.split('-')[0].replace(/_/g, ' ');
+    loadBrandsMeta(f.name, safeId, stName);
+  });
+}
 
 function renderBrandChipsHtml(filename, safeId, brands, stationName) {
   const brandList = Array.isArray(brands) ? brands : [];
@@ -2786,6 +3211,7 @@ async function addBrandToRecording(filename, safeId, encodedStation) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ brands: updated, station: stationName })
     });
+    delete _metaCache[filename];
     toast(`✓ Added "${brand}"`, 'success');
     input.value = '';
     const tagsEl = document.getElementById('tags_' + safeId);
@@ -2799,7 +3225,6 @@ async function addBrandToRecording(filename, safeId, encodedStation) {
       statusEl.innerHTML = `✓ ${updated.length} found`;
       statusEl.style.color = 'var(--green)';
     }
-    // If advertisers tab is active, refresh it
     const advTab = document.getElementById('tab-advertisers');
     if (advTab && advTab.classList.contains('active')) loadAdvertisers();
   } catch (e) {
@@ -2820,6 +3245,7 @@ async function removeBrandFromRecording(filename, safeId, encodedBrand, encodedS
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ brands: updated, station: stationName })
     });
+    delete _metaCache[filename];
     toast(`Removed "${brand}"`, '');
     const tagsEl = document.getElementById('tags_' + safeId);
     if (tagsEl) {
@@ -2841,19 +3267,18 @@ async function loadBrandsMeta(filename, safeId, stationName) {
   const wrapEl = document.getElementById('brandswrap_' + safeId);
   const transcriptEl = document.getElementById('transcript_' + safeId);
   if (!statusEl) return;
-  try {
-    const r = await fetch(`${API}/api/recordings/meta/${encodeURIComponent(filename)}`);
-    const data = await r.json();
+
+  const applyMeta = (data) => {
     const stName = stationName || filename.split('-')[0].replace(/_/g, ' ');
     const spotBadge = (data.spots && data.spots.length > 0) ? ` <span style="font-family:'JetBrains Mono',monospace;font-size:9px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);border-radius:3px;padding:1px 5px">${data.spots.length} spots</span>` : '';
     const brands = data.brands || [];
 
     if (data.status === 'transcribing') {
       statusEl.innerHTML = '⏳ Transcribing...' + spotBadge;
-      setTimeout(() => loadBrandsMeta(filename, safeId, stationName), 4000);
+      setTimeout(() => { delete _metaCache[filename]; loadBrandsMeta(filename, safeId, stationName); }, 4000);
     } else if (data.status === 'extracting') {
       statusEl.innerHTML = '🤖 Extracting...' + spotBadge;
-      setTimeout(() => loadBrandsMeta(filename, safeId, stationName), 3000);
+      setTimeout(() => { delete _metaCache[filename]; loadBrandsMeta(filename, safeId, stationName); }, 3000);
     } else if (data.status === 'done') {
       statusEl.innerHTML = (brands.length ? '✓ ' + brands.length + ' found' : '✓ none') + spotBadge;
       statusEl.style.color = 'var(--green)';
@@ -2868,6 +3293,18 @@ async function loadBrandsMeta(filename, safeId, stationName) {
       statusEl.style.color = 'var(--muted)';
       if (wrapEl) wrapEl.innerHTML = renderBrandChipsHtml(filename, safeId, brands, stName);
     }
+  };
+
+  if (_metaCache[filename]) {
+    applyMeta(_metaCache[filename]);
+    return;
+  }
+
+  try {
+    const r = await fetch(`${API}/api/recordings/meta/${encodeURIComponent(filename)}`);
+    const data = await r.json();
+    _metaCache[filename] = data;
+    applyMeta(data);
   } catch(e) { if (statusEl) statusEl.textContent = '—'; }
 }
 
@@ -2981,10 +3418,17 @@ async function loadCommercialHistory() {
     const files = await r.json();
     const stationFiles = files.filter(f => f.name.startsWith(station.replace(/[^a-zA-Z0-9_-]/g,'_') + '-') || f.name.includes(station));
     if (!stationFiles.length) { list.innerHTML = '<div class="empty"><div class="empty-icon">📻</div>No commercials for ' + station + '</div>'; return; }
-    // Load meta for each file
-    const metas = await Promise.all(stationFiles.map(async f => {
-      try { const mr = await fetch(`${API}/api/recordings/meta/${encodeURIComponent(f.name)}`); return { file: f, meta: await mr.json() }; }
-      catch(_) { return { file: f, meta: {} }; }
+    
+    // Load meta for latest 40 files quickly with in-memory caching
+    const visibleFiles = stationFiles.slice(0, 40);
+    const metas = await Promise.all(visibleFiles.map(async f => {
+      if (_metaCache[f.name]) return { file: f, meta: _metaCache[f.name] };
+      try {
+        const mr = await fetch(`${API}/api/recordings/meta/${encodeURIComponent(f.name)}`);
+        const meta = await mr.json();
+        _metaCache[f.name] = meta;
+        return { file: f, meta };
+      } catch(_) { return { file: f, meta: {} }; }
     }));
     const logoUrl = getLogoUrl(station);
     list.innerHTML = metas.map(({ file, meta }) => {
@@ -2992,7 +3436,7 @@ async function loadCommercialHistory() {
       return `
         <div class="commercial-item">
           <div class="commercial-header">
-            ${logoUrl ? `<img src="${logoUrl}" style="width:28px;height:28px;border-radius:5px;object-fit:contain;border:1px solid var(--border)">` : '<span style="font-size:18px">📢</span>'}
+            ${logoUrl ? `<img src="${logoUrl}" loading="lazy" style="width:28px;height:28px;border-radius:5px;object-fit:contain;border:1px solid var(--border)">` : '<span style="font-size:18px">📢</span>'}
             <div style="flex:1;min-width:0">
               <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${file.name}</div>
               <div class="commercial-date">${fmtDateTime(file.modified)} · ${fmtSize(file.size)}</div>
@@ -3377,28 +3821,52 @@ async function repairStationUrls() {
 
 function renderStationGroupsView() {
   const view = document.getElementById('stationGroupsView');
+  if (!view) return;
   if (!savedStations.length) { view.innerHTML = '<div class="empty" style="padding:20px">No stations saved yet</div>'; return; }
   const groups = {};
   savedStations.forEach(s => { const g = s.group || 'Other'; if (!groups[g]) groups[g] = []; groups[g].push(s); });
   view.innerHTML = Object.entries(groups).map(([g, stations]) => `
-    <div class="group-label" style="margin-bottom:10px">${g}</div>
+    <div class="group-label" style="margin-bottom:12px">${g}</div>
     <div class="station-grid">${stations.map(s => {
       const logoUrl = getLogoUrl(s.name) || getLogoUrl(s.callsign);
       const letters = (s.name || '?').substring(0,4);
+      const isMonitoring = _activeMonitorStationNames.has(s.name);
       const logoEl = logoUrl
-        ? `<img src="${logoUrl}" class="station-card-logo" onerror="logoError(this,&quot;${letters}&quot;,'station-card-placeholder')">`
+        ? `<img src="${logoUrl}" loading="lazy" class="station-card-logo" onerror="logoError(this,&quot;${letters}&quot;,'station-card-placeholder')">`
         : `<div class="station-card-placeholder">${letters}</div>`;
-      return `<div class="station-card">
+      const isSdr = s.sourceType === 'sdr' || (s.streamUrl && (s.streamUrl.startsWith('fm://') || s.streamUrl.startsWith('hd://') || s.streamUrl.startsWith('sdr://')));
+      const sdrBadge = isSdr ? `<span style="background:rgba(234,179,8,0.15);color:var(--amber);border:1px solid rgba(234,179,8,0.3);border-radius:980px;padding:2px 8px;font-size:9.5px;font-weight:700">📻 ${s.freq ? s.freq + ' MHz' : 'OFF-AIR'}</span>` : '';
+      return `<div class="station-card ${isMonitoring ? 'station-card-active' : ''}">
         ${logoEl}
-        <div class="station-card-name">${s.name}</div>
-        ${s.callsign ? `<div class="station-card-meta">${s.callsign}</div>` : ''}
-        ${s.group ? `<span class="station-card-group">${s.group}</span>` : ''}
-        <div class="station-card-actions">
-          <button class="btn btn-sm" style="font-size:10px;color:var(--blue)" onclick="editStation(${JSON.stringify(s.name).replace(/"/g,'&quot;')})">EDIT</button>
-          <button class="btn btn-delete" style="padding:5px 8px;font-size:10px" onclick="deleteStation(${JSON.stringify(s.name).replace(/"/g,'&quot;')})">DEL</button>
+        <div class="station-card-name">${esc(s.name)}</div>
+        ${s.callsign ? `<div class="station-card-meta">${esc(s.callsign)}</div>` : ''}
+        <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">
+          ${s.group ? `<span class="station-card-group">${esc(s.group)}</span>` : ''}
+          ${sdrBadge}
+        </div>
+        <div style="width:100%;margin-top:auto;display:flex;flex-direction:column;gap:8px">
+          ${isMonitoring ? `
+            <button class="btn btn-sm" style="background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);font-size:11px;font-weight:700;width:100%;padding:8px" onclick="switchTab('monitor')">
+              🟢 LIVE MONITORING
+            </button>
+          ` : `
+            <button class="btn btn-start" style="font-size:11px;font-weight:700;width:100%;padding:8px" onclick="startStationFromTab(${JSON.stringify(s.name).replace(/"/g,'&quot;')})">
+              ▶ START MONITORING
+            </button>
+          `}
+          <div class="station-card-actions">
+            <button class="btn btn-sm" style="font-size:10px;color:var(--blue)" onclick="editStation(${JSON.stringify(s.name).replace(/"/g,'&quot;')})">EDIT</button>
+            <button class="btn btn-delete" style="padding:5px 8px;font-size:10px" onclick="deleteStation(${JSON.stringify(s.name).replace(/"/g,'&quot;')})">DEL</button>
+          </div>
         </div>
       </div>`;
     }).join('')}</div>`).join('');
+}
+
+async function startStationFromTab(name) {
+  toast('Starting ' + name + '...', '');
+  await launchStation(name);
+  switchTab('monitor');
 }
 
 function populateStationSelects() {
@@ -3448,21 +3916,265 @@ async function fetchLogoFromRadioBrowser() {
   } catch(e) { toast('Logo lookup failed', 'error'); }
 }
 
+// ── RTL-SDR Off-Air Functions (Version 3) ───────────────────────────────────
+
+function toggleStationSourceType() {
+  const isSdr = document.querySelector('input[name="stationSourceType"]:checked')?.value === 'sdr';
+  document.getElementById('sdrStationOptions').style.display = isSdr ? 'block' : 'none';
+  const metaSrc = document.getElementById('newMetadataSource');
+  if (isSdr) {
+    if (metaSrc) metaSrc.value = 'rds';
+    updateSdrUrlPreview();
+  } else {
+    if (metaSrc && metaSrc.value === 'rds') metaSrc.value = 'auto';
+  }
+}
+
+function toggleNewSdrMode() {
+  const mode = document.getElementById('newSdrMode').value;
+  document.getElementById('newSdrProgCol').style.display = mode === 'hd' ? 'block' : 'none';
+}
+
+function updateSdrUrlPreview() {
+  const isSdr = document.querySelector('input[name="stationSourceType"]:checked')?.value === 'sdr';
+  if (!isSdr) return;
+  const freq = parseFloat(document.getElementById('newSdrFreq').value) || 105.1;
+  const mode = document.getElementById('newSdrMode').value;
+  const prog = document.getElementById('newSdrProg').value;
+  const urlEl = document.getElementById('newStreamUrl');
+  if (mode === 'hd') {
+    urlEl.value = `hd://${freq}/${prog}`;
+  } else {
+    urlEl.value = `fm://${freq}`;
+  }
+}
+
+let _sdrPollingTimer = null;
+
+function openSdrModal() {
+  toggleToolsMenu();
+  openModal('sdrModal');
+  scanSdrDevices();
+  pollSdrStatus();
+  if (!_sdrPollingTimer) {
+    _sdrPollingTimer = setInterval(pollSdrStatus, 2000);
+  }
+}
+
+async function scanSdrDevices() {
+  const out = document.getElementById('sdrDeviceOutput');
+  const serialList = document.getElementById('sdrSerialManagerList');
+  out.innerHTML = '<span style="color:var(--amber)">Scanning USB devices and SDR pool...</span>';
+  if (serialList) serialList.innerHTML = '<span style="color:var(--muted)">Loading serials...</span>';
+
+  try {
+    const [devRes, poolRes] = await Promise.all([
+      fetch(`${API}/api/sdr/devices`),
+      fetch(`${API}/api/sdr/pool/status`).catch(() => ({ json: () => ({ workers: [], widebandClustersCount: 0 }) }))
+    ]);
+    const data = await devRes.json();
+    const pool = await poolRes.json();
+
+    const devSelect = document.getElementById('newSdrDevice');
+    const testSelect = document.getElementById('sdrTestDevice');
+
+    if (data.detected && data.devices.length > 0) {
+      out.innerHTML = `<span style="color:var(--green)">✓ Found ${data.count} RTL-SDR Dongle(s) (${esc(data.tunerType)}):</span><br>` +
+        data.devices.map(d => `• Stick #${d.index} [SN: <code>${esc(d.serial||'00000001')}</code>]: <strong>${esc(d.name)}</strong> ${d.inUse ? '<span style="color:var(--amber);font-size:10.5px">[ACTIVE]</span>' : '<span style="color:var(--green);font-size:10.5px">[IDLE]</span>'}`).join('<br>') +
+        (pool.widebandClustersCount > 0 ? `<br><span style="color:var(--blue);font-size:11px">⚡ Active Wideband Clusters: ${pool.widebandClustersCount}</span>` : '');
+
+      // Populate serial number manager list
+      if (serialList) {
+        serialList.innerHTML = data.devices.map(d => `
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;padding:6px 8px;background:var(--surface3);border-radius:4px">
+            <div style="flex:1">
+              <span style="font-weight:600;color:#fff">Stick #${d.index}</span>
+              <span style="color:var(--muted);font-size:11px">(${esc(d.name.substring(0,18))})</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <input type="text" id="serialInput_${d.index}" value="${esc(d.serial || ('0000000' + (d.index + 1)))}" style="width:110px;padding:3px 6px;font-family:'JetBrains Mono',monospace;font-size:11px;height:26px" placeholder="00000001"/>
+              <button class="btn btn-sm" onclick="writeDeviceSerial(${d.index})" style="padding:3px 8px;font-size:10px;height:26px">💾 WRITE</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Populate dropdowns
+      const optionsHtml = [
+        '<option value="auto">✨ Auto-Assign (Next Available Dongle)</option>',
+        '<option value="wideband">⚡ Wideband Channelizer (Share with nearby stations within 2.4 MHz)</option>',
+        ...data.devices.map(d => `<option value="${d.index}">📻 Physical Dongle #${d.index} [SN: ${esc(d.serial||'—')}] (${esc(d.name.substring(0,16))})</option>`)
+      ].join('');
+
+      if (devSelect) {
+        const cur = devSelect.value;
+        devSelect.innerHTML = optionsHtml;
+        if (cur) devSelect.value = cur;
+      }
+      if (testSelect) {
+        const cur = testSelect.value;
+        testSelect.innerHTML = optionsHtml;
+        if (cur) testSelect.value = cur;
+      }
+    } else {
+      out.innerHTML = `<span style="color:var(--amber)">⚠️ No direct USB RTL-SDR detected by container.</span><br><span style="font-size:11px;color:var(--muted)">Ensure <code>/dev/bus/usb</code> is mounted in docker-compose.yml and host DVB kernel module is blacklisted.</span>`;
+      if (serialList) serialList.innerHTML = '<span style="color:var(--muted)">No USB dongles detected.</span>';
+    }
+  } catch(e) {
+    out.innerHTML = `<span style="color:var(--red)">Failed to query SDR hardware: ${esc(e.message)}</span>`;
+    if (serialList) serialList.innerHTML = '';
+  }
+}
+
+async function writeDeviceSerial(deviceIndex) {
+  const input = document.getElementById(`serialInput_${deviceIndex}`);
+  const serial = input ? input.value.trim() : '';
+  if (!serial) return toast('Serial number required', 'error');
+
+  toast(`Writing serial '${serial}' to Stick #${deviceIndex} EEPROM...`, '');
+  try {
+    const r = await fetch(`${API}/api/sdr/eeprom/write`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ deviceIndex, serial })
+    });
+    const res = await r.json();
+    if (res.success) {
+      toast(`✓ Serial '${serial}' written to Stick #${deviceIndex}`, 'success');
+      setTimeout(scanSdrDevices, 1000);
+    } else {
+      toast(`EEPROM Write failed: ${res.error || 'Unknown error'}`, 'error');
+    }
+  } catch(e) {
+    toast(`EEPROM Write failed: ${e.message}`, 'error');
+  }
+}
+
+async function autoSerializeAll() {
+  if (!confirm('Automatically assign unique serial numbers (00000001, 00000002, ...) to all connected RTL-SDR sticks?')) return;
+  toast('Programming unique serials to all RTL-SDR EEPROMs...', '');
+  try {
+    const r = await fetch(`${API}/api/sdr/eeprom/auto-serialize`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prefix: '0000000' })
+    });
+    const res = await r.json();
+    if (res.success) {
+      toast('✓ All RTL-SDR sticks successfully serialized!', 'success');
+      setTimeout(scanSdrDevices, 1200);
+    } else {
+      toast(`Auto-serialize warning: ${res.error || res.message}`, 'error');
+      setTimeout(scanSdrDevices, 1200);
+    }
+  } catch(e) {
+    toast(`Auto-serialize failed: ${e.message}`, 'error');
+  }
+}
+
+function toggleSdrTestMode() {
+  const mode = document.getElementById('sdrTestMode').value;
+  document.getElementById('sdrTestProgCol').style.display = mode === 'hd' ? 'block' : 'none';
+}
+
+async function tuneSdrTest() {
+  const freq = parseFloat(document.getElementById('sdrTestFreq').value);
+  const mode = document.getElementById('sdrTestMode').value;
+  const program = parseInt(document.getElementById('sdrTestProgram').value, 10) || 0;
+  const device = document.getElementById('sdrTestDevice') ? document.getElementById('sdrTestDevice').value : 'auto';
+  const gain = document.getElementById('sdrTestGain').value.trim();
+  const ppm = parseInt(document.getElementById('sdrTestPpm').value, 10) || 0;
+
+  if (!freq) return toast('Enter frequency', 'error');
+  toast(`Tuning SDR to ${freq} MHz (${mode.toUpperCase()})...`, '');
+
+  try {
+    const isWideband = device === 'wideband';
+    const r = await fetch(`${API}/api/sdr/tune`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ freq, mode, program, device: isWideband ? 'wideband' : device, isWideband, gain: gain ? parseFloat(gain) : null, ppm })
+    });
+    const data = await r.json();
+    if (data.error) return toast(data.error, 'error');
+
+    toast(`✓ Tuned to ${freq} MHz`, 'success');
+    document.getElementById('sdrTelemetryPanel').style.display = 'block';
+    const audio = document.getElementById('sdrLiveAudio');
+    if (audio) {
+      audio.src = `${API}/api/sdr/stream.mp3?t=${Date.now()}`;
+      audio.play().catch(()=>{});
+    }
+    pollSdrStatus();
+  } catch(e) {
+    toast('Tune failed: ' + e.message, 'error');
+  }
+}
+
+async function stopSdrTest() {
+  const audio = document.getElementById('sdrLiveAudio');
+  if (audio) { audio.pause(); audio.src = ''; }
+  try {
+    await fetch(`${API}/api/sdr/stop`, { method: 'POST' });
+    toast('All SDR tuners stopped');
+    document.getElementById('sdrTelemetryPanel').style.display = 'none';
+  } catch(e) {}
+}
+
+async function pollSdrStatus() {
+  const panel = document.getElementById('sdrTelemetryPanel');
+  const modal = document.getElementById('sdrModal');
+  if (!modal || modal.style.display === 'none') {
+    if (_sdrPollingTimer) { clearInterval(_sdrPollingTimer); _sdrPollingTimer = null; }
+    return;
+  }
+  try {
+    const r = await fetch(`${API}/api/sdr/status`);
+    const status = await r.json();
+    if (status.running) {
+      panel.style.display = 'block';
+      const stEl = document.getElementById('sdrTelemetryStatus');
+      const devTag = status.isWideband ? '⚡ WIDEBAND' : `📻 STICK #${status.deviceIndex || 0}`;
+      stEl.textContent = `● ${status.syncState || 'RECEIVING'} (${devTag} · ${status.mode?.toUpperCase()} ${status.frequency} MHz)`;
+      stEl.style.color = status.syncState === 'LOCKED' ? 'var(--green)' : 'var(--amber)';
+
+      const sigBadge = document.getElementById('sdrSignalBadge');
+      sigBadge.textContent = status.signal ? `RF: ${status.signal}` : (status.mer !== null && status.mer !== undefined ? `MER: ${status.mer} dB` : 'ACTIVE');
+
+      document.getElementById('sdrRdsPs').textContent = status.ps || status.station || '—';
+      document.getElementById('sdrRdsTitle').textContent = status.rtPlus || status.title || (status.artist ? `${status.artist} - ${status.title}` : '—');
+      document.getElementById('sdrRdsRt').textContent = status.rt || '—';
+    }
+  } catch(_) {}
+}
+
 async function saveStation() {
   const name = document.getElementById('newStationName').value.trim();
   const streamUrl = document.getElementById('newStreamUrl').value.trim();
   if (!name) return toast('Station name required', 'error');
   if (!streamUrl) return toast('Stream URL required', 'error');
+  const isSdr = document.querySelector('input[name="stationSourceType"]:checked')?.value === 'sdr';
+  const sdrDevVal = document.getElementById('newSdrDevice') ? document.getElementById('newSdrDevice').value : 'auto';
+  const isWideband = sdrDevVal === 'wideband';
   const stationData = {
     name, callsign: document.getElementById('newCallsign').value.trim(),
     streamUrl, metadataUrl: document.getElementById('newMetadataUrl').value.trim() || '',
-    metadataSource: document.getElementById('newMetadataSource').value,
+    metadataSource: isSdr ? 'rds' : document.getElementById('newMetadataSource').value,
     network: document.getElementById('newGroup').value,
     group: document.getElementById('newGroup').value,
     pollInterval: parseInt(document.getElementById('newPollInterval').value) || 10,
     stallThreshold: parseInt(document.getElementById('newStallThreshold').value) || 60,
     triggerMode: document.getElementById('newTriggerMode').value,
     triggerKeywords: document.getElementById('newTriggerKeywords').value.trim() || '',
+    sourceType: isSdr ? (isWideband ? 'wideband' : 'sdr') : 'web',
+    freq: isSdr ? parseFloat(document.getElementById('newSdrFreq').value) : null,
+    sdrMode: isSdr ? document.getElementById('newSdrMode').value : null,
+    gain: isSdr && document.getElementById('newSdrGain').value ? parseFloat(document.getElementById('newSdrGain').value) : null,
+    ppm: isSdr ? (parseInt(document.getElementById('newSdrPpm').value, 10) || 0) : 0,
+    program: isSdr ? (parseInt(document.getElementById('newSdrProg').value, 10) || 0) : 0,
+    preferredDevice: sdrDevVal,
+    sdrDeviceIndex: !isNaN(parseInt(sdrDevVal, 10)) ? parseInt(sdrDevVal, 10) : null,
+    isWideband: isWideband,
   };
   try {
     const r = await fetch(`${API}/api/stations`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(stationData) });
@@ -3496,6 +4208,12 @@ async function saveStation() {
 function editStation(name) {
   const s = savedStations.find(x => x.name === name);
   if (!s) return;
+  const isSdr = s.sourceType === 'sdr' || s.sourceType === 'wideband' || s.streamUrl.startsWith('fm://') || s.streamUrl.startsWith('hd://') || s.streamUrl.startsWith('sdr://');
+  const radios = document.getElementsByName('stationSourceType');
+  if (radios.length >= 2) {
+    radios[0].checked = !isSdr;
+    radios[1].checked = isSdr;
+  }
   document.getElementById('newStationName').value = s.name;
   document.getElementById('newCallsign').value = s.callsign || '';
   document.getElementById('newStreamUrl').value = s.streamUrl;
@@ -3506,17 +4224,46 @@ function editStation(name) {
   document.getElementById('newStallThreshold').value = s.stallThreshold;
   document.getElementById('newTriggerMode').value = s.triggerMode;
   document.getElementById('newTriggerKeywords').value = s.triggerKeywords || '';
+  
+  if (isSdr) {
+    if (s.freq) document.getElementById('newSdrFreq').value = s.freq;
+    if (s.sdrMode) document.getElementById('newSdrMode').value = s.sdrMode;
+    if (s.gain !== undefined && s.gain !== null) document.getElementById('newSdrGain').value = s.gain;
+    if (s.ppm !== undefined) document.getElementById('newSdrPpm').value = s.ppm;
+    if (s.program !== undefined) document.getElementById('newSdrProg').value = s.program;
+    if (s.preferredDevice !== undefined) {
+      document.getElementById('newSdrDevice').value = s.preferredDevice;
+    } else if (s.isWideband) {
+      document.getElementById('newSdrDevice').value = 'wideband';
+    } else if (s.sdrDeviceIndex !== undefined && s.sdrDeviceIndex !== null) {
+      document.getElementById('newSdrDevice').value = String(s.sdrDeviceIndex);
+    } else {
+      document.getElementById('newSdrDevice').value = 'auto';
+    }
+  }
+  
   document.getElementById('editingStation').value = name;
   document.getElementById('stationFormLabel').textContent = 'Edit Station — ' + name;
   document.getElementById('cancelEditBtn').style.display = '';
-  toggleNewTriggerMode(); toggleNewMetaSource();
+  toggleStationSourceType(); toggleNewSdrMode(); toggleNewTriggerMode(); toggleNewMetaSource();
   document.getElementById('newStationName').scrollIntoView({behavior:'smooth',block:'center'});
 }
 
 function cancelEdit() { clearStationForm(); }
 
 function clearStationForm() {
-  ['newStationName','newCallsign','newStreamUrl','newMetadataUrl','newLogoUrl','newTriggerKeywords'].forEach(id => document.getElementById(id).value = '');
+  ['newStationName','newCallsign','newStreamUrl','newMetadataUrl','newLogoUrl','newTriggerKeywords','newSdrGain'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const radios = document.getElementsByName('stationSourceType');
+  if (radios.length >= 2) { radios[0].checked = true; radios[1].checked = false; }
+  document.getElementById('newSdrFreq').value = 105.1;
+  document.getElementById('newSdrMode').value = 'fm';
+  document.getElementById('newSdrProg').value = '0';
+  document.getElementById('newSdrPpm').value = '0';
+  const devSelect = document.getElementById('newSdrDevice');
+  if (devSelect) devSelect.value = 'auto';
   document.getElementById('newPollInterval').value = 10;
   document.getElementById('newStallThreshold').value = 60;
   document.getElementById('newTriggerMode').value = 'hybrid';
@@ -3527,7 +4274,7 @@ function clearStationForm() {
   document.getElementById('editingStation').value = '';
   document.getElementById('stationFormLabel').textContent = 'Add Station';
   document.getElementById('cancelEditBtn').style.display = 'none';
-  toggleNewTriggerMode(); toggleNewMetaSource();
+  toggleStationSourceType(); toggleNewSdrMode(); toggleNewTriggerMode(); toggleNewMetaSource();
 }
 
 async function deleteStation(name) {
@@ -3728,12 +4475,123 @@ async function fetchStationLogo(callsign, name) {
 function ensureLogos(stations) {}
 function autoFetchLogos(stations) {}
 
-// ── Init ──────────────────────────────────────────────────────────────────────
+// ── MCP Server & AI Telemetry ──────────────────────────────────────────────
 
-const savedTheme = localStorage.getItem('theme') || 'light';
-document.documentElement.setAttribute('data-theme', savedTheme);
+let currentMcpTab = 'claude';
 
-setInterval(refreshStatus, 3000);
+function openMcpModal() {
+  closeToolsMenu();
+  switchMcpTab(currentMcpTab);
+  openModal('mcpModal');
+}
+
+function switchMcpTab(tab) {
+  currentMcpTab = tab;
+  ['claude', 'antigravity', 'docker', 'remote'].forEach(t => {
+    const btn = document.getElementById('mcpTab' + t.charAt(0).toUpperCase() + t.slice(1));
+    if (btn) {
+      btn.className = (t === tab) ? 'btn btn-sm btn-start' : 'btn btn-sm btn-secondary';
+    }
+  });
+
+  const snippetEl = document.getElementById('mcpConfigSnippet');
+  const origin = window.location.origin;
+
+  if (tab === 'claude') {
+    snippetEl.textContent = JSON.stringify({
+      "mcpServers": {
+        "barracuda": {
+          "command": "node",
+          "args": ["/absolute/path/to/Barracuda/recorder/mcp_server.js"],
+          "env": {
+            "BARRACUDA_API_URL": origin
+          }
+        }
+      }
+    }, null, 2);
+  } else if (tab === 'antigravity') {
+    snippetEl.textContent = JSON.stringify({
+      "name": "barracuda",
+      "command": "node",
+      "args": ["recorder/mcp_server.js"],
+      "env": {
+        "BARRACUDA_API_URL": "http://127.0.0.1:3000"
+      }
+    }, null, 2);
+  } else if (tab === 'docker') {
+    snippetEl.textContent = JSON.stringify({
+      "mcpServers": {
+        "barracuda": {
+          "command": "docker",
+          "args": ["exec", "-i", "barracuda-recorder-1", "node", "/app/mcp_server.js"]
+        }
+      }
+    }, null, 2);
+  } else if (tab === 'remote') {
+    snippetEl.textContent = JSON.stringify({
+      "mcpServers": {
+        "barracuda-remote": {
+          "url": `${origin}/api/mcp/sse`,
+          "transport": "sse"
+        }
+      }
+    }, null, 2);
+  }
+}
+
+function copyMcpSnippet() {
+  const text = document.getElementById('mcpConfigSnippet').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    toast('MCP configuration copied to clipboard!', 'success');
+  }).catch(() => {
+    toast('Copied to clipboard', 'success');
+  });
+}
+
+async function testMcpOverview() {
+  const btn = document.getElementById('mcpTestBtn');
+  const out = document.getElementById('mcpTestOutput');
+  btn.disabled = true;
+  btn.textContent = '⏳ RUNNING...';
+  out.style.display = 'block';
+  out.textContent = 'Calling MCP Tool: barracuda_get_overview...';
+
+  try {
+    const r = await fetch(`${API}/api/mcp/call`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'barracuda_get_overview', arguments: {} })
+    });
+    const data = await r.json();
+    out.textContent = JSON.stringify(data.result, null, 2);
+    toast('MCP Tool executed successfully!', 'success');
+  } catch (e) {
+    out.textContent = 'Error: ' + e.message;
+    toast('Failed to call MCP tool', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '⚡ TEST AI OVERVIEW';
+  }
+}
+
+// ── Init & Smart Visibility Polling ──────────────────────────────────────────
+
+let pollIntervalId = null;
+
+function setupSmartPolling() {
+  if (pollIntervalId) clearInterval(pollIntervalId);
+  const intervalMs = document.hidden ? 20000 : 3000;
+  pollIntervalId = setInterval(refreshStatus, intervalMs);
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    refreshStatus();
+  }
+  setupSmartPolling();
+});
+
+setupSmartPolling();
 refreshStatus();
 loadStations().then(() => {
   // Auto-repair corrupted URLs on startup

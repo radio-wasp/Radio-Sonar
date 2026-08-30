@@ -6,6 +6,21 @@ process.on('unhandledRejection', (reason) => {
   console.error('[FATAL] Unhandled rejection (process kept alive):', reason);
 });
 
+// ── In-memory log buffer for MCP and UI Diagnostics ──────────────────────────
+const SYSTEM_LOGS = [];
+const origLog = console.log;
+const origErr = console.error;
+console.log = (...args) => {
+  origLog(...args);
+  SYSTEM_LOGS.push({ time: new Date().toISOString(), level: 'info', msg: args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ') });
+  if (SYSTEM_LOGS.length > 300) SYSTEM_LOGS.shift();
+};
+console.error = (...args) => {
+  origErr(...args);
+  SYSTEM_LOGS.push({ time: new Date().toISOString(), level: 'error', msg: args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ') });
+  if (SYSTEM_LOGS.length > 300) SYSTEM_LOGS.shift();
+};
+
 const zlib = require('zlib');
 const express = require('express');
 const { spawn, execSync, execFileSync } = require('child_process');
@@ -15,10 +30,25 @@ const cors = require('cors');
 const http = require('http');
 const https = require('https');
 const multer = require('multer');
+const { sdrManager } = require('./sdr_receiver');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Live SDR stream client subscribers
+let sdrStreamClients = [];
+
+sdrManager.on('audio', (chunk) => {
+  for (let i = sdrStreamClients.length - 1; i >= 0; i--) {
+    const client = sdrStreamClients[i];
+    if (client.writableEnded || client.destroyed) {
+      sdrStreamClients.splice(i, 1);
+    } else {
+      client.write(chunk);
+    }
+  }
+});
 
 const DEFAULT_RECORDINGS_DIR = process.env.RECORDINGS_DIR || '/recordings';
 const LOGOS_DIR = '/recordings/logos';
@@ -42,6 +72,44 @@ function getRecordingsDir() {
   const d = DEFAULT_RECORDINGS_DIR;
   if (!fs.existsSync(d)) try { fs.mkdirSync(d, { recursive: true }); } catch(_) {}
   return d;
+}
+
+// ── In-Memory Recordings Cache (High-Performance File Indexing) ──────────────
+let RECORDINGS_CACHE = null;
+let RECORDINGS_CACHE_TIME = 0;
+const RECORDINGS_CACHE_TTL_MS = 20000; // 20 seconds TTL
+
+function invalidateRecordingsCache() {
+  RECORDINGS_CACHE = null;
+  RECORDINGS_CACHE_TIME = 0;
+}
+
+function getCachedRecordings(dir) {
+  const now = Date.now();
+  if (RECORDINGS_CACHE && (now - RECORDINGS_CACHE_TIME < RECORDINGS_CACHE_TTL_MS)) {
+    return RECORDINGS_CACHE;
+  }
+  try {
+    if (!fs.existsSync(dir)) return { files: [], totalFiles: 0, totalBytes: 0 };
+    const entries = fs.readdirSync(dir);
+    const files = [];
+    let totalBytes = 0;
+    for (const f of entries) {
+      if (f.endsWith('.mp3') || f.endsWith('.aac') || f.endsWith('.ogg')) {
+        try {
+          const stat = fs.statSync(path.join(dir, f));
+          totalBytes += stat.size;
+          files.push({ name: f, size: stat.size, modified: stat.mtime });
+        } catch (_) {}
+      }
+    }
+    files.sort((a, b) => new Date(b.modified) - new Date(a.modified));
+    RECORDINGS_CACHE = { files, totalFiles: entries.length, totalBytes };
+    RECORDINGS_CACHE_TIME = now;
+    return RECORDINGS_CACHE;
+  } catch (_) {
+    return { files: [], totalFiles: 0, totalBytes: 0 };
+  }
 }
 
 const audioDsp = require('./audio_dsp');
@@ -1061,7 +1129,7 @@ async function resolveDirectStreamUrl(url) {
     const guideId = idMatch ? idMatch[1] : '';
     if (guideId) {
       try {
-        const tuneUrl = `https://opml.radiotime.com/Tune.ashx?id=${guideId}&render=json&formats=mp3,aac,ogg`;
+        const tuneUrl = `https://opml.radiotime.com/Tune.ashx?id=${guideId}&render=json&partnerId=RadioTime&formats=mp3,aac,ogg`;
         const res = await httpGet(tuneUrl, {
           headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' },
           timeout: 6000
@@ -1121,23 +1189,85 @@ async function startMonitor(id, url, options = {}) {
     triggerMode = 'hybrid', triggerKeywords = '',
     recordingEnabled = false, transcribeEnabled = false,
     metadataLogEnabled = true, metadataRetentionHours = 5,
+    gain = null, ppm = 0, program = 0, sdrDeviceIndex, preferredDevice, isWideband,
   } = options;
 
-  const directUrl = await resolveDirectStreamUrl(url);
+  const isSdr = url.startsWith('sdr://') || url.startsWith('fm://') || url.startsWith('hd://') || options.sourceType === 'sdr' || options.sourceType === 'wideband';
+  let directUrl = url;
+  let sdrWorker = null;
+
+  if (isSdr) {
+    directUrl = `http://127.0.0.1:3000/api/sdr/stream/${id}.mp3`;
+    let sdrMode = 'fm';
+    let sdrFreq = 105.1;
+    let sdrProg = parseInt(program, 10) || 0;
+    let widebandFlag = isWideband || options.sourceType === 'wideband' || preferredDevice === 'wideband';
+
+    if (url.startsWith('fm://')) {
+      sdrMode = 'fm';
+      sdrFreq = parseFloat(url.replace('fm://', '')) || 105.1;
+    } else if (url.startsWith('hd://')) {
+      sdrMode = 'hd';
+      const parts = url.replace('hd://', '').split('/');
+      sdrFreq = parseFloat(parts[0]) || 105.1;
+      sdrProg = parseInt(parts[1], 10) || 0;
+    } else if (url.startsWith('sdr://')) {
+      const parts = url.replace('sdr://', '').split('/');
+      sdrMode = parts[0] === 'hd' ? 'hd' : 'fm';
+      sdrFreq = parseFloat(parts[1]) || 105.1;
+      sdrProg = parseInt(parts[2], 10) || 0;
+    }
+
+    sdrWorker = await sdrManager.acquireWorker(id, {
+      freq: sdrFreq,
+      mode: sdrMode,
+      program: sdrProg,
+      gain: gain ? parseFloat(gain) : null,
+      ppm: parseInt(ppm, 10) || 0,
+      preferredDevice: sdrDeviceIndex !== undefined ? sdrDeviceIndex : preferredDevice,
+      isWideband: widebandFlag,
+      stationName: stationName || (sdrMode === 'hd' ? `HD${sdrProg + 1} ${sdrFreq} MHz` : `FM ${sdrFreq} MHz`),
+    });
+  } else {
+    directUrl = await resolveDirectStreamUrl(url);
+  }
 
   const state = {
-    id, url, directUrl, status: 'listening',
+    id, url, directUrl, isSdr, status: 'listening',
     currentTitle: null, currentArtist: null, currentSongTitle: null, currentAlbumart: null,
     lastTitle: null, lastTitleChange: Date.now(),
     station: null, recordingFile: null, recordingStart: null,
     ffmpegRec: null, startTime: new Date(), interval: null,
-    options: { pollInterval, stallThreshold, metadataUrl, metadataSource, stationName, callsign, network, triggerMode, triggerKeywords, recordingEnabled, transcribeEnabled, metadataLogEnabled, metadataRetentionHours },
+    options: { pollInterval, stallThreshold, metadataUrl, metadataSource, stationName, callsign, network, triggerMode, triggerKeywords, recordingEnabled, transcribeEnabled, metadataLogEnabled, metadataRetentionHours, gain, ppm, program, sdrDeviceIndex, preferredDevice, isWideband, sourceType: isSdr ? 'sdr' : 'web' },
     titleHistory: [],
     metadataLogFile: path.join(getRecordingsDir(), (stationName ? stationName.trim().replace(/[^a-zA-Z0-9_-]/g, '_') : 'station') + '-metadata.json'),
     volumeAdDetected: false, silenceAdDetected: false,
+    sdrTelemetry: isSdr && sdrWorker ? sdrWorker.getStatus() : null,
   };
 
   monitors[id] = state;
+
+  if (isSdr && sdrWorker) {
+    const onSdrMeta = (sdrMeta) => {
+      if (!monitors[id]) return;
+      state.sdrTelemetry = sdrMeta;
+      const sdrTitle = sdrMeta.rtPlus || sdrMeta.title || sdrMeta.rt || '';
+      if (sdrTitle && sdrTitle !== state.lastTitle) {
+        state.lastTitle = sdrTitle;
+        state.lastTitleChange = Date.now();
+        state.currentTitle = sdrTitle;
+        state.currentArtist = sdrMeta.artist || null;
+        state.currentSongTitle = sdrMeta.title || null;
+        state.station = sdrMeta.ps || state.station;
+
+        const historyEntry = { title: sdrTitle, artist: state.currentArtist, songTitle: state.currentSongTitle, albumart: null, time: new Date() };
+        state.titleHistory.unshift(historyEntry);
+        if (state.titleHistory.length > 20) state.titleHistory.pop();
+        if (state.options.metadataLogEnabled && sdrTitle) appendMetadataLog(state.metadataLogFile, historyEntry, state.options.metadataRetentionHours);
+      }
+    };
+    sdrWorker.on('metadata', onSdrMeta);
+  }
 
   async function poll() {
     if (!monitors[id]) return;
@@ -1175,12 +1305,25 @@ async function startMonitor(id, url, options = {}) {
         }
       }
 
-      // ── Acoustic Dual-Fingerprint Engine (Continuous across ALL stations) ──
+      // ── Adaptive Acoustic Dual-Fingerprint Engine ──
       const now = Date.now();
       const timeSinceLastFpCheck = now - (state.lastFpCheck || 0);
 
-      // Run acoustic fingerprinting continuously for EVERY station every 15 seconds
-      const shouldRunAcoustic = !state.fpRunning && (timeSinceLastFpCheck > 15000);
+      // Adaptive Polling: When a known song is actively playing, back off sampling to 55s
+      // during the track's middle to save ~70% CPU, then ramp up to 15s near track end.
+      let targetFpInterval = 15000;
+      if (state.fingerprintMusicDetected) {
+        const songAgeMs = now - (state.lastTitleChange || now);
+        if (songAgeMs < 120000) {
+          targetFpInterval = 55000; // 55s interval during first 2 mins of song
+        } else if (songAgeMs < 180000) {
+          targetFpInterval = 30000; // 30s interval between 2-3 mins
+        } else {
+          targetFpInterval = 15000; // 15s interval approaching track end
+        }
+      }
+
+      const shouldRunAcoustic = !state.fpRunning && (timeSinceLastFpCheck >= targetFpInterval);
 
       if (shouldRunAcoustic) {
         state.fpRunning = true;
@@ -1398,8 +1541,8 @@ async function searchTuneIn(query, limit = 15) {
     const guideId = q.toLowerCase().startsWith('s') ? q.toLowerCase() : 's' + q;
     try {
       const [describeRes, tuneRes, npRes] = await Promise.all([
-        httpGet(`https://opml.radiotime.com/Describe.ashx?id=${guideId}&render=json`, { timeout: 5000 }).catch(() => null),
-        httpGet(`https://opml.radiotime.com/Tune.ashx?id=${guideId}&render=json&formats=mp3,aac`, { timeout: 5000 }).catch(() => null),
+        httpGet(`https://opml.radiotime.com/Describe.ashx?id=${guideId}&render=json&partnerId=RadioTime`, { timeout: 5000 }).catch(() => null),
+        httpGet(`https://opml.radiotime.com/Tune.ashx?id=${guideId}&render=json&partnerId=RadioTime&formats=mp3,aac`, { timeout: 5000 }).catch(() => null),
         httpGet(`https://feed.tunein.com/profiles/${guideId}/nowPlaying`, { timeout: 4000 }).catch(() => null)
       ]);
 
@@ -1417,12 +1560,14 @@ async function searchTuneIn(query, limit = 15) {
         } catch (_) {}
       }
 
-      let streamUrl = `https://opml.radiotime.com/Tune.ashx?id=${guideId}&formats=mp3,aac`;
+      let streamUrl = `https://opml.radiotime.com/Tune.ashx?id=${guideId}&partnerId=RadioTime&formats=mp3,aac`;
       if (tuneRes && tuneRes.body) {
         try {
           const tuneData = JSON.parse(tuneRes.body);
           const tuneBody = Array.isArray(tuneData.body) ? tuneData.body : [tuneData.body || {}];
-          if (tuneBody[0]?.url) streamUrl = tuneBody[0].url;
+          const best = tuneBody.find(b => b && b.url && !b.url.includes('opml.radiotime.com'));
+          if (best && best.url) streamUrl = best.url;
+          else if (tuneBody[0]?.url) streamUrl = tuneBody[0].url;
         } catch (_) {
           const lines = tuneRes.body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http'));
           if (lines.length > 0) streamUrl = lines[0];
@@ -1471,7 +1616,7 @@ async function searchTuneIn(query, limit = 15) {
   // 2. Keyword Search across TuneIn Global Directory
   try {
     const result = await httpGet(
-      `https://opml.radiotime.com/Search.ashx?query=${encodeURIComponent(q)}&formats=mp3,aac&render=json&filter=s`,
+      `https://opml.radiotime.com/Search.ashx?query=${encodeURIComponent(q)}&formats=mp3,aac&render=json&partnerId=RadioTime&filter=s`,
       { timeout: 6000 }
     );
     const data = JSON.parse(result.body);
@@ -1480,7 +1625,7 @@ async function searchTuneIn(query, limit = 15) {
 
     const resolved = await Promise.all(stationItems.map(async s => {
       const guideId = s.guide_id || '';
-      let streamUrl = s.URL || s.url || `https://opml.radiotime.com/Tune.ashx?id=${guideId}&formats=mp3,aac`;
+      let streamUrl = s.URL || s.url || `https://opml.radiotime.com/Tune.ashx?id=${guideId}&partnerId=RadioTime&formats=mp3,aac`;
       let nowPlaying = '', albumart = '', stationLogo = s.image || '';
       const metadataUrl = guideId ? `https://feed.tunein.com/profiles/${guideId}/nowPlaying` : '';
 
@@ -2149,7 +2294,7 @@ async function fetchTuneInId(callsign, name) {
 
   for (const q of queries) {
     try {
-      const url = `https://opml.radiotime.com/Search.ashx?query=${encodeURIComponent(q)}&render=json&filter=s&formats=mp3,aac`;
+      const url = `https://opml.radiotime.com/Search.ashx?query=${encodeURIComponent(q)}&render=json&partnerId=RadioTime&filter=s&formats=mp3,aac`;
       const res = await httpGet(url);
       const data = JSON.parse(res.body);
       const items = (data.body || []).filter(i => i.type === 'audio' && i.guide_id);
@@ -2295,28 +2440,108 @@ app.post('/api/stations/rebuild-bell', (req, res) => {
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
+// ── Off-Air RTL-SDR Endpoints (Version 3.1) ──────────────────────────────────
+
+app.get('/api/sdr/devices', async (req, res) => {
+  try {
+    const info = await sdrManager.scanDevices();
+    res.json(info);
+  } catch (err) {
+    res.json({ detected: false, count: 0, devices: [], error: err.message });
+  }
+});
+
+app.get('/api/sdr/status', (req, res) => {
+  res.json(sdrManager.getStatus());
+});
+
+app.get('/api/sdr/pool/status', (req, res) => {
+  res.json(sdrManager.getPoolStatus());
+});
+
+app.get(['/api/sdr/stream/:id.mp3', '/api/sdr/stream.mp3'], (req, res) => {
+  const workerId = req.params.id || 'default';
+  const worker = sdrManager.getWorker(workerId);
+  res.setHeader('Content-Type', 'audio/mpeg');
+  res.setHeader('Cache-Control', 'no-cache, no-store');
+  res.setHeader('Connection', 'keep-alive');
+  worker.addClient(res);
+});
+
+app.post('/api/sdr/tune', async (req, res) => {
+  const { freq, mode = 'fm', program = 0, gain = null, ppm = 0, device = 'auto', isWideband = false, stationName } = req.body;
+  if (!freq) return res.status(400).json({ error: 'Frequency in MHz required' });
+  const freqNum = parseFloat(freq);
+  if (isNaN(freqNum) || freqNum <= 0) return res.status(400).json({ error: 'Invalid frequency' });
+
+  const worker = await sdrManager.acquireWorker('default', {
+    freq: freqNum,
+    mode,
+    program: parseInt(program, 10) || 0,
+    gain: gain ? parseFloat(gain) : null,
+    ppm: parseInt(ppm, 10) || 0,
+    preferredDevice: device,
+    isWideband: !!isWideband,
+    stationName
+  });
+
+  res.json({ message: 'Tuning started', status: worker.getStatus() });
+});
+
+app.post('/api/sdr/eeprom/write', async (req, res) => {
+  const { deviceIndex, serial } = req.body;
+  if (deviceIndex === undefined || !serial) {
+    return res.status(400).json({ error: 'deviceIndex and serial are required' });
+  }
+  try {
+    const result = await sdrManager.writeSerial(deviceIndex, serial);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/sdr/eeprom/auto-serialize', async (req, res) => {
+  const { prefix = '0000000' } = req.body || {};
+  try {
+    const result = await sdrManager.autoSerializeAll(prefix);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/sdr/stop', (req, res) => {
+  sdrManager.stop();
+  res.json({ message: 'All SDR tuners stopped' });
+});
+
 // ── Monitor API ───────────────────────────────────────────────────────────────
 
 app.get('/api/status', (req, res) => {
-  const active = Object.values(monitors).map(m => ({
-    id: m.id, url: m.url, status: m.status,
-    currentTitle: m.currentTitle, currentArtist: m.currentArtist,
-    currentSongTitle: m.currentSongTitle, currentAlbumart: m.currentAlbumart,
-    currentCueType: m.currentCueType || null, currentDurationMs: m.currentDurationMs || null,
-    station: m.station, recordingFile: m.recordingFile, recordingStart: m.recordingStart,
-    startTime: m.startTime, lastTitleChange: m.lastTitleChange,
-    titleHistory: m.titleHistory.slice(0, 5), options: m.options,
-    metadataSource: m.options.metadataUrl ? 'json' : 'stream',
-    recordingEnabled: m.options.recordingEnabled, transcribeEnabled: m.options.transcribeEnabled,
-    metadataLogEnabled: m.options.metadataLogEnabled, metadataRetentionHours: m.options.metadataRetentionHours,
-    metadataLogFile: m.metadataLogFile,
-    acousticMatchInfo: m.acousticMatchInfo || null,
-  }));
+  const active = Object.values(monitors).map(m => {
+    const sdrWorker = m.isSdr ? sdrManager.getWorker(m.id) : null;
+    return {
+      id: m.id, url: m.url, status: m.status, isSdr: m.isSdr || false,
+      currentTitle: m.currentTitle, currentArtist: m.currentArtist,
+      currentSongTitle: m.currentSongTitle, currentAlbumart: m.currentAlbumart,
+      currentCueType: m.currentCueType || null, currentDurationMs: m.currentDurationMs || null,
+      station: m.station, recordingFile: m.recordingFile, recordingStart: m.recordingStart,
+      startTime: m.startTime, lastTitleChange: m.lastTitleChange,
+      titleHistory: m.titleHistory.slice(0, 5), options: m.options,
+      metadataSource: m.isSdr ? 'rds' : (m.options.metadataUrl ? 'json' : 'stream'),
+      recordingEnabled: m.options.recordingEnabled, transcribeEnabled: m.options.transcribeEnabled,
+      metadataLogEnabled: m.options.metadataLogEnabled, metadataRetentionHours: m.options.metadataRetentionHours,
+      metadataLogFile: m.metadataLogFile,
+      acousticMatchInfo: m.acousticMatchInfo || null,
+      sdrTelemetry: sdrWorker ? sdrWorker.getStatus() : m.sdrTelemetry,
+    };
+  });
   res.json({ active });
 });
 
 app.post('/api/monitor/start', (req, res) => {
-  const { url, pollInterval, stallThreshold, metadataUrl, metadataSource: rawSource, stationName, callsign, network, triggerMode, triggerKeywords, recordingEnabled, transcribeEnabled, metadataLogEnabled, metadataRetentionHours } = req.body;
+  const { url, pollInterval, stallThreshold, metadataUrl, metadataSource: rawSource, stationName, callsign, network, triggerMode, triggerKeywords, recordingEnabled, transcribeEnabled, metadataLogEnabled, metadataRetentionHours, gain, ppm, program, sdrDeviceIndex, preferredDevice, isWideband, sourceType } = req.body;
   // Server-side metadataSource override by network — ensures correct parser even
   // if frontend sends 'auto' for a known network
   let metadataSource = rawSource || 'auto';
@@ -2336,7 +2561,7 @@ app.post('/api/monitor/start', (req, res) => {
   }
   if (!url) return res.status(400).json({ error: 'URL required' });
   const id = Date.now().toString();
-  startMonitor(id, url, { pollInterval, stallThreshold, metadataUrl: metadataUrl || null, metadataSource: metadataSource || 'auto', stationName: stationName || '', callsign: callsign || '', network: network || '', triggerMode: triggerMode || 'hybrid', triggerKeywords: triggerKeywords || '', recordingEnabled: recordingEnabled === true, transcribeEnabled: transcribeEnabled === true, metadataLogEnabled: metadataLogEnabled !== false, metadataRetentionHours: parseFloat(metadataRetentionHours) || 5 });
+  startMonitor(id, url, { pollInterval, stallThreshold, metadataUrl: metadataUrl || null, metadataSource: metadataSource || 'auto', stationName: stationName || '', callsign: callsign || '', network: network || '', triggerMode: triggerMode || 'hybrid', triggerKeywords: triggerKeywords || '', recordingEnabled: recordingEnabled === true, transcribeEnabled: transcribeEnabled === true, metadataLogEnabled: metadataLogEnabled !== false, metadataRetentionHours: parseFloat(metadataRetentionHours) || 5, gain, ppm, program, sdrDeviceIndex, preferredDevice, isWideband, sourceType });
   res.json({ id, message: 'Monitoring started' });
 });
 
@@ -2345,14 +2570,40 @@ app.post('/api/monitor/stop/:id', (req, res) => {
   if (!m) return res.status(404).json({ error: 'Not found' });
   clearInterval(m.interval);
   if (m.ffmpegRec) m.ffmpegRec.kill('SIGTERM');
+  if (m.isSdr) sdrManager.releaseWorker(req.params.id);
   delete monitors[req.params.id];
   res.json({ message: 'Stopped' });
 });
 
 app.post('/api/monitor/stopall', (req, res) => {
-  Object.values(monitors).forEach(m => { clearInterval(m.interval); if (m.ffmpegRec) m.ffmpegRec.kill('SIGTERM'); });
+  Object.values(monitors).forEach(m => { 
+    clearInterval(m.interval); 
+    if (m.ffmpegRec) m.ffmpegRec.kill('SIGTERM'); 
+    if (m.isSdr) sdrManager.releaseWorker(m.id);
+  });
+  sdrManager.stop();
   monitors = {};
   res.json({ message: 'All stopped' });
+});
+
+app.post('/api/monitor/recordall', (req, res) => {
+  const enabled = req.body.enabled !== undefined ? !!req.body.enabled : true;
+  Object.values(monitors).forEach(m => {
+    m.options.recordingEnabled = enabled;
+    if (!enabled && m.status === 'recording') {
+      endRecording(m);
+      m.status = 'listening';
+    }
+  });
+  res.json({ recordingEnabled: enabled, count: Object.keys(monitors).length });
+});
+
+app.post('/api/monitor/transcribeall', (req, res) => {
+  const enabled = req.body.enabled !== undefined ? !!req.body.enabled : true;
+  Object.values(monitors).forEach(m => {
+    m.options.transcribeEnabled = enabled;
+  });
+  res.json({ transcribeEnabled: enabled, count: Object.keys(monitors).length });
 });
 
 app.post('/api/monitor/:id/recording', (req, res) => {
@@ -2383,11 +2634,8 @@ app.post('/api/monitor/:id/metalog', (req, res) => {
 app.get('/api/recordings', (req, res) => {
   try {
     const dir = getRecordingsDir();
-    const files = fs.readdirSync(dir)
-      .filter(f => f.endsWith('.mp3') || f.endsWith('.aac') || f.endsWith('.ogg'))
-      .map(f => { const stat = fs.statSync(path.join(dir, f)); return { name: f, size: stat.size, modified: stat.mtime }; })
-      .sort((a, b) => new Date(b.modified) - new Date(a.modified));
-    res.json(files);
+    const cached = getCachedRecordings(dir);
+    res.json(cached.files || []);
   } catch(e) { res.json([]); }
 });
 
@@ -2413,6 +2661,7 @@ app.delete('/api/recordings/station/:station', (req, res) => {
         }
       }
     }
+    invalidateRecordingsCache();
     res.json({ message: 'Deleted', deleted });
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -2433,6 +2682,7 @@ app.delete('/api/recordings/all', (req, res) => {
         }
       }
     }
+    invalidateRecordingsCache();
     res.json({ message: 'All recordings deleted', deleted });
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -2445,6 +2695,7 @@ app.delete('/api/recordings/:name', (req, res) => {
   fs.unlinkSync(fp);
   const metaFp = safeRecordingPath(req.params.name.replace(/\.(mp3|aac|ogg)$/i, '.json'));
   if (metaFp && fs.existsSync(metaFp)) fs.unlinkSync(metaFp);
+  invalidateRecordingsCache();
   res.json({ message: 'Deleted' });
 });
 
@@ -2463,6 +2714,7 @@ app.patch('/api/recordings/meta/:name', (req, res) => {
   fs.writeFileSync(mp, JSON.stringify(updated, null, 2));
   // Re-update advertisers if brands changed
   if (req.body.brands) updateAdvertisers(req.body.station || path.basename(req.params.name).split('-')[0], path.basename(req.params.name), req.body.brands);
+  invalidateRecordingsCache();
   res.json(updated);
 });
 
@@ -2474,9 +2726,10 @@ app.post('/api/recordings/purge', (req, res) => {
   const cutoff = Date.now() - (hours * 60 * 60 * 1000);
   let deleted = 0;
   try {
-    fs.readdirSync(RECORDINGS_DIR).filter(f => /\.(mp3|aac|ogg)$/i.test(f)).forEach(f => {
+    const dir = getRecordingsDir();
+    fs.readdirSync(dir).filter(f => /\.(mp3|aac|ogg)$/i.test(f)).forEach(f => {
       if (slug && !f.startsWith(slug + '-') && !f.includes(station)) return;
-      const fp = path.join(RECORDINGS_DIR, f);
+      const fp = path.join(dir, f);
       if (fs.statSync(fp).mtimeMs < cutoff) {
         fs.unlinkSync(fp);
         deleted++;
@@ -2484,6 +2737,7 @@ app.post('/api/recordings/purge', (req, res) => {
         if (fs.existsSync(mp)) fs.unlinkSync(mp);
       }
     });
+    invalidateRecordingsCache();
   } catch(e) {}
   res.json({ deleted, entriesRemoved: deleted, hours });
 });
@@ -2869,22 +3123,12 @@ app.post('/api/settings/ai', (req, res) => {
 
 app.get('/api/storage/info', (req, res) => {
   const dir = getRecordingsDir();
-  let totalFiles = 0;
-  let totalBytes = 0;
-  try {
-    if (fs.existsSync(dir)) {
-      const files = fs.readdirSync(dir);
-      totalFiles = files.length;
-      for (const f of files) {
-        try { totalBytes += fs.statSync(path.join(dir, f)).size; } catch(_) {}
-      }
-    }
-  } catch(_) {}
+  const cached = getCachedRecordings(dir);
   res.json({
     recordingsDir: dir,
-    totalFiles,
-    totalBytes,
-    totalFormatted: (totalBytes / (1024 * 1024)).toFixed(2) + ' MB'
+    totalFiles: cached.totalFiles || 0,
+    totalBytes: cached.totalBytes || 0,
+    totalFormatted: ((cached.totalBytes || 0) / (1024 * 1024)).toFixed(2) + ' MB'
   });
 });
 
@@ -2896,4 +3140,83 @@ app.post('/api/recordings/retranscribe/:name', async (req, res) => {
   res.json({ message: 'Transcription queued' });
 });
 
-app.listen(3000, () => console.log('Barracuda API on :3000'));
+// ── System Logs & Diagnostics ────────────────────────────────────────────────
+
+app.get('/api/logs', (req, res) => {
+  const count = parseInt(req.query.lines) || 50;
+  res.json(SYSTEM_LOGS.slice(-Math.min(250, count)));
+});
+
+// ── Model Context Protocol (MCP) Server Bridge ──────────────────────────────
+
+const mcp = require('./mcp_server');
+
+app.get('/api/mcp/tools', (req, res) => {
+  res.json({
+    version: '2.1.0-beta',
+    tools: mcp.MCP_TOOLS,
+    resources: mcp.MCP_RESOURCES
+  });
+});
+
+app.post('/api/mcp/call', async (req, res) => {
+  const { name, arguments: toolArgs } = req.body || {};
+  if (!name) return res.status(400).json({ error: 'Tool name is required' });
+  try {
+    const result = await mcp.executeTool(name, toolArgs || {});
+    res.json({ result });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Remote MCP SSE Endpoint
+app.get('/api/mcp/sse', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders();
+
+  const endpointUri = `/api/mcp/message?sessionId=${Date.now()}`;
+  res.write(`event: endpoint\ndata: ${endpointUri}\n\n`);
+
+  const keepAlive = setInterval(() => {
+    res.write(': keep-alive\n\n');
+  }, 15000);
+
+  req.on('close', () => clearInterval(keepAlive));
+});
+
+app.post('/api/mcp/message', async (req, res) => {
+  const { jsonrpc, id, method, params } = req.body || {};
+  if (method === 'tools/list') {
+    return res.json({ jsonrpc: '2.0', id, result: { tools: mcp.MCP_TOOLS } });
+  }
+  if (method === 'tools/call') {
+    const { name, arguments: toolArgs } = params || {};
+    const result = await mcp.executeTool(name, toolArgs || {});
+    return res.json({
+      jsonrpc: '2.0',
+      id,
+      result: {
+        content: [{ type: 'text', text: typeof result === 'string' ? result : JSON.stringify(result, null, 2) }],
+        isError: !!result.error
+      }
+    });
+  }
+  if (method === 'initialize') {
+    return res.json({
+      jsonrpc: '2.0',
+      id,
+      result: {
+        protocolVersion: '2024-11-05',
+        capabilities: { tools: {}, resources: {} },
+        serverInfo: { name: 'barracuda-mcp-server', version: '3.0.0' }
+      }
+    });
+  }
+  res.json({ jsonrpc: '2.0', id, result: {} });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Radio SONAR API on :${PORT} (v3.0.0 RTL-SDR Off-Air & MCP enabled)`));

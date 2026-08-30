@@ -7,9 +7,14 @@ services:
       - ./recorder/server.js:/app/server.js
       - ./recorder/audio_dsp.js:/app/audio_dsp.js
       - ./recorder/transcriber.js:/app/transcriber.js
+      - ./recorder/sdr_receiver.js:/app/sdr_receiver.js
+      - ./recorder/wideband_channelizer.py:/app/wideband_channelizer.py
       - ./recorder/shazam_recognize.py:/app/shazam_recognize.py
+      - ./recorder/mcp_server.js:/app/mcp_server.js
       - recordings:/recordings
       - whisper_cache:/root/.cache/whisper
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
     labels:
       net.unraid.docker.shell: "bash"
     networks:

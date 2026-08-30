@@ -1,7 +1,11 @@
 {
   "name": "barracuda",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "mcp": "node mcp_server.js"
+  },
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
