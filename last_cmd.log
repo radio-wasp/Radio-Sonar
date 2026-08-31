@@ -1,247 +1,334 @@
-Script started on 2026-08-30 19:00:50-03:00 [COMMAND="'/usr/local/emhttp/plugins/compose.manager/scripts/compose.sh' '-cup' '-pbarracuda-main' '-f/mnt/utility/Junkbox/composefiles/Barracuda-main/docker-compose.yml' '-s/mnt/utility/Junkbox/composefiles/Barracuda-main' '--recreate'" TERM="xterm-256color" TTY="/dev/pts/1" COLUMNS="139" LINES="43"]
-[?25l[0G[+] up 0/1
- [33m⠋[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m0.1s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠙[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m0.2s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠹[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m0.3s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠸[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m0.4s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠼[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m0.5s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠴[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m0.6s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠦[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m0.7s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠧[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m0.8s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠇[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m0.9s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠏[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m1.0s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠋[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m1.1s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠙[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m1.2s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠹[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m1.3s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠸[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m1.4s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠼[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m1.5s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠴[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m1.6s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠦[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m1.7s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠧[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m1.8s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠇[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m1.9s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠏[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m2.0s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠋[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m2.1s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠙[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m2.2s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠹[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m2.3s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠸[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m2.4s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠼[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m2.5s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠴[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m2.6s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠦[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m2.7s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠧[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m2.8s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠇[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m2.9s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠏[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m3.0s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠋[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m3.1s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠙[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m3.2s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠹[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m3.3s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠸[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m3.4s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠼[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m3.5s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠴[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m3.6s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠦[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m3.7s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠧[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m3.8s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠇[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m3.9s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠏[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m4.0s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠋[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m4.1s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠙[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m4.2s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠹[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m4.3s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠸[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m4.4s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠼[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m4.5s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠴[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m4.6s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠦[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m4.7s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠧[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m4.8s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠇[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m4.9s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠏[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m5.0s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠋[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m5.1s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠙[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m5.2s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠹[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m5.3s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠸[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m5.4s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠼[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m5.5s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠴[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m5.6s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠦[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m5.7s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠧[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m5.8s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠇[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m5.9s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠏[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m6.0s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠋[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m6.1s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠙[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m6.2s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠹[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m6.3s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠸[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m6.4s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠼[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m6.5s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠴[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m6.6s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠦[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m6.7s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠧[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m6.8s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠇[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m6.9s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠏[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m7.0s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠋[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m7.1s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠙[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m7.2s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠹[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m7.3s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠸[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m7.4s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠼[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m7.5s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠴[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m7.6s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠦[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m7.7s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠧[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m7.8s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠇[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m7.9s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠏[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m8.0s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠋[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m8.1s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠙[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m8.2s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠹[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m8.3s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠸[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m8.4s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠼[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m8.5s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠴[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m8.6s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠦[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m8.7s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠧[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m8.8s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠇[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m8.9s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠏[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m9.0s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠋[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m9.1s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠙[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m9.2s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠹[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m9.3s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠸[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m9.4s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠼[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m9.5s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠴[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m9.6s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠦[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m9.7s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠧[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m9.8s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠇[0m Container barracuda-main-recorder-1 Recreate                                                                                              [34m9.9s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠏[0m Container barracuda-main-recorder-1 Recreate                                                                                             [34m10.0s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠋[0m Container barracuda-main-recorder-1 Recreate                                                                                             [34m10.1s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠙[0m Container barracuda-main-recorder-1 Recreate                                                                                             [34m10.2s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠹[0m Container barracuda-main-recorder-1 Recreate                                                                                             [34m10.3s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠸[0m Container barracuda-main-recorder-1 Recreate                                                                                             [34m10.4s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠼[0m Container barracuda-main-recorder-1 Recreate                                                                                             [34m10.5s[0m
-[?25h[?25l[2A[0G[+] up 0/1
- [33m⠴[0m Container barracuda-main-recorder-1 Recreate                                                                                             [34m10.6s[0m
-[?25h[?25l[2A[0G[+] up 1/2
- [32m✔[0m Container barracuda-main-recorder-1 [32mRecreated[0m                                                                                            [34m10.7s[0m
- [33m⠋[0m Container barracuda-main-web-1      Recreate                                                                                             [34m 0.0s[0m
-[?25h[?25l[3A[0G[+] up 1/2
- [32m✔[0m Container barracuda-main-recorder-1 [32mRecreated[0m                                                                                            [34m10.7s[0m
- [33m⠙[0m Container barracuda-main-web-1      Recreate                                                                                             [34m 0.1s[0m
-[?25h[?25l[3A[0G[+] up 1/2
- [32m✔[0m Container barracuda-main-recorder-1 [32mRecreated[0m                                                                                            [34m10.7s[0m
- [33m⠹[0m Container barracuda-main-web-1      Recreate                                                                                             [34m 0.2s[0m
-[?25h[?25l[3A[0G[+] up 1/2
- [32m✔[0m Container barracuda-main-recorder-1 [32mRecreated[0m                                                                                            [34m10.7s[0m
- [33m⠸[0m Container barracuda-main-web-1      Recreate                                                                                             [34m 0.3s[0m
-[?25h[?25l[3A[0G[+] up 1/2
- [33m⠦[0m Container barracuda-main-recorder-1 Starting                                                                                             [34m11.1s[0m
- [32m✔[0m Container barracuda-main-web-1      [32mRecreated[0m                                                                                            [34m 0.4s[0m
-[?25h[?25l[3A[0G[+] up 1/2
- [33m⠧[0m Container barracuda-main-recorder-1 Starting                                                                                             [34m11.2s[0m
- [32m✔[0m Container barracuda-main-web-1      [32mRecreated[0m                                                                                            [34m 0.4s[0m
-[?25h[?25l[3A[0G[+] up 1/2
- [33m⠇[0m Container barracuda-main-recorder-1 Starting                                                                                             [34m11.3s[0m
- [32m✔[0m Container barracuda-main-web-1      [32mRecreated[0m                                                                                            [34m 0.4s[0m
-[?25h[?25l[3A[0G[+] up 1/2
- [32m✔[0m Container barracuda-main-recorder-1 [32mStarted[0m                                                                                              [34m11.3s[0m
- [33m⠼[0m Container barracuda-main-web-1      Starting                                                                                             [34m 0.7s[0m
-[?25h[?25l[3A[0G[+] up 1/2
- [32m✔[0m Container barracuda-main-recorder-1 [32mStarted[0m                                                                                              [34m11.3s[0m
- [33m⠴[0m Container barracuda-main-web-1      Starting                                                                                             [34m 0.8s[0m
-[?25h[?25l[3A[0G[+] up 2/2
- [32m✔[0m Container barracuda-main-recorder-1 [32mStarted[0m                                                                                              [34m11.3s[0m
- [32m✔[0m Container barracuda-main-web-1      [32mStarted[0m                                                                                              [34m 0.9s[0m
+Script started on 2026-08-31 17:42:01-03:00 [COMMAND="'/usr/local/emhttp/plugins/compose.manager/scripts/compose.sh' '-cdown' '-pbarracuda-main' '-f/mnt/utility/Junkbox/composefiles/Barracuda-main/docker-compose.yml' '-s/mnt/utility/Junkbox/composefiles/Barracuda-main'" TERM="xterm-256color" TTY="/dev/pts/1" COLUMNS="112" LINES="34"]
+[?25l[0G[+] down 0/1
+ [33m⠋[0m Container barracuda-main-web-1 Stopping                                                                       [34m0.1s[0m
+[?25h[?25l[2A[0G[+] down 0/1
+ [33m⠙[0m Container barracuda-main-web-1 Stopping                                                                       [34m0.2s[0m
+[?25h[?25l[2A[0G[+] down 0/1
+ [33m⠹[0m Container barracuda-main-web-1 Removing                                                                       [34m0.3s[0m
+[?25h[?25l[2A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠋[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m0.1s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠙[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m0.2s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠹[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m0.3s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠸[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m0.4s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠼[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m0.5s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠴[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m0.6s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠦[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m0.7s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠧[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m0.8s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠇[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m0.9s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠏[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m1.0s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠋[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m1.1s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠙[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m1.2s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠹[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m1.3s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠸[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m1.4s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠼[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m1.5s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠴[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m1.6s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠦[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m1.7s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠧[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m1.8s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠇[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m1.9s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠏[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m2.0s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠋[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m2.1s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠙[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m2.2s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠹[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m2.3s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠸[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m2.4s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠼[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m2.5s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠴[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m2.6s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠦[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m2.7s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠧[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m2.8s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠇[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m2.9s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠏[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m3.0s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠋[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m3.1s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠙[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m3.2s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠹[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m3.3s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠸[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m3.4s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠼[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m3.5s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠴[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m3.6s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠦[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m3.7s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠧[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m3.8s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠇[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m3.9s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠏[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m4.0s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠋[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m4.1s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠙[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m4.2s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠹[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m4.3s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠸[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m4.4s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠼[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m4.5s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠴[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m4.6s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠦[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m4.7s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠧[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m4.8s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠇[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m4.9s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠏[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m5.0s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠋[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m5.1s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠙[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m5.2s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠹[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m5.3s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠸[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m5.4s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠼[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m5.5s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠴[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m5.6s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠦[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m5.7s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠧[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m5.8s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠇[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m5.9s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠏[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m6.0s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠋[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m6.1s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠙[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m6.2s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠹[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m6.3s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠸[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m6.4s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠼[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m6.5s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠴[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m6.6s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠦[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m6.7s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠧[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m6.8s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠇[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m6.9s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠏[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m7.0s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠋[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m7.1s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠙[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m7.2s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠹[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m7.3s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠸[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m7.4s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠼[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m7.5s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠴[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m7.6s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠦[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m7.7s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠧[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m7.8s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠇[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m7.9s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠏[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m8.0s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠋[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m8.1s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠙[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m8.2s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠹[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m8.3s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠸[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m8.4s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠼[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m8.5s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠴[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m8.6s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠦[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m8.7s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠧[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m8.8s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠇[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m8.9s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠏[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m9.0s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠋[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m9.1s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠙[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m9.2s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠹[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m9.3s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠸[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m9.4s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠼[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m9.5s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠴[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m9.6s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠦[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m9.7s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠧[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m9.8s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                   [34m0.3s[0m
+ [33m⠇[0m Container barracuda-main-recorder-1 Stopping                                                                  [34m9.9s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                  [34m 0.3s[0m
+ [33m⠏[0m Container barracuda-main-recorder-1 Stopping                                                                 [34m10.0s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                  [34m 0.3s[0m
+ [33m⠋[0m Container barracuda-main-recorder-1 Stopping                                                                 [34m10.1s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                  [34m 0.3s[0m
+ [33m⠙[0m Container barracuda-main-recorder-1 Stopping                                                                 [34m10.2s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                  [34m 0.3s[0m
+ [33m⠹[0m Container barracuda-main-recorder-1 Removing                                                                 [34m10.3s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                  [34m 0.3s[0m
+ [33m⠸[0m Container barracuda-main-recorder-1 Removing                                                                 [34m10.4s[0m
+[?25h[?25l[3A[0G[+] down 1/2
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                  [34m 0.3s[0m
+ [33m⠼[0m Container barracuda-main-recorder-1 Removing                                                                 [34m10.5s[0m
+[?25h[?25l[3A[0G[+] down 2/3
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                  [34m 0.3s[0m
+ [32m✔[0m Container barracuda-main-recorder-1 [32mRemoved[0m                                                                  [34m10.5s[0m
+ [33m⠋[0m Network barracuda-main_internal     Removing                                                                 [34m 0.1s[0m
+[?25h[?25l[4A[0G[+] down 3/3
+ [32m✔[0m Container barracuda-main-web-1      [32mRemoved[0m                                                                  [34m 0.3s[0m
+ [32m✔[0m Container barracuda-main-recorder-1 [32mRemoved[0m                                                                  [34m10.5s[0m
+ [32m✔[0m Network barracuda-main_internal     [32mRemoved[0m                                                                  [34m 0.1s[0m
 [?25h
-✓ Stack barracuda-main started successfully
+✓ Stack barracuda-main stopped successfully
 
-Script done on 2026-08-30 19:01:02-03:00 [COMMAND_EXIT_CODE="0"]
+Script done on 2026-08-31 17:42:12-03:00 [COMMAND_EXIT_CODE="0"]

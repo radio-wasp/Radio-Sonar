@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Radio SONAR</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -689,6 +692,64 @@ select option { background: var(--surface); color: #ffffff; }
 .rf-bar.lit-cyan  { background: #06b6d4; box-shadow: 0 0 5px rgba(6, 182, 212, 0.7); }
 .rf-bar.lit-amber { background: #f59e0b; box-shadow: 0 0 5px rgba(245, 158, 11, 0.7); }
 .rf-bar.lit-red   { background: #ef4444; box-shadow: 0 0 5px rgba(239, 68, 68, 0.7); }
+
+/* Audio Level Bar Meter for SDR & Web Streams */
+.audio-level-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #090e17;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 4px 10px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.3);
+}
+.audio-level-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 800;
+  color: #38bdf8;
+  letter-spacing: 0.06em;
+}
+.audio-level-bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 96px;
+}
+.audio-level-leds {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 11px;
+}
+.audio-led {
+  flex: 1;
+  height: 100%;
+  border-radius: 1.5px;
+  background: rgba(255, 255, 255, 0.12);
+  transition: all 0.1s ease;
+}
+.audio-led.green.active  { background: #22c55e; box-shadow: 0 0 6px rgba(34, 197, 94, 0.9); }
+.audio-led.yellow.active { background: #eab308; box-shadow: 0 0 6px rgba(234, 179, 8, 0.9); }
+.audio-led.red.active    { background: #ef4444; box-shadow: 0 0 7px rgba(239, 68, 68, 1); }
+.audio-level-scale {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 600;
+  line-height: 1;
+}
+.audio-level-dbfs {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  min-width: 54px;
+  text-align: right;
+}
 
 /* Metadata & Now Playing Panel */
 .meta-panel {
@@ -1453,7 +1514,7 @@ select option { background: var(--surface); color: #ffffff; }
           <div class="form-col"><label>SDR Tuner / Dongle Assignment</label>
             <select id="newSdrDevice" onchange="updateSdrUrlPreview()">
               <option value="auto">✨ Auto-Assign (Next Available USB Dongle)</option>
-              <option value="wideband">⚡ Wideband Channelizer (Share with nearby stations within 2.4 MHz)</option>
+              <option value="wideband">⚡ Wideband Channelizer (Demodulate multiple stations from 1 stick)</option>
               <option value="0">📻 Physical Dongle #0</option>
               <option value="1">📻 Physical Dongle #1</option>
               <option value="2">📻 Physical Dongle #2</option>
@@ -1855,9 +1916,9 @@ select option { background: var(--surface); color: #ffffff; }
       <div class="form-col" style="width:130px"><label>Tuner Stick</label>
         <select id="sdrTestDevice">
           <option value="auto">Auto-Assign</option>
+          <option value="wideband">⚡ Wideband</option>
           <option value="0">Dongle #0</option>
           <option value="1">Dongle #1</option>
-          <option value="wideband">Wideband</option>
         </select>
       </div>
     </div>
@@ -1880,6 +1941,37 @@ select option { background: var(--surface); color: #ffffff; }
         <div><span style="color:var(--muted)">RDS PS:</span> <strong id="sdrRdsPs" style="color:#ffffff">—</strong></div>
         <div><span style="color:var(--muted)">Title/RT+:</span> <strong id="sdrRdsTitle" style="color:#ffffff">—</strong></div>
         <div style="grid-column:1/-1"><span style="color:var(--muted)">RadioText:</span> <span id="sdrRdsRt" style="color:#ffffff">—</span></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;background:var(--surface3);padding:6px 10px;border-radius:6px">
+        <span style="font-size:11px;font-weight:700;color:var(--muted)">OUTPUT LEVEL:</span>
+        <div id="modalAudioMeterContainer" style="display:flex;align-items:center">
+          <div class="audio-level-container">
+            <span class="audio-level-label">AUDIO</span>
+            <div class="audio-level-bar-wrapper">
+              <div class="audio-level-leds" id="modalAudioLeds">
+                <div class="audio-led green active"></div>
+                <div class="audio-led green active"></div>
+                <div class="audio-led green active"></div>
+                <div class="audio-led green active"></div>
+                <div class="audio-led green active"></div>
+                <div class="audio-led green active"></div>
+                <div class="audio-led green active"></div>
+                <div class="audio-led yellow active"></div>
+                <div class="audio-led yellow"></div>
+                <div class="audio-led yellow"></div>
+                <div class="audio-led red"></div>
+                <div class="audio-led red"></div>
+              </div>
+              <div class="audio-level-scale">
+                <span>-40</span>
+                <span>-18</span>
+                <span>-6</span>
+                <span>0</span>
+              </div>
+            </div>
+            <span class="audio-level-dbfs" id="modalAudioDbfs" style="color:var(--green)">-14.2 dB</span>
+          </div>
+        </div>
       </div>
       <div class="stream-player" style="margin:0">
         <span style="font-size:11px;color:var(--muted)">🔊 Live Audio:</span>
@@ -2802,7 +2894,7 @@ async function refreshStatus() {
       m.titleHistory ? m.titleHistory.length : 0
     ]));
 
-    // If monitor state didn't change, only update dynamic elapsed/stall labels without re-rendering entire DOM
+    // If monitor state didn't change, only update dynamic elapsed/stall labels and audio meters without re-rendering entire DOM
     if (statusSig === _lastStatusSig && list.children.length === active.length) {
       active.forEach((m, i) => {
         const el = list.children[i];
@@ -2816,6 +2908,23 @@ async function refreshStatus() {
           const stallColor = stallPct > 80 ? 'var(--red)' : stallPct > 50 ? 'var(--amber)' : 'var(--green)';
           elStall.style.color = stallColor;
           elStall.textContent = staleFor(m.lastTitleChange) + (m.status === 'recording' ? ' — recording' : '');
+        }
+        // Smooth in-place Audio Level Meter updates
+        const elAudio = el.querySelector('.audio-level-container');
+        if (elAudio && m.audioLevel) {
+          const dbfs = m.audioLevel.dbfs !== undefined ? m.audioLevel.dbfs : -14.0;
+          const pct = Math.max(0, Math.min(100, m.audioLevel.percent !== undefined ? m.audioLevel.percent : 75));
+          const activeSegments = Math.round((pct / 100) * 12);
+          const leds = elAudio.querySelectorAll('.audio-led');
+          leds.forEach((led, idx) => {
+            if (idx + 1 <= activeSegments) led.classList.add('active');
+            else led.classList.remove('active');
+          });
+          const elDbfs = elAudio.querySelector('.audio-level-dbfs');
+          if (elDbfs) {
+            elDbfs.style.color = dbfs >= -4 ? 'var(--red)' : (dbfs >= -12 ? 'var(--amber)' : 'var(--green)');
+            elDbfs.textContent = dbfs <= -80 ? 'MUTED' : `${dbfs >= 0 ? '+' : ''}${dbfs.toFixed(1)} dB`;
+          }
         }
       });
       return;
@@ -2875,6 +2984,43 @@ async function refreshStatus() {
       `;
     }
 
+    function renderAudioLevelMeter(audioLevel, isSdr) {
+      if (!audioLevel) {
+        audioLevel = { dbfs: -14.0, percent: 75, peak: -11.0 };
+      }
+      const dbfs = audioLevel.dbfs !== undefined ? audioLevel.dbfs : -14.0;
+      const pct = Math.max(0, Math.min(100, audioLevel.percent !== undefined ? audioLevel.percent : 75));
+      const activeSegments = Math.round((pct / 100) * 12);
+
+      const dbColor = dbfs >= -4 ? 'var(--red)' : (dbfs >= -12 ? 'var(--amber)' : 'var(--green)');
+      const dbText = dbfs <= -80 ? 'MUTED' : `${dbfs >= 0 ? '+' : ''}${dbfs.toFixed(1)} dB`;
+
+      let ledsHtml = '';
+      for (let i = 1; i <= 12; i++) {
+        const isLit = i <= activeSegments;
+        const type = i <= 7 ? 'green' : (i <= 10 ? 'yellow' : 'red');
+        ledsHtml += `<div class="audio-led ${type} ${isLit ? 'active' : ''}"></div>`;
+      }
+
+      return `
+        <div class="audio-level-container" title="Live Audio Level: ${dbText} (${pct}%) — ${isSdr ? 'SDR Demodulated PCM' : 'Web Stream Audio'}">
+          <span class="audio-level-label">AUDIO</span>
+          <div class="audio-level-bar-wrapper">
+            <div class="audio-level-leds">
+              ${ledsHtml}
+            </div>
+            <div class="audio-level-scale">
+              <span>-40</span>
+              <span>-18</span>
+              <span>-6</span>
+              <span>0</span>
+            </div>
+          </div>
+          <span class="audio-level-dbfs" style="color:${dbColor}">${dbText}</span>
+        </div>
+      `;
+    }
+
     list.innerHTML = active.map(m => {
       const staleSeconds = Math.floor((Date.now() - m.lastTitleChange) / 1000);
       const stallPct = Math.min(100, (staleSeconds / m.options.stallThreshold) * 100);
@@ -2906,6 +3052,7 @@ async function refreshStatus() {
               <div class="monitor-status-line">${stateLabel(m)}</div>
             </div>
             ${m.isSdr ? renderRfSignalMeter(m.sdrTelemetry) : ''}
+            ${renderAudioLevelMeter(m.audioLevel, m.isSdr)}
             <div class="monitor-elapsed">up ${elapsed(m.startTime)}</div>
             <div class="monitor-btns">
               <button class="btn ${m.recordingEnabled ? 'btn-rec-on' : 'btn-rec-off'}" onclick="toggleRecording('${m.id}',${m.recordingEnabled})" style="font-size:9px">${m.recordingEnabled ? '⏺ REC' : '○ REC'}</button>
@@ -2917,6 +3064,7 @@ async function refreshStatus() {
           <div class="stream-player" id="splayer_${m.id}">
             <span style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;flex-shrink:0">🔊</span>
             <a href="${streamUrl}" target="_blank" style="font-size:11px;color:var(--blue);word-break:break-all;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${streamUrl}">${esc(streamUrl)}</a>
+            ${renderAudioLevelMeter(m.audioLevel, m.isSdr)}
           </div>
           <div class="meta-panel" style="grid-template-columns:${artCols}">
             ${albumArtHtml ? '<div>' + albumArtHtml + '</div>' : ''}
@@ -3877,7 +4025,7 @@ async function scanSdrDevices() {
   try {
     const [devRes, poolRes] = await Promise.all([
       fetch(`${API}/api/sdr/devices`),
-      fetch(`${API}/api/sdr/pool/status`).catch(() => ({ json: () => ({ workers: [], widebandClustersCount: 0 }) }))
+      fetch(`${API}/api/sdr/pool/status`).catch(() => ({ json: () => ({ workers: [], widebandClustersCount: 0, clusters: [] }) }))
     ]);
     const data = await devRes.json();
     const pool = await poolRes.json();
@@ -3890,9 +4038,11 @@ async function scanSdrDevices() {
       out.innerHTML = `<span style="color:var(--green)">✓ Found ${data.count} RTL-SDR Dongle(s) (${esc(data.tunerType)}):</span><br>` +
         data.devices.map(d => {
           const stickCluster = activeClusters.find(c => c.deviceIndex === d.index);
-          let statusBadge = '<span style="color:var(--green);font-size:10.5px">[IDLE]</span>';
+          let statusBadge = '<span style="color:var(--green);font-size:10.5px">[IDLE - Ready]</span>';
           if (stickCluster) {
             statusBadge = `<span style="color:var(--amber);font-size:10.5px">[ACTIVE - Wideband Center ${stickCluster.centerMhz} MHz (${stickCluster.channels.join(', ')} MHz)]</span>`;
+          } else if (d.inUse && d.activeStation) {
+            statusBadge = `<span style="color:var(--amber);font-size:10.5px">[ACTIVE - ${esc(d.activeStation.stationName || d.activeStation.freq + ' MHz')}]</span>`;
           } else if (d.inUse) {
             statusBadge = '<span style="color:var(--amber);font-size:10.5px">[ACTIVE]</span>';
           }
@@ -3918,8 +4068,8 @@ async function scanSdrDevices() {
 
       // Populate dropdowns
       const optionsHtml = [
-        '<option value="auto">✨ Auto-Assign (Next Available Dongle)</option>',
-        '<option value="wideband">⚡ Wideband Channelizer (Share with nearby stations within 2.4 MHz)</option>',
+        '<option value="auto">✨ Auto-Assign (Next Available USB Dongle)</option>',
+        '<option value="wideband">⚡ Wideband Channelizer (Demodulate multiple stations from 1 stick)</option>',
         ...data.devices.map(d => `<option value="${d.index}">📻 Physical Dongle #${d.index} [SN: ${esc(d.serial||'—')}] (${esc(d.name.substring(0,16))})</option>`)
       ].join('');
 
@@ -4015,7 +4165,7 @@ async function tuneSdrTest() {
     const data = await r.json();
     if (data.error) return toast(data.error, 'error');
 
-    toast(`✓ Tuned to ${freq} MHz`, 'success');
+    toast(`✓ Tuned to ${freq} MHz` + (isWideband ? ' (Wideband)' : ''), 'success');
     document.getElementById('sdrTelemetryPanel').style.display = 'block';
     const audio = document.getElementById('sdrLiveAudio');
     if (audio) {
@@ -4061,6 +4211,21 @@ async function pollSdrStatus() {
       document.getElementById('sdrRdsPs').textContent = status.ps || status.station || '—';
       document.getElementById('sdrRdsTitle').textContent = status.rtPlus || status.title || (status.artist ? `${status.artist} - ${status.title}` : '—');
       document.getElementById('sdrRdsRt').textContent = status.rt || '—';
+
+      // Update modal audio level bar meter
+      const dbfs = status.dbfs !== undefined && status.dbfs !== null ? status.dbfs : -14.0;
+      const pct = Math.max(0, Math.min(100, status.signalPercent !== undefined ? status.signalPercent : 75));
+      const activeSegments = Math.round((pct / 100) * 12);
+      const modalLeds = document.querySelectorAll('#modalAudioLeds .audio-led');
+      modalLeds.forEach((led, idx) => {
+        if (idx + 1 <= activeSegments) led.classList.add('active');
+        else led.classList.remove('active');
+      });
+      const modalDbfsEl = document.getElementById('modalAudioDbfs');
+      if (modalDbfsEl) {
+        modalDbfsEl.style.color = dbfs >= -4 ? 'var(--red)' : (dbfs >= -12 ? 'var(--amber)' : 'var(--green)');
+        modalDbfsEl.textContent = dbfs <= -80 ? 'MUTED' : `${dbfs >= 0 ? '+' : ''}${dbfs.toFixed(1)} dB`;
+      }
     }
   } catch(_) {}
 }

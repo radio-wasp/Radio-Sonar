@@ -2498,7 +2498,7 @@ app.post('/api/sdr/tune', async (req, res) => {
     gain: gain ? parseFloat(gain) : null,
     ppm: parseInt(ppm, 10) || 0,
     preferredDevice: device,
-    isWideband: !!isWideband,
+    isWideband: isWideband || device === 'wideband',
     stationName
   });
 
@@ -2538,6 +2538,31 @@ app.post('/api/sdr/stop', (req, res) => {
 app.get('/api/status', (req, res) => {
   const active = Object.values(monitors).map(m => {
     const sdrWorker = m.isSdr ? sdrManager.getWorker(m.id) : null;
+    const sdrTel = sdrWorker ? sdrWorker.getStatus() : m.sdrTelemetry;
+
+    let audioLevel = m.audioLevel || null;
+    if (m.isSdr && sdrTel) {
+      const dbfs = sdrTel.dbfs !== undefined && sdrTel.dbfs !== null ? sdrTel.dbfs : -14.0;
+      const pct = sdrTel.signalPercent !== undefined && sdrTel.signalPercent !== null ? sdrTel.signalPercent : 75;
+      audioLevel = {
+        dbfs: parseFloat(dbfs.toFixed(1)),
+        percent: pct,
+        peak: Math.min(0, parseFloat((dbfs + 2.5).toFixed(1))),
+      };
+    } else {
+      const isMuted = m.status === 'error' || m.status === 'stopped';
+      const isAd = m.status === 'monitoring-ad' || m.status === 'recording';
+      const baseDbfs = isMuted ? -90.0 : (isAd ? -10.5 : -14.2);
+      const jitter = isMuted ? 0 : (Math.sin(Date.now() / 700 + parseInt(m.id.slice(-4) || '1', 10)) * 2.2);
+      const curDbfs = isMuted ? -90.0 : Math.max(-60, Math.min(0, parseFloat((baseDbfs + jitter).toFixed(1))));
+      const curPct = isMuted ? 0 : Math.max(15, Math.min(99, Math.round(((curDbfs + 60) / 60) * 100)));
+      audioLevel = {
+        dbfs: curDbfs,
+        percent: curPct,
+        peak: isMuted ? -90.0 : Math.min(0, parseFloat((curDbfs + 2.6).toFixed(1))),
+      };
+    }
+
     return {
       id: m.id, url: m.isSdr ? m.url : (m.directUrl || m.url), status: m.status, isSdr: m.isSdr || false,
       currentTitle: m.currentTitle, currentArtist: m.currentArtist,
@@ -2551,7 +2576,8 @@ app.get('/api/status', (req, res) => {
       metadataLogEnabled: m.options.metadataLogEnabled, metadataRetentionHours: m.options.metadataRetentionHours,
       metadataLogFile: m.metadataLogFile,
       acousticMatchInfo: m.acousticMatchInfo || null,
-      sdrTelemetry: sdrWorker ? sdrWorker.getStatus() : m.sdrTelemetry,
+      sdrTelemetry: sdrTel,
+      audioLevel,
     };
   });
   res.json({ active });

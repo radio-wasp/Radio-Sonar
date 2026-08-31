@@ -1,267 +1,395 @@
 #!/usr/bin/env python3
 """
-wideband_channelizer.py — Radio SONAR Wideband FM Channelizer (High Performance)
+wideband_channelizer.py — High-Performance Real-Time Wideband FM Channelizer
+Radio SONAR Version 3.1
 
-Demodulates multiple FM broadcast carrier frequencies concurrently from a single
-RTL-SDR USB dongle capturing a 2.4 MSps raw IQ spectrum window.
+Captures a 2.4 MSps raw IQ spectrum slice via rtl_sdr, channelizes and demodulates
+multiple FM carriers concurrently using vectorized NumPy DSP, and streams 240 kSps
+S16LE PCM audio/MPX to independent channel socket endpoints for redsea / ffmpeg.
 
-Optimizations:
-- Fast pre-computed vectorized DDC complex rotators (3x-5x faster DSP)
-- Non-blocking POSIX FIFO I/O (immune to pipe stalls and reader disconnects)
-- Real-time carrier SNR / power calculation and telemetry output
-- Seamless FIR filter state tracking across chunk boundaries
+Features:
+- Precomputed complex rotators for zero-copy baseband DDC shift
+- 61-tap lowpass FIR filter with 10x decimation (2.4 MSps -> 240 kSps)
+- Fast polar discriminator FM demodulation
+- Multi-client UNIX domain socket server per channel (with TCP fallback)
+- Real-time carrier power, SNR, and dBFS telemetry per channel
+- Stdin dynamic channel management (ADD, DEL, CENTER)
 """
 
 import sys
 import os
 import argparse
 import subprocess
+import socket
 import signal
 import time
-import math
-import errno
 import numpy as np
 
-try:
-    from scipy import signal as sp_signal
-    HAVE_SCIPY = True
-except ImportError:
-    HAVE_SCIPY = False
+# ── DSP Filter Generation ─────────────────────────────────────────────────────
 
-CHUNK_SAMPLES = 131072  # 262,144 bytes uint8 IQ = 131,072 complex pairs (~54.6 ms @ 2.4 MSps)
+def design_lowpass_fir(num_taps=61, cutoff_hz=90000.0, fs=2400000.0):
+    """
+    Design a standard Hamming-windowed lowpass FIR filter.
+    Cutoff: 90 kHz (bandwidth: 180 kHz for FM broadcast audio + 57 kHz RDS subcarrier)
+    """
+    n = np.arange(num_taps) - (num_taps - 1) / 2.0
+    fc = cutoff_hz / fs
+    # Sinc impulse response with Hamming window
+    h = np.sinc(2.0 * fc * n) * (2.0 * fc)
+    w = np.hamming(num_taps)
+    taps = (h * w).astype(np.float32)
+    taps /= np.sum(taps)
+    return taps
 
-class ChannelDemodulator:
-    def __init__(self, freq_mhz, center_mhz, sample_rate=2400000, out_path="", out_rate=240000):
-        self.freq_mhz = freq_mhz
-        self.center_mhz = center_mhz
-        self.in_rate = float(sample_rate)
-        self.out_rate = float(out_rate)
-        self.delta_f = (freq_mhz - center_mhz) * 1e6  # Frequency offset in Hz
-        self.out_path = out_path
-        self.fd = None
-        self.is_stdout = (out_path == '-')
-        self.phase = 0.0
+# ── Channel Demodulator Class ─────────────────────────────────────────────────
+
+class FmChannel:
+    def __init__(self, freq_mhz, center_mhz, fs_in=2400000, fs_out=240000, fir_taps=None, sock_dir="/tmp/sonar_wb"):
+        self.freq_mhz = float(freq_mhz)
+        self.center_mhz = float(center_mhz)
+        self.fs_in = fs_in
+        self.fs_out = fs_out
+        self.decim = int(fs_in // fs_out)  # 10
+        self.fir_taps = fir_taps if fir_taps is not None else design_lowpass_fir()
+        self.num_taps = len(self.fir_taps)
+        self.sock_dir = sock_dir
+
+        self.offset_hz = (self.freq_mhz - self.center_mhz) * 1e6
+        self.prev_phase = 0.0
         self.prev_sample = 0.0 + 0.0j
+        self.fir_state = np.zeros(self.num_taps - 1, dtype=np.complex64)
 
-        # Decimation factor: 2.4 MSps -> 240 kSps (M = 10)
-        self.decim_factor = int(round(self.in_rate / self.out_rate))
-        if self.decim_factor < 1:
-            self.decim_factor = 1
+        # Pre-calculate base rotator table
+        self._cached_rotator = None
+        self._cached_rot_len = 0
 
-        # Phase increment per chunk
-        self.phase_step = math.fmod(2.0 * math.pi * self.delta_f * (CHUNK_SAMPLES / self.in_rate), 2.0 * math.pi)
+        # Socket server for this channel
+        self.freq_khz = int(round(self.freq_mhz * 1000))
+        self.sock_path = os.path.join(self.sock_dir, f"ch_{self.freq_khz}.sock")
+        self.tcp_port = 9200 + (self.freq_khz % 800)
+        self.server_sock = None
+        self.clients = []
+        self._init_server()
 
-        # Pre-compute base rotator table for fast vector Digital Down Conversion (DDC)
-        t = np.arange(CHUNK_SAMPLES, dtype=np.float32) / self.in_rate
-        angle = - (2.0 * np.pi * self.delta_f * t).astype(np.float32)
-        self.base_rotator = (np.cos(angle) + 1j * np.sin(angle)).astype(np.complex64)
+        # Telemetry
+        self.last_telemetry_time = time.time()
+        self.last_dbfs = -90.0
+        self.last_pct = 10
 
-        # Pre-compute 61-tap FIR lowpass filter (cutoff 85 kHz for FM MPX)
-        cutoff_hz = 85000.0
-        num_taps = 61
-        nyquist = self.in_rate / 2.0
-        norm_cutoff = cutoff_hz / nyquist
-
-        if HAVE_SCIPY:
-            self.fir = sp_signal.firwin(num_taps, norm_cutoff, window='hamming').astype(np.float32)
-            self.fir_state = np.zeros(num_taps - 1, dtype=np.complex64)
-        else:
-            n = np.arange(- (num_taps // 2), (num_taps // 2) + 1)
-            h = np.sinc(2 * norm_cutoff * n) * (2 * norm_cutoff)
-            w = 0.54 - 0.46 * np.cos(2 * np.pi * np.arange(num_taps) / (num_taps - 1))
-            self.fir = (h * w / np.sum(h * w)).astype(np.float32)
-            self.fir_state = np.zeros(num_taps - 1, dtype=np.complex64)
-
-        self.last_stat_time = 0.0
-        self.last_dbfs = -50.0
-        self.last_pct = 50
-
-    def try_open_output(self):
-        if self.is_stdout:
-            self.fd = sys.stdout.fileno()
-            return True
-        if self.fd is not None:
-            return True
-        if not self.out_path:
-            return False
-
+    def _init_server(self):
         try:
-            # Open non-blocking so we never deadlock waiting for reader
-            self.fd = os.open(self.out_path, os.O_WRONLY | os.O_NONBLOCK)
-            return True
-        except OSError as e:
-            if e.errno in (errno.ENXIO, errno.ENOENT):
-                # Reader not attached yet or FIFO not created yet
-                self.fd = None
-                return False
-            else:
-                self.fd = None
-                return False
+            os.makedirs(self.sock_dir, exist_ok=True)
+            if os.path.exists(self.sock_path):
+                try: os.unlink(self.sock_path)
+                except Exception: pass
+            
+            self.server_sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            self.server_sock.bind(self.sock_path)
+            self.server_sock.listen(8)
+            self.server_sock.setblocking(False)
+            print(f"[channelizer] Channel {self.freq_mhz} MHz listening on UNIX socket: {self.sock_path}", flush=True)
+        except Exception as e:
+            try:
+                self.server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                self.server_sock.bind(('127.0.0.1', self.tcp_port))
+                self.server_sock.listen(8)
+                self.server_sock.setblocking(False)
+                print(f"[channelizer] Channel {self.freq_mhz} MHz listening on TCP port: {self.tcp_port} (UNIX fallback: {e})", flush=True)
+            except Exception as e2:
+                print(f"[channelizer] ERROR: Failed to bind socket for {self.freq_mhz} MHz: {e2}", flush=True)
 
-    def process_iq(self, iq_chunk):
-        n_samples = len(iq_chunk)
-        if n_samples == 0:
+    def accept_clients(self):
+        if not self.server_sock:
+            return
+        while True:
+            try:
+                conn, _ = self.server_sock.accept()
+                conn.setblocking(False)
+                try: conn.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 262144)
+                except Exception: pass
+                self.clients.append(conn)
+                print(f"[channelizer] New reader attached to {self.freq_mhz} MHz (total: {len(self.clients)})", flush=True)
+            except BlockingIOError:
+                break
+            except Exception:
+                break
+
+    def update_center(self, new_center_mhz):
+        self.center_mhz = float(new_center_mhz)
+        self.offset_hz = (self.freq_mhz - self.center_mhz) * 1e6
+        self._cached_rotator = None
+        self.prev_phase = 0.0
+
+    def get_rotator(self, length):
+        if self._cached_rotator is None or self._cached_rot_len != length:
+            t = np.arange(length, dtype=np.float32) / self.fs_in
+            w = -2.0 * np.pi * self.offset_hz
+            self._cached_rotator = np.exp(1j * (w * t)).astype(np.complex64)
+            self._cached_rot_len = length
+            self._phase_step_per_chunk = (w * length / self.fs_in) % (2.0 * np.pi)
+        return self._cached_rotator
+
+    def process(self, iq_chunk):
+        """
+        Processes complex64 IQ chunk at fs_in (2.4 MSps), decimates to 240 kSps,
+        FM polar discriminates, and writes S16LE PCM bytes to client sockets.
+        """
+        N = len(iq_chunk)
+        if N == 0:
             return
 
-        # 1. Fast Digital Down Conversion (DDC)
-        phase_rot = math.cos(self.phase) + 1j * math.sin(self.phase)
-        self.phase = math.fmod(self.phase - (2.0 * math.pi * self.delta_f * n_samples / self.in_rate), 2.0 * math.pi)
-
-        if n_samples == CHUNK_SAMPLES:
-            shifted = iq_chunk * (self.base_rotator * np.complex64(phase_rot))
+        # 1. Frequency Shift (DDC)
+        rot = self.get_rotator(N)
+        if self.prev_phase != 0.0:
+            shift_iq = iq_chunk * (rot * np.exp(1j * self.prev_phase))
         else:
-            t = np.arange(n_samples, dtype=np.float32) / self.in_rate
-            angle = self.phase - (2.0 * np.pi * self.delta_f * t)
-            rot = (np.cos(angle) + 1j * np.sin(angle)).astype(np.complex64)
-            shifted = iq_chunk * rot
+            shift_iq = iq_chunk * rot
+        self.prev_phase = (self.prev_phase + self._phase_step_per_chunk) % (2.0 * np.pi)
 
-        # 2. Lowpass Decimation Filter
-        if HAVE_SCIPY:
-            filtered, self.fir_state = sp_signal.lfilter(self.fir, 1.0, shifted, zi=self.fir_state)
-        else:
-            filtered = np.convolve(shifted, self.fir, mode='same')
+        # 2. FIR Lowpass Filter + Decimation (10x -> 240 kSps)
+        conv_input = np.concatenate((self.fir_state, shift_iq))
+        self.fir_state = shift_iq[-(self.num_taps - 1):]
 
-        decimated = filtered[::self.decim_factor]
-        if len(decimated) < 2:
+        filtered = np.convolve(conv_input, self.fir_taps, mode='valid')
+        decimated = filtered[::self.decim]
+
+        # 3. Polar Discriminator FM Demodulation
+        if len(decimated) == 0:
             return
 
-        # Signal level calculation (Carrier SNR/power)
-        now = time.time()
-        if now - self.last_stat_time > 2.0:
-            self.last_stat_time = now
-            pwr = float(np.mean(np.abs(decimated[:512]) ** 2))
-            dbfs = 10.0 * math.log10(max(pwr, 1e-9))
-            pct = int(min(100, max(5, ((dbfs + 55.0) / 45.0) * 100.0)))
-            self.last_dbfs = dbfs
-            self.last_pct = pct
-            sys.stderr.write(f"[ch-stat:{self.freq_mhz:.1f}] pct={pct} dbfs={dbfs:.1f}\n")
-            sys.stderr.flush()
-
-        # 3. FM Polar Discriminator (dtheta = angle(x[n] * conj(x[n-1])))
         delayed = np.empty_like(decimated)
         delayed[0] = self.prev_sample
         delayed[1:] = decimated[:-1]
         self.prev_sample = decimated[-1]
 
         prod = decimated * np.conj(delayed)
-        dtheta = np.angle(prod)
+        demod = np.angle(prod)
 
-        # 4. Scale to 16-bit PCM: max FM deviation +-75 kHz
-        scale = 32767.0 / np.pi
-        pcm16 = np.clip(dtheta * scale, -32768, 32767).astype(np.int16)
-        raw_bytes = pcm16.tobytes()
+        # 4. Scale to 16-bit Signed Integer PCM
+        pcm_int16 = np.clip(demod * (32767.0 / np.pi), -32768, 32767).astype(np.int16)
+        raw_bytes = pcm_int16.tobytes()
 
-        # 5. Write to FIFO non-blocking
-        if self.try_open_output():
+        # 5. Broadcast to connected clients
+        self.accept_clients()
+        dead_clients = []
+        for client in self.clients:
             try:
-                os.write(self.fd, raw_bytes)
-            except OSError as e:
-                if e.errno in (errno.EPIPE, errno.EBADF):
-                    # Reader closed
-                    try:
-                        os.close(self.fd)
-                    except Exception:
-                        pass
-                    self.fd = None
-                elif e.errno in (errno.EAGAIN, errno.EWOULDBLOCK):
-                    # Buffer full, drop chunk to maintain real-time sync
-                    pass
+                client.sendall(raw_bytes)
+            except (BlockingIOError, socket.error):
+                pass
+            except Exception:
+                dead_clients.append(client)
+
+        for dc in dead_clients:
+            try: dc.close()
+            except Exception: pass
+            if dc in self.clients:
+                self.clients.remove(dc)
+
+        # 6. Telemetry calculation (~every 1.5s)
+        now = time.time()
+        if now - self.last_telemetry_time >= 1.5:
+            self.last_telemetry_time = now
+            pwr = np.mean(np.abs(decimated) ** 2) + 1e-12
+            dbfs = max(-90.0, min(0.0, float(10.0 * np.log10(pwr))))
+            pct = max(10, min(100, int(round(((dbfs + 65.0) / 55.0) * 100.0))))
+            self.last_dbfs = dbfs
+            self.last_pct = pct
+            print(f"[ch-stat:{self.freq_mhz:.3f}] dbfs={dbfs:.1f} pct={pct} clients={len(self.clients)}", flush=True)
 
     def close(self):
-        if self.fd is not None and not self.is_stdout:
+        for c in self.clients:
+            try: c.close()
+            except Exception: pass
+        self.clients = []
+        if self.server_sock:
+            try: self.server_sock.close()
+            except Exception: pass
+            self.server_sock = None
+        if os.path.exists(self.sock_path):
+            try: os.unlink(self.sock_path)
+            except Exception: pass
+
+
+# ── Main Channelizer Engine ───────────────────────────────────────────────────
+
+class WidebandChannelizer:
+    def __init__(self, device_index, center_mhz, channel_list, gain=None, ppm=0, sock_dir="/tmp/sonar_wb"):
+        self.device_index = int(device_index)
+        self.center_mhz = float(center_mhz)
+        self.gain = gain
+        self.ppm = int(ppm)
+        self.sock_dir = sock_dir
+        self.fs = 2400000
+        self.fir_taps = design_lowpass_fir(num_taps=61, cutoff_hz=90000.0, fs=self.fs)
+
+        self.channels = {}  # freq_mhz -> FmChannel
+        self.running = True
+        self.rtl_proc = None
+
+        os.makedirs(self.sock_dir, exist_ok=True)
+        for freq in channel_list:
+            self.add_channel(freq)
+
+    def add_channel(self, freq_mhz):
+        freq_mhz = float(freq_mhz)
+        if freq_mhz not in self.channels:
+            ch = FmChannel(freq_mhz, self.center_mhz, fs_in=self.fs, fs_out=240000, fir_taps=self.fir_taps, sock_dir=self.sock_dir)
+            self.channels[freq_mhz] = ch
+            print(f"[channelizer] Activated Channel {freq_mhz} MHz (Offset: {(freq_mhz - self.center_mhz)*1000:+.1f} kHz)", flush=True)
+
+    def remove_channel(self, freq_mhz):
+        freq_mhz = float(freq_mhz)
+        if freq_mhz in self.channels:
+            self.channels[freq_mhz].close()
+            del self.channels[freq_mhz]
+            print(f"[channelizer] Deactivated Channel {freq_mhz} MHz", flush=True)
+
+    def set_center(self, new_center_mhz):
+        new_center_mhz = float(new_center_mhz)
+        if abs(new_center_mhz - self.center_mhz) > 0.001:
+            print(f"[channelizer] Shifting Center Freq: {self.center_mhz} -> {new_center_mhz} MHz", flush=True)
+            self.center_mhz = new_center_mhz
+            for ch in self.channels.values():
+                ch.update_center(new_center_mhz)
+            self._restart_rtl_sdr()
+
+    def _start_rtl_sdr(self):
+        if self.rtl_proc and self.rtl_proc.poll() is None:
+            try: self.rtl_proc.kill()
+            except Exception: pass
+
+        dev_arg = ['-d', str(self.device_index)]
+        ppm_arg = ['-p', str(self.ppm)] if self.ppm else []
+        gain_arg = ['-g', str(self.gain)] if (self.gain is not None and str(self.gain).lower() != 'auto') else []
+
+        center_hz = int(round(self.center_mhz * 1e6))
+        cmd = [
+            'rtl_sdr',
+            *dev_arg,
+            *ppm_arg,
+            *gain_arg,
+            '-s', str(self.fs),
+            '-f', str(center_hz),
+            '-'
+        ]
+
+        print(f"[channelizer] Spawning SDR capture: {' '.join(cmd)}", flush=True)
+        self.rtl_proc = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            bufsize=262144
+        )
+
+    def _restart_rtl_sdr(self):
+        self._start_rtl_sdr()
+
+    def run(self):
+        self._start_rtl_sdr()
+        chunk_bytes = 262144  # 131,072 complex samples per chunk (~54.6 ms)
+
+        try:
+            import fcntl
+            fl = fcntl.fcntl(sys.stdin.fileno(), fcntl.F_GETFL)
+            fcntl.fcntl(sys.stdin.fileno(), fcntl.F_SETFL, fl | os.O_NONBLOCK)
+        except Exception:
+            pass
+
+        print(f"[channelizer] Wideband Channelizer Engine Online! Center: {self.center_mhz} MHz, Bandwidth: 2.4 MHz", flush=True)
+
+        while self.running:
             try:
-                os.close(self.fd)
+                line = sys.stdin.readline()
+                if line:
+                    parts = line.strip().split()
+                    if parts:
+                        cmd = parts[0].upper()
+                        if cmd == 'ADD' and len(parts) > 1:
+                            self.add_channel(float(parts[1]))
+                        elif cmd == 'DEL' and len(parts) > 1:
+                            self.remove_channel(float(parts[1]))
+                        elif cmd == 'CENTER' and len(parts) > 1:
+                            self.set_center(float(parts[1]))
+                        elif cmd == 'QUIT' or cmd == 'STOP':
+                            break
             except Exception:
                 pass
-            self.fd = None
 
+            if not self.rtl_proc or self.rtl_proc.poll() is not None:
+                print("[channelizer] rtl_sdr exited or failed to start. Restarting in 2s...", flush=True)
+                time.sleep(2.0)
+                self._start_rtl_sdr()
+                continue
+
+            try:
+                raw = self.rtl_proc.stdout.read(chunk_bytes)
+                if not raw or len(raw) < 1024:
+                    time.sleep(0.01)
+                    continue
+
+                raw_u8 = np.frombuffer(raw, dtype=np.uint8)
+                n_samples = len(raw_u8) // 2
+                raw_u8 = raw_u8[:n_samples * 2]
+
+                i_samp = (raw_u8[0::2].astype(np.float32) - 127.5) * (1.0 / 128.0)
+                q_samp = (raw_u8[1::2].astype(np.float32) - 127.5) * (1.0 / 128.0)
+                iq_complex = i_samp + 1j * q_samp
+
+                for ch in list(self.channels.values()):
+                    ch.process(iq_complex)
+
+            except Exception as e:
+                print(f"[channelizer] Processing error: {e}", flush=True)
+                time.sleep(0.05)
+
+        self.stop()
+
+    def stop(self):
+        self.running = False
+        if self.rtl_proc:
+            try: self.rtl_proc.kill()
+            except Exception: pass
+            self.rtl_proc = None
+        for ch in self.channels.values():
+            ch.close()
+        self.channels.clear()
+        print("[channelizer] Engine shutdown complete.", flush=True)
+
+
+# ── CLI Interface ─────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser(description="Radio SONAR Wideband FM Channelizer")
-    parser.add_argument('--device', type=str, default='0', help='RTL-SDR device index or serial')
-    parser.add_argument('--center', type=float, required=True, help='Center tuning frequency in MHz')
-    parser.add_argument('--sample-rate', type=int, default=2400000, help='IQ sample rate (default 2400000)')
-    parser.add_argument('--gain', type=str, default='auto', help='Tuner gain in dB or auto')
-    parser.add_argument('--ppm', type=int, default=0, help='PPM frequency correction')
-    parser.add_argument('--channels', type=str, required=True,
-                        help='Comma-separated freq_mhz:output_path pairs (e.g. 104.9:/tmp/ch1.raw,105.1:/tmp/ch2.raw)')
+    parser = argparse.ArgumentParser(description="Wideband RTL-SDR FM Channelizer")
+    parser.add_argument("--device", "-d", default="0", help="RTL-SDR device index")
+    parser.add_argument("--center", "-c", type=float, required=True, help="Center frequency in MHz")
+    parser.add_argument("--channels", "-ch", required=True, help="Comma-separated channel frequencies in MHz")
+    parser.add_argument("--gain", "-g", default=None, help="Tuner gain in dB or auto")
+    parser.add_argument("--ppm", "-p", type=int, default=0, help="PPM frequency correction")
+    parser.add_argument("--sock-dir", default="/tmp/sonar_wb", help="Directory for channel sockets")
 
     args = parser.parse_args()
+    channel_list = [float(f.strip()) for f in args.channels.split(",") if f.strip()]
 
-    channels = []
-    for pair in args.channels.split(','):
-        pair = pair.strip()
-        if not pair:
-            continue
-        parts = pair.split(':')
-        if len(parts) != 2:
-            sys.stderr.write(f"[channelizer] Invalid channel format: {pair}\n")
-            continue
-        freq = float(parts[0])
-        out_path = parts[1]
-        ch = ChannelDemodulator(freq, args.center, args.sample_rate, out_path)
-        channels.append(ch)
-
-    if not channels:
-        sys.stderr.write("[channelizer] No valid channels specified.\n")
-        sys.exit(1)
-
-    sys.stderr.write(f"[channelizer] Starting on device {args.device}, center {args.center:.3f} MHz, rate {args.sample_rate} Sps\n")
-    for ch in channels:
-        offset_khz = (ch.freq_mhz - args.center) * 1e3
-        sys.stderr.write(f"[channelizer]  • Channel {ch.freq_mhz:.1f} MHz (offset: {offset_khz:+.1f} kHz) -> {ch.out_path}\n")
-
-    # Build rtl_sdr command
-    rtl_cmd = ['rtl_sdr', '-d', str(args.device), '-f', f"{int(round(args.center * 1e6))}", '-s', str(args.sample_rate)]
-    if args.gain.lower() != 'auto':
-        try:
-            gain_val = float(args.gain)
-            rtl_cmd.extend(['-g', str(gain_val)])
-        except ValueError:
-            pass
-    if args.ppm != 0:
-        rtl_cmd.extend(['-p', str(args.ppm)])
-    rtl_cmd.append('-')
-
-    sys.stderr.write(f"[channelizer] Executing: {' '.join(rtl_cmd)}\n")
-
-    proc = subprocess.Popen(rtl_cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+    engine = WidebandChannelizer(
+        device_index=args.device,
+        center_mhz=args.center,
+        channel_list=channel_list,
+        gain=args.gain,
+        ppm=args.ppm,
+        sock_dir=args.sock_dir
+    )
 
     def handle_sig(sig, frame):
-        proc.terminate()
-        for ch in channels:
-            ch.close()
+        engine.stop()
         sys.exit(0)
 
     signal.signal(signal.SIGINT, handle_sig)
     signal.signal(signal.SIGTERM, handle_sig)
 
-    CHUNK_BYTES = CHUNK_SAMPLES * 2  # 2 bytes per IQ sample pair (uint8 I, uint8 Q)
+    engine.run()
 
-    try:
-        while proc.poll() is None:
-            raw = proc.stdout.read(CHUNK_BYTES)
-            if not raw or len(raw) < 4:
-                break
 
-            u8_arr = np.frombuffer(raw, dtype=np.uint8)
-            if len(u8_arr) % 2 != 0:
-                u8_arr = u8_arr[:-1]
-
-            i_samples = (u8_arr[0::2].astype(np.float32) - 127.5) / 127.5
-            q_samples = (u8_arr[1::2].astype(np.float32) - 127.5) / 127.5
-            iq_complex = i_samples + 1j * q_samples
-
-            for ch in channels:
-                ch.process_iq(iq_complex)
-
-    except KeyboardInterrupt:
-        pass
-    finally:
-        proc.terminate()
-        for ch in channels:
-            ch.close()
-        sys.stderr.write("[channelizer] Finished.\n")
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

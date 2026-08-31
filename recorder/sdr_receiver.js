@@ -5,31 +5,32 @@
  * Radio SONAR Version 3.1
  *
  * Supports:
- * 1. Multi-Dongle Device Pooling: Run N physical RTL-SDR USB sticks concurrently.
- * 2. Single-Stick Wideband FM Channelizer: Demodulate multiple FM carriers from a single
- *    2.4 MHz IQ spectrum slice via Python DSP (wideband_channelizer.py).
+ * 1. Single-Stick Wideband FM Channelizer: Demodulate multiple FM stations concurrently
+ *    from a single 2.4 MHz IQ spectrum slice via Python DSP (wideband_channelizer.py)
+ *    and zero-loss UNIX domain / TCP socket streaming.
+ * 2. Multi-Dongle Physical Pooling: Run N physical RTL-SDR USB sticks concurrently.
  * 3. Analog FM Stereo with real-time RDS/RBDS decoding (rtl_fm + redsea + ffmpeg).
  * 4. NRSC-5 Digital HD Radio decoding (HD1–HD4) with MER/BER telemetry (nrsc5 + ffmpeg).
- * 5. Dynamic device auto-discovery, allocation, and health diagnostics.
+ * 5. Dynamic device auto-discovery, auto-clustering, and health diagnostics.
  */
 
 const { spawn, exec } = require('child_process');
 const EventEmitter = require('events');
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
+const net = require('net');
 
 class SdrWorker extends EventEmitter {
   constructor(id, options = {}) {
     super();
-    this.id = id; // e.g. monitorId or 'default'
+    this.id = id; // monitorId or 'default'
     this.deviceIndex = options.deviceIndex !== undefined ? options.deviceIndex : 0;
     this.deviceSerial = options.deviceSerial || null;
     this.isWideband = options.isWideband || false;
     this.clusterKey = options.clusterKey || null;
 
     this.procs = [];
-    this.fifoPath = null;
+    this.clientSocket = null;
     this.running = false;
     this.currentMode = null; // 'fm' | 'hd'
     this.currentFreq = null;
@@ -48,7 +49,7 @@ class SdrWorker extends EventEmitter {
       frequency: null,
       program: 0,
       gain: null,
-      syncState: 'IDLE', // 'IDLE' | 'RECEIVING' | 'SYNCING' | 'LOCKED' | 'UNSYNCED'
+      syncState: 'IDLE', // 'IDLE' | 'RECEIVING' | 'SYNCING' | 'LOCKED' | 'UNSYNCED' | 'ERROR'
       mer: null,
       merLower: null,
       merUpper: null,
@@ -65,6 +66,7 @@ class SdrWorker extends EventEmitter {
       station: '',
       album: '',
       pi: null,
+      lastError: null,
       lastUpdate: 0,
     };
   }
@@ -96,6 +98,7 @@ class SdrWorker extends EventEmitter {
       station: '',
       album: '',
       pi: null,
+      lastError: null,
       lastUpdate: Date.now(),
     };
   }
@@ -167,6 +170,7 @@ class SdrWorker extends EventEmitter {
   tuneFm(freqMhz, options = {}) {
     this.stop();
     this.running = true;
+    this.isWideband = false;
     this.currentMode = 'fm';
     this.currentFreq = freqMhz;
     this.currentGain = options.gain !== undefined ? options.gain : null;
@@ -183,9 +187,9 @@ class SdrWorker extends EventEmitter {
       station: this.activeStationName,
     });
 
-    const devArg = this.deviceSerial ? ['-d', String(this.deviceSerial)] : ['-d', String(this.deviceIndex)];
-    const gainArgs = this.currentGain !== null ? ['-g', String(Math.round(this.currentGain * 10))] : [];
-    const ppmArgs = ['-p', String(this.currentPpm)];
+    const devArg = ['-d', String(this.deviceIndex)];
+    const gainArgs = this.currentGain !== null ? ['-g', String(this.currentGain)] : [];
+    const ppmArgs = this.currentPpm ? ['-p', String(this.currentPpm)] : [];
 
     const rtlCmd = 'rtl_fm';
     const rtlArgs = [
@@ -218,15 +222,20 @@ class SdrWorker extends EventEmitter {
       '-',
     ];
 
-    console.log(`[sdr-worker:${this.id}] Tuning FM ${freqMhz} MHz on device ${this.deviceIndex} (gain: ${this.currentGain || 'auto'})`);
+    console.log(`[sdr-worker:${this.id}] Spawning dedicated FM: ${rtlCmd} ${rtlArgs.join(' ')} | ${redseaCmd} | ${ffmpegCmd}`);
 
     try {
-      const rtlProc = spawn(rtlCmd, rtlArgs, { stdio: ['ignore', 'pipe', 'ignore'] });
+      const rtlProc = spawn(rtlCmd, rtlArgs, { stdio: ['ignore', 'pipe', 'pipe'] });
       const redseaProc = spawn(redseaCmd, redseaArgs, { stdio: ['pipe', 'pipe', 'pipe'] });
-      const ffmpegProc = spawn(ffmpegCmd, ffmpegArgs, { stdio: ['pipe', 'pipe', 'ignore'] });
+      const ffmpegProc = spawn(ffmpegCmd, ffmpegArgs, { stdio: ['pipe', 'pipe', 'pipe'] });
 
       rtlProc.stdout.pipe(redseaProc.stdin);
       redseaProc.stdout.pipe(ffmpegProc.stdin);
+
+      rtlProc.stdout.on('error', () => {});
+      redseaProc.stdin.on('error', () => {});
+      redseaProc.stdout.on('error', () => {});
+      ffmpegProc.stdin.on('error', () => {});
 
       this.procs = [rtlProc, redseaProc, ffmpegProc];
 
@@ -235,6 +244,11 @@ class SdrWorker extends EventEmitter {
           this._calculateAudioRms(chunk);
           this.broadcastAudio(chunk);
         }
+      });
+
+      let rtlErrBuf = '';
+      rtlProc.stderr.on('data', (data) => {
+        rtlErrBuf += data.toString('utf8');
       });
 
       let rdsBuf = '';
@@ -253,9 +267,19 @@ class SdrWorker extends EventEmitter {
         }
       });
 
+      let ffmpegErrBuf = '';
+      ffmpegProc.stderr.on('data', (data) => {
+        ffmpegErrBuf += data.toString('utf8');
+      });
+
       const handleExit = (procName, code) => {
-        if (this.running) {
-          console.warn(`[sdr-worker:${this.id}] Process ${procName} exited with code ${code}`);
+        if (this.running && code !== 0 && code !== null) {
+          const errMsg = procName === 'rtl_fm' ? rtlErrBuf.trim() : (procName === 'ffmpeg' ? ffmpegErrBuf.trim() : '');
+          console.error(`[sdr-worker:${this.id}] Process ${procName} exited with code ${code}. ${errMsg}`);
+          this.updateState({
+            syncState: 'ERROR',
+            lastError: `${procName} exited (code ${code}): ${errMsg || 'Abnormal exit'}`
+          });
         }
       };
 
@@ -264,7 +288,7 @@ class SdrWorker extends EventEmitter {
       ffmpegProc.on('exit', (code) => handleExit('ffmpeg', code));
     } catch (err) {
       console.error(`[sdr-worker:${this.id}] Spawn error:`, err.message);
-      this.updateState({ syncState: 'ERROR' });
+      this.updateState({ syncState: 'ERROR', lastError: err.message });
     }
   }
 
@@ -274,6 +298,7 @@ class SdrWorker extends EventEmitter {
   tuneHd(freqMhz, program = 0, options = {}) {
     this.stop();
     this.running = true;
+    this.isWideband = false;
     this.currentMode = 'hd';
     this.currentFreq = freqMhz;
     this.currentProgram = program;
@@ -291,12 +316,15 @@ class SdrWorker extends EventEmitter {
       station: this.activeStationName,
     });
 
-    const devArg = this.deviceSerial ? ['-d', String(this.deviceSerial)] : ['-d', String(this.deviceIndex)];
+    const devArg = ['-d', String(this.deviceIndex)];
     const gainArgs = this.currentGain !== null ? ['-g', Number(this.currentGain).toFixed(1)] : [];
+    const ppmArgs = options.ppm ? ['-p', String(options.ppm)] : [];
+
     const nrsc5Cmd = 'nrsc5';
     const nrsc5Args = [
       ...devArg,
       ...gainArgs,
+      ...ppmArgs,
       '-o', '-',
       '-t', 'raw',
       String(freqMhz),
@@ -315,13 +343,16 @@ class SdrWorker extends EventEmitter {
       '-',
     ];
 
-    console.log(`[sdr-worker:${this.id}] Tuning HD Radio ${freqMhz} MHz HD${program + 1} on device ${this.deviceIndex}`);
+    console.log(`[sdr-worker:${this.id}] Spawning: ${nrsc5Cmd} ${nrsc5Args.join(' ')} | ${ffmpegCmd}`);
 
     try {
       const nrsc5Proc = spawn(nrsc5Cmd, nrsc5Args, { stdio: ['ignore', 'pipe', 'pipe'] });
-      const ffmpegProc = spawn(ffmpegCmd, ffmpegArgs, { stdio: ['pipe', 'pipe', 'ignore'] });
+      const ffmpegProc = spawn(ffmpegCmd, ffmpegArgs, { stdio: ['pipe', 'pipe', 'pipe'] });
 
       nrsc5Proc.stdout.pipe(ffmpegProc.stdin);
+      nrsc5Proc.stdout.on('error', () => {});
+      ffmpegProc.stdin.on('error', () => {});
+
       this.procs = [nrsc5Proc, ffmpegProc];
 
       ffmpegProc.stdout.on('data', (chunk) => {
@@ -342,9 +373,19 @@ class SdrWorker extends EventEmitter {
         }
       });
 
+      let ffmpegErrBuf = '';
+      ffmpegProc.stderr.on('data', (data) => {
+        ffmpegErrBuf += data.toString('utf8');
+      });
+
       const handleExit = (procName, code) => {
-        if (this.running) {
-          console.warn(`[sdr-worker:${this.id}] Process ${procName} exited with code ${code}`);
+        if (this.running && code !== 0 && code !== null) {
+          const errMsg = procName === 'nrsc5' ? hdBuf.trim().split('\n').slice(-3).join(' ') : ffmpegErrBuf.trim();
+          console.error(`[sdr-worker:${this.id}] Process ${procName} exited with code ${code}. ${errMsg}`);
+          this.updateState({
+            syncState: 'ERROR',
+            lastError: `${procName} exited (code ${code}): ${errMsg || 'Abnormal exit'}`
+          });
         }
       };
 
@@ -352,31 +393,23 @@ class SdrWorker extends EventEmitter {
       ffmpegProc.on('exit', (code) => handleExit('ffmpeg', code));
     } catch (err) {
       console.error(`[sdr-worker:${this.id}] Spawn error:`, err.message);
-      this.updateState({ syncState: 'ERROR' });
+      this.updateState({ syncState: 'ERROR', lastError: err.message });
     }
   }
 
   /**
-   * Connect to Wideband Channelizer FIFO output
+   * Connect to Wideband Channelizer Socket Stream
    */
-  connectWidebandChannel(freqMhz, fifoPath, options = {}) {
-    if (this.fifoStream) {
-      try { this.fifoStream.destroy(); } catch (_) {}
-      this.fifoStream = null;
-    }
-    for (const proc of this.procs) {
-      if (proc && !proc.killed) {
-        try { proc.kill('SIGTERM'); } catch (_) {}
-      }
-    }
-    this.procs = [];
+  connectWidebandChannel(freqMhz, sockPath, options = {}) {
+    this.stop();
     this.running = true;
     this.isWideband = true;
     this.currentMode = 'fm';
     this.currentFreq = freqMhz;
-    this.fifoPath = fifoPath;
+    this.sockPath = sockPath;
     this.activeStationName = options.stationName || `FM ${freqMhz} MHz (Wideband)`;
 
+    this.resetState();
     this.updateState({
       running: true,
       mode: 'fm',
@@ -386,24 +419,22 @@ class SdrWorker extends EventEmitter {
       station: this.activeStationName,
     });
 
-    console.log(`[sdr-worker:${this.id}] Attaching to Wideband FIFO ${fifoPath} for ${freqMhz} MHz`);
+    console.log(`[sdr-worker:${this.id}] Connecting to Wideband Channel Socket: ${sockPath} for ${freqMhz} MHz`);
 
     try {
-      // Decode RDS from 240k MPX and encode MP3
       const redseaProc = spawn('redsea', ['-r', '240k', '-u', '--feed-through'], { stdio: ['pipe', 'pipe', 'pipe'] });
       const ffmpegProc = spawn('ffmpeg', [
         '-loglevel', 'error',
         '-f', 's16le', '-ar', '240000', '-ac', '1', '-i', '-',
         '-af', 'aemphasis=type=75fm:mode=reproduction,lowpass=f=15000',
         '-ar', '48000', '-f', 'mp3', '-b:a', '128k', '-'
-      ], { stdio: ['pipe', 'pipe', 'ignore'] });
+      ], { stdio: ['pipe', 'pipe', 'pipe'] });
 
-      // Open FIFO read stream
-      const fifoStream = fs.createReadStream(fifoPath);
-      this.fifoStream = fifoStream;
-
-      fifoStream.pipe(redseaProc.stdin);
       redseaProc.stdout.pipe(ffmpegProc.stdin);
+
+      redseaProc.stdin.on('error', () => {});
+      redseaProc.stdout.on('error', () => {});
+      ffmpegProc.stdin.on('error', () => {});
 
       this.procs = [redseaProc, ffmpegProc];
 
@@ -429,17 +460,54 @@ class SdrWorker extends EventEmitter {
         }
       });
 
-      redseaProc.on('error', (err) => {
-        console.warn(`[sdr-worker:${this.id}] redsea process error:`, err.message);
-      });
-      ffmpegProc.on('error', (err) => {
-        console.warn(`[sdr-worker:${this.id}] ffmpeg process error:`, err.message);
-      });
-      fifoStream.on('error', (err) => {
-        console.warn(`[sdr-worker:${this.id}] FIFO read error:`, err.message);
-      });
+      let reconnectTimer = null;
+      const connectSocket = () => {
+        if (!this.running) return;
+        if (this.clientSocket) {
+          try { this.clientSocket.destroy(); } catch (_) {}
+          this.clientSocket = null;
+        }
+
+        let sock;
+        if (fs.existsSync(sockPath)) {
+          sock = net.createConnection(sockPath);
+        } else {
+          const freqKhz = Math.round(freqMhz * 1000);
+          const tcpPort = 9200 + (freqKhz % 800);
+          sock = net.createConnection({ port: tcpPort, host: '127.0.0.1' });
+        }
+
+        this.clientSocket = sock;
+
+        sock.on('connect', () => {
+          console.log(`[sdr-worker:${this.id}] Attached to Wideband stream for ${freqMhz} MHz`);
+          sock.pipe(redseaProc.stdin, { end: false });
+        });
+
+        sock.on('error', () => {
+          if (this.running && !reconnectTimer) {
+            reconnectTimer = setTimeout(() => {
+              reconnectTimer = null;
+              connectSocket();
+            }, 500);
+          }
+        });
+
+        sock.on('close', () => {
+          if (this.running && !reconnectTimer) {
+            reconnectTimer = setTimeout(() => {
+              reconnectTimer = null;
+              connectSocket();
+            }, 500);
+          }
+        });
+      };
+
+      setTimeout(connectSocket, 250);
+
     } catch (err) {
-      console.error(`[sdr-worker:${this.id}] Wideband attach error:`, err.message);
+      console.error(`[sdr-worker:${this.id}] Wideband connect error:`, err.message);
+      this.updateState({ syncState: 'ERROR', lastError: err.message });
     }
   }
 
@@ -462,15 +530,8 @@ class SdrWorker extends EventEmitter {
       } else if (patches.title) {
         patches.rtPlus = patches.title;
       }
-      patches.syncState = 'LOCKED';
     }
-    if (obj.pi !== undefined) patches.pi = obj.pi;
-    if (obj.prog_type) patches.programType = obj.prog_type;
-
-    if (patches.syncState === 'LOCKED' && (!this.state.signalPercent || this.state.signalPercent < 75)) {
-      patches.signalPercent = Math.max(78, this.state.signalPercent || 80);
-      patches.signal = `${patches.signalPercent}% (RDS LOCK)`;
-    }
+    if (obj.pi) patches.pi = obj.pi;
 
     if (Object.keys(patches).length > 0) {
       this.updateState(patches);
@@ -478,39 +539,46 @@ class SdrWorker extends EventEmitter {
   }
 
   _handleHdLine(line) {
+    if (!line) return;
     const patches = {};
-    if (line.includes('Synchronized')) {
+
+    if (line.includes('Synchronized') || line.includes('sync: 1')) {
       patches.syncState = 'LOCKED';
-    } else if (line.includes('Lost synchronization') || line.includes('Unsynchronized')) {
+    } else if (line.includes('Lost sync') || line.includes('sync: 0')) {
       patches.syncState = 'UNSYNCED';
     }
 
-    const merMatch = line.match(/MER:\s*([\d.]+)\s*dB\s*\(([^)]+)\),\s*([\d.]+)\s*dB\s*\(([^)]+)\)/);
+    const merMatch = line.match(/MER:\s*([\d.]+)\s*\(lower\)\s*,\s*([\d.]+)\s*\(upper\)\s*,\s*([\d.]+)\s*\(avg\)\s*dB/i) ||
+                     line.match(/MER:\s*([\d.]+)\s*dB/i);
     if (merMatch) {
-      const lower = parseFloat(merMatch[1]);
-      const upper = parseFloat(merMatch[3]);
-      patches.merLower = lower;
-      patches.merUpper = upper;
-      patches.mer = parseFloat(((lower + upper) / 2).toFixed(1));
-      patches.signalPercent = Math.max(10, Math.min(100, Math.round((patches.mer / 22.0) * 100)));
-      patches.signal = `+${patches.mer} dB MER (${patches.signalPercent}%)`;
-      patches.dbfs = parseFloat((patches.mer - 25).toFixed(1));
+      if (merMatch[3]) {
+        patches.merLower = parseFloat(merMatch[1]);
+        patches.merUpper = parseFloat(merMatch[2]);
+        patches.mer = parseFloat(merMatch[3]);
+      } else {
+        patches.mer = parseFloat(merMatch[1]);
+      }
+      const avgMer = patches.mer || 0;
+      const pct = Math.max(10, Math.min(100, Math.round((avgMer / 22.0) * 100)));
+      patches.signalPercent = pct;
+      patches.dbfs = parseFloat((avgMer - 24.0).toFixed(1));
+      patches.signal = `${pct}% (${avgMer.toFixed(1)} dB MER)`;
     }
 
-    const berMatch = line.match(/BER:\s*([\d.eE+-]+)/);
-    if (berMatch) patches.ber = berMatch[1];
+    const berMatch = line.match(/BER:\s*([\d.e+-]+)/i);
+    if (berMatch) patches.ber = parseFloat(berMatch[1]);
 
-    const titleMatch = line.match(/Title:\s*(.+)$/);
+    const titleMatch = line.match(/Title:\s*(.+)/i);
     if (titleMatch) patches.title = titleMatch[1].trim();
 
-    const artistMatch = line.match(/Artist:\s*(.+)$/);
+    const artistMatch = line.match(/Artist:\s*(.+)/i);
     if (artistMatch) patches.artist = artistMatch[1].trim();
 
-    const albumMatch = line.match(/Album:\s*(.+)$/);
-    if (albumMatch) patches.album = albumMatch[1].trim();
-
-    const stationMatch = line.match(/Station name:\s*(.+)$/);
-    if (stationMatch) patches.station = stationMatch[1].trim();
+    const callMatch = line.match(/Station:\s*(.+)/i) || line.match(/Callsign:\s*(.+)/i);
+    if (callMatch) {
+      patches.station = callMatch[1].trim();
+      patches.ps = patches.station;
+    }
 
     if (patches.artist && patches.title) {
       patches.rtPlus = `${patches.artist} - ${patches.title}`;
@@ -529,165 +597,190 @@ class SdrWorker extends EventEmitter {
     this.currentFreq = null;
     this.activeStationName = null;
 
+    if (this.clientSocket) {
+      try { this.clientSocket.destroy(); } catch (_) {}
+      this.clientSocket = null;
+    }
+
     for (const proc of this.procs) {
       if (proc && !proc.killed) {
         try { proc.kill('SIGTERM'); } catch (_) {}
         setTimeout(() => {
           try { if (!proc.killed) proc.kill('SIGKILL'); } catch (_) {}
-        }, 800);
+        }, 600);
       }
     }
     this.procs = [];
-
-    // ONLY unlink fifoPath if NOT wideband cluster (cluster manages its own FIFO lifecycle)
-    if (!this.isWideband && this.fifoPath && fs.existsSync(this.fifoPath)) {
-      try { fs.unlinkSync(this.fifoPath); } catch (_) {}
-    }
-    this.fifoPath = null;
     this.resetState();
     this.emit('stopped');
   }
 }
 
 /**
- * WidebandCluster — Manages a single python wideband_channelizer.py instance
- * digitizing up to 2.4 MHz of spectrum on one RTL-SDR stick.
+ * WidebandCluster — Manages single-stick multi-channel DDC demodulation
  */
 class WidebandCluster {
-  constructor(clusterKey, deviceIndex, centerMhz, gain = 'auto', ppm = 0) {
+  constructor(clusterKey, deviceIndex, initialFreq, gain = null, ppm = 0) {
     this.clusterKey = clusterKey;
     this.deviceIndex = deviceIndex;
-    this.centerMhz = centerMhz;
+    this.centerMhz = initialFreq;
     this.gain = gain;
     this.ppm = ppm;
-    this.channels = new Map(); // freqMhz -> { fifoPath, worker }
+    this.channels = new Map(); // freq -> { worker, sockPath }
+    this.tmpDir = `/tmp/sonar_wb_${deviceIndex}`;
     this.proc = null;
-    this.tmpDir = path.join(os.tmpdir(), `sonar_wb_${clusterKey}`);
-    if (!fs.existsSync(this.tmpDir)) {
-      try { fs.mkdirSync(this.tmpDir, { recursive: true }); } catch (_) {}
-    }
+    this.running = true;
+
+    try { fs.mkdirSync(this.tmpDir, { recursive: true }); } catch (_) {}
   }
 
   canFit(freqMhz) {
-    const freqs = [...this.channels.keys(), freqMhz];
-    const minF = Math.min(...freqs);
-    const maxF = Math.max(...freqs);
+    const freqs = Array.from(this.channels.keys());
+    if (freqs.length === 0) return true;
+    const minF = Math.min(...freqs, freqMhz);
+    const maxF = Math.max(...freqs, freqMhz);
     return (maxF - minF) <= 2.1;
   }
 
-  addChannel(freqMhz, worker) {
-    const freqs = [...this.channels.keys(), freqMhz];
+  calculateOptimalCenter(newFreq = null) {
+    const freqs = Array.from(this.channels.keys());
+    if (newFreq !== null && !freqs.includes(newFreq)) freqs.push(newFreq);
+    if (freqs.length === 0) return this.centerMhz;
     const minF = Math.min(...freqs);
     const maxF = Math.max(...freqs);
-    this.centerMhz = parseFloat(((minF + maxF) / 2).toFixed(3));
-
-    const fifoPath = path.join(this.tmpDir, `ch_${String(freqMhz).replace('.', '_')}.raw`);
-    try {
-      if (!fs.existsSync(fifoPath)) {
-        execSync(`mkfifo "${fifoPath}"`);
+    let center = parseFloat(((minF + maxF) / 2.0).toFixed(3));
+    // If center matches any carrier, offset by +150 kHz to avoid LO DC spike
+    for (const f of freqs) {
+      if (Math.abs(center - f) < 0.05) {
+        center = parseFloat((center + 0.15).toFixed(3));
+        break;
       }
-    } catch (_) {}
-    this.channels.set(freqMhz, { fifoPath, worker });
-    this.restartProcess();
+    }
+    return center;
+  }
 
-    // Reconnect ALL active channel workers in the cluster so all channels receive continuous audio
-    setTimeout(() => {
-      for (const [f, ch] of this.channels) {
-        ch.worker.connectWidebandChannel(f, ch.fifoPath, { stationName: ch.worker.activeStationName });
+  startProcess() {
+    if (this.proc && !this.proc.killed) {
+      try { this.proc.kill('SIGTERM'); } catch (_) {}
+    }
+
+    const channelStr = Array.from(this.channels.keys()).join(',');
+    const gainArgs = this.gain !== null ? ['-g', String(this.gain)] : [];
+    const ppmArgs = this.ppm ? ['-p', String(this.ppm)] : [];
+
+    const scriptPath = path.join(__dirname, 'wideband_channelizer.py');
+    const args = [
+      scriptPath,
+      '-d', String(this.deviceIndex),
+      '-c', String(this.centerMhz),
+      '-ch', channelStr,
+      ...gainArgs,
+      ...ppmArgs,
+      '--sock-dir', this.tmpDir
+    ];
+
+    console.log(`[wideband-cluster:${this.clusterKey}] Spawning: python3 ${args.join(' ')}`);
+
+    this.proc = spawn('python3', args, {
+      stdio: ['pipe', 'pipe', 'pipe']
+    });
+
+    let buf = '';
+    this.proc.stdout.on('data', (d) => {
+      buf += d.toString('utf8');
+      const lines = buf.split('\n');
+      buf = lines.pop();
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        const statMatch = trimmed.match(/\[ch-stat:([\d.]+)\]\s+dbfs=([-\d.]+)\s+pct=(\d+)/i);
+        if (statMatch) {
+          const f = parseFloat(statMatch[1]);
+          const dbfs = parseFloat(statMatch[2]);
+          const pct = parseInt(statMatch[3], 10);
+          const chInfo = this.channels.get(f);
+          if (chInfo && chInfo.worker) {
+            chInfo.worker.updateState({
+              dbfs,
+              signalPercent: pct,
+              signal: `${pct}% (${dbfs.toFixed(1)} dBFS)`,
+              syncState: chInfo.worker.state.syncState === 'IDLE' ? 'RECEIVING' : chInfo.worker.state.syncState,
+            });
+          }
+        }
       }
-    }, 200);
+    });
+
+    this.proc.stderr.on('data', (d) => {
+      const msg = d.toString('utf8').trim();
+      if (msg) console.error(`[wideband-cluster:${this.clusterKey}] ${msg}`);
+    });
+
+    this.proc.on('exit', (code) => {
+      if (this.channels.size > 0 && this.running) {
+        console.warn(`[wideband-cluster:${this.clusterKey}] Process exited with code ${code}. Restarting in 2s...`);
+        setTimeout(() => {
+          if (this.channels.size > 0 && this.running) this.startProcess();
+        }, 2000);
+      }
+    });
+  }
+
+  addChannel(freqMhz, worker) {
+    const freqKhz = Math.round(freqMhz * 1000);
+    const sockPath = path.join(this.tmpDir, `ch_${freqKhz}.sock`);
+    const isNew = !this.channels.has(freqMhz);
+
+    this.channels.set(freqMhz, { worker, sockPath });
+
+    const newCenter = this.calculateOptimalCenter(freqMhz);
+    const centerChanged = Math.abs(newCenter - this.centerMhz) > 0.001;
+    this.centerMhz = newCenter;
+
+    if (!this.proc || this.proc.killed || isNew || centerChanged) {
+      this.startProcess();
+    } else {
+      try {
+        if (this.proc.stdin && this.proc.stdin.writable) {
+          this.proc.stdin.write(`ADD ${freqMhz}\n`);
+        }
+      } catch (_) {}
+    }
+
+    worker.connectWidebandChannel(freqMhz, sockPath, { stationName: worker.activeStationName });
   }
 
   removeChannel(freqMhz) {
     const ch = this.channels.get(freqMhz);
     if (ch) {
-      ch.worker.stop();
-      try { if (fs.existsSync(ch.fifoPath)) fs.unlinkSync(ch.fifoPath); } catch (_) {}
       this.channels.delete(freqMhz);
-    }
-    if (this.channels.size === 0) {
-      this.stop();
-    } else {
-      const freqs = [...this.channels.keys()];
-      const minF = Math.min(...freqs);
-      const maxF = Math.max(...freqs);
-      this.centerMhz = parseFloat(((minF + maxF) / 2).toFixed(3));
-      this.restartProcess();
-      setTimeout(() => {
-        for (const [f, c] of this.channels) {
-          c.worker.connectWidebandChannel(f, c.fifoPath, { stationName: c.worker.activeStationName });
-        }
-      }, 200);
-    }
-  }
-
-  restartProcess() {
-    if (this.proc && !this.proc.killed) {
-      try { this.proc.kill('SIGTERM'); } catch (_) {}
-    }
-    if (this.channels.size === 0) return;
-
-    const channelArgs = Array.from(this.channels.entries())
-      .map(([freq, ch]) => `${freq}:${ch.fifoPath}`)
-      .join(',');
-
-    const pyScript = path.join(__dirname, 'wideband_channelizer.py');
-    const pyCmd = fs.existsSync('/opt/whisper-env/bin/python3') ? '/opt/whisper-env/bin/python3' : 'python3';
-
-    const args = [
-      pyScript,
-      '--device', String(this.deviceIndex),
-      '--center', String(this.centerMhz),
-      '--sample-rate', '2400000',
-      '--gain', String(this.gain || 'auto'),
-      '--ppm', String(this.ppm || 0),
-      '--channels', channelArgs,
-    ];
-
-    console.log(`[sdr-wideband] Auto-adjusting cluster on Stick #${this.deviceIndex} (Center: ${this.centerMhz} MHz, Active Channels: [${[...this.channels.keys()].join(', ')}])`);
-    this.proc = spawn(pyCmd, args, { stdio: ['ignore', 'ignore', 'pipe'] });
-
-    let stderrBuf = '';
-    this.proc.stderr.on('data', (d) => {
-      stderrBuf += d.toString('utf8');
-      const lines = stderrBuf.split('\n');
-      stderrBuf = lines.pop();
-
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed) continue;
-
-        const statMatch = trimmed.match(/\[ch-stat:([\d.]+)\]\s+pct=(\d+)\s+dbfs=([-\d.]+)/);
-        if (statMatch) {
-          const freq = parseFloat(statMatch[1]);
-          const pct = parseInt(statMatch[2], 10);
-          const dbfs = parseFloat(statMatch[3]);
-          const ch = this.channels.get(freq);
-          if (ch && ch.worker) {
-            ch.worker.updateState({
-              signalPercent: pct,
-              dbfs: dbfs,
-              signal: `${pct}% (${dbfs >= 0 ? '+' : ''}${dbfs.toFixed(1)} dBFS)`,
-              syncState: ch.worker.state.syncState === 'IDLE' ? 'RECEIVING' : ch.worker.state.syncState,
-            });
+      if (this.channels.size === 0) {
+        this.stop();
+      } else {
+        try {
+          if (this.proc && this.proc.stdin && this.proc.stdin.writable) {
+            this.proc.stdin.write(`DEL ${freqMhz}\n`);
           }
-        } else if (trimmed.includes('Error') || trimmed.includes('offset')) {
-          console.log(`[sdr-wideband:${this.clusterKey}] ${trimmed}`);
-        }
+        } catch (_) {}
       }
-    });
+    }
   }
 
   stop() {
+    this.running = false;
     if (this.proc && !this.proc.killed) {
       try { this.proc.kill('SIGTERM'); } catch (_) {}
     }
     this.proc = null;
-    for (const [, ch] of this.channels) {
-      try { if (fs.existsSync(ch.fifoPath)) fs.unlinkSync(ch.fifoPath); } catch (_) {}
-    }
     this.channels.clear();
-    try { if (fs.existsSync(this.tmpDir)) fs.rmdirSync(this.tmpDir); } catch (_) {}
+    try {
+      if (fs.existsSync(this.tmpDir)) {
+        const files = fs.readdirSync(this.tmpDir);
+        for (const f of files) try { fs.unlinkSync(path.join(this.tmpDir, f)); } catch (_) {}
+        fs.rmdirSync(this.tmpDir);
+      }
+    } catch (_) {}
   }
 }
 
@@ -702,7 +795,7 @@ class SdrPoolManager extends EventEmitter {
     this.defaultWorker = new SdrWorker('default', { deviceIndex: 0 });
     this.workers.set('default', this.defaultWorker);
 
-    // Bubble up metadata and audio events from workers
+    // Bubble up metadata and audio events from default worker
     this.defaultWorker.on('metadata', (meta) => this.emit('metadata', meta));
     this.defaultWorker.on('audio', (chunk) => this.emit('audio', chunk));
   }
@@ -739,18 +832,34 @@ class SdrPoolManager extends EventEmitter {
         const tunerMatch = output.match(/Tuner\s+type[^\n:]*:\s*([^\r\n]+)/i);
         const tunerType = tunerMatch ? tunerMatch[1].trim() : 'R820T/R820T2/E4000';
 
-        // Check if any devices are currently busy
-        const busyIndexes = new Set();
-        for (const [, w] of this.workers) {
-          if (w.running) busyIndexes.add(w.deviceIndex);
+        // Check which physical dongles are actively tuning
+        const busyMap = new Map();
+        for (const [id, w] of this.workers) {
+          if (w.running) {
+            busyMap.set(w.deviceIndex, {
+              monitorId: id,
+              stationName: w.activeStationName || `FM ${w.currentFreq} MHz`,
+              freq: w.currentFreq,
+              mode: w.currentMode,
+              isWideband: w.isWideband
+            });
+          }
         }
         for (const [, c] of this.widebandClusters) {
-          busyIndexes.add(c.deviceIndex);
+          if (c.channels.size > 0) {
+            busyMap.set(c.deviceIndex, {
+              centerMhz: c.centerMhz,
+              channels: Array.from(c.channels.keys()),
+              isWideband: true,
+              stationName: `Wideband Center ${c.centerMhz} MHz (${Array.from(c.channels.keys()).join(', ')} MHz)`
+            });
+          }
         }
 
         const deviceList = devices.map(d => ({
           ...d,
-          inUse: busyIndexes.has(d.index),
+          inUse: busyMap.has(d.index),
+          activeStation: busyMap.get(d.index) || null,
         }));
 
         resolve({
@@ -796,7 +905,6 @@ class SdrPoolManager extends EventEmitter {
         handleChunk(d);
       });
 
-      // Periodically send 'y' in case prompt arrived without specific keywords
       const confirmTimer = setInterval(() => {
         try {
           if (proc.stdin.writable) proc.stdin.write('y\n');
@@ -875,7 +983,7 @@ class SdrPoolManager extends EventEmitter {
     const isExplicitWideband = pref === 'wideband' || options.isWideband;
     const isAuto = pref === 'auto' || pref === undefined || pref === null;
 
-    // ── Smart Dynamic FM Clustering ──────────────────────────────────────────
+    // ── Smart Dynamic FM Wideband Clustering ─────────────────────────────────
     if (mode === 'fm' && (isAuto || isExplicitWideband)) {
       // 1. Check if an active WidebandCluster can absorb this frequency (<= 2.1 MHz span)
       for (const [, cluster] of this.widebandClusters) {
@@ -889,6 +997,7 @@ class SdrPoolManager extends EventEmitter {
             worker.clusterKey = cluster.clusterKey;
             worker.deviceIndex = cluster.deviceIndex;
           }
+          worker.activeStationName = options.stationName || `FM ${freq} MHz`;
           cluster.addChannel(freq, worker);
           return worker;
         }
@@ -898,12 +1007,11 @@ class SdrPoolManager extends EventEmitter {
       for (const [existingId, existingWorker] of this.workers) {
         if (existingId !== id && existingWorker.running && existingWorker.currentMode === 'fm' && !existingWorker.isWideband && existingWorker.currentFreq) {
           const span = Math.abs(freq - existingWorker.currentFreq);
-          if (span <= 2.0) {
+          if (span <= 2.1) {
             const devIdx = existingWorker.deviceIndex;
             console.log(`[sdr-pool] Smart Auto-Adjust: Promoting Stick #${devIdx} to Wideband Cluster for ${existingWorker.currentFreq} MHz and ${freq} MHz (span: ${span.toFixed(2)} MHz)`);
-            const clusterKey = `wb_dev${devIdx}_${Math.round(freq)}`;
-            const centerMhz = parseFloat(((existingWorker.currentFreq + freq) / 2).toFixed(3));
-            const cluster = new WidebandCluster(clusterKey, devIdx, centerMhz, options.gain, options.ppm);
+            const clusterKey = `wb_dev${devIdx}`;
+            const cluster = new WidebandCluster(clusterKey, devIdx, existingWorker.currentFreq, options.gain, options.ppm);
             this.widebandClusters.set(clusterKey, cluster);
 
             // Migrate existing worker
@@ -921,24 +1029,30 @@ class SdrPoolManager extends EventEmitter {
               worker.clusterKey = clusterKey;
               worker.deviceIndex = devIdx;
             }
+            worker.activeStationName = options.stationName || `FM ${freq} MHz`;
             cluster.addChannel(freq, worker);
             return worker;
           }
         }
       }
 
-      // If user explicitly chose 'wideband' but no cluster exists yet, create one
+      // If user explicitly chose 'wideband' and no cluster exists yet, create one
       if (isExplicitWideband) {
         const scan = await this.scanDevices();
         const availableDev = scan.devices.find(d => !d.inUse)?.index || 0;
-        const clusterKey = `wb_dev${availableDev}_${Math.round(freq)}`;
+        const clusterKey = `wb_dev${availableDev}`;
         const cluster = new WidebandCluster(clusterKey, availableDev, freq, options.gain, options.ppm);
         this.widebandClusters.set(clusterKey, cluster);
 
         if (!worker) {
           worker = new SdrWorker(id, { deviceIndex: availableDev, isWideband: true, clusterKey });
           this.workers.set(id, worker);
+        } else {
+          worker.isWideband = true;
+          worker.clusterKey = clusterKey;
+          worker.deviceIndex = availableDev;
         }
+        worker.activeStationName = options.stationName || `FM ${freq} MHz`;
         cluster.addChannel(freq, worker);
         return worker;
       }
@@ -949,10 +1063,11 @@ class SdrPoolManager extends EventEmitter {
     if (typeof pref === 'number' || (typeof pref === 'string' && !isNaN(parseInt(pref, 10)) && pref !== 'auto' && pref !== 'wideband')) {
       chosenDeviceIndex = parseInt(pref, 10);
     } else {
-      // Auto-assign first idle dongle
       const scan = await this.scanDevices();
       const idle = scan.devices.find(d => !d.inUse);
-      if (idle) chosenDeviceIndex = idle.index;
+      if (idle) {
+        chosenDeviceIndex = idle.index;
+      }
     }
 
     if (!worker) {
@@ -1018,7 +1133,6 @@ class SdrPoolManager extends EventEmitter {
     };
   }
 
-  // Compatibility helpers for single-tuner callers
   getStatus() {
     return this.defaultWorker.getStatus();
   }
@@ -1047,5 +1161,5 @@ module.exports = {
   SdrWorker,
   WidebandCluster,
   SdrPoolManager,
-  sdrManager: sdrPoolManager, // Export as sdrManager for drop-in compatibility
+  sdrManager: sdrPoolManager,
 };

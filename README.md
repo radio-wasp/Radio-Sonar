@@ -67,9 +67,8 @@ It seamlessly unifies **Web Audio Streams** (HLS, ICY, AAC, MP3, Triton, Corus, 
 ### 📻 Off-Air RTL-SDR Demodulation Engine
 - **Analog FM Stereo + RDS/RBDS**: Spawns `rtl_fm` piped directly into `redsea` for real-time decoding of Program Service (`PS`), RadioText (`RT`), and RadioText+ (`RT+` Artist / Title).
 - **NRSC-5 Digital HD Radio**: Demodulates digital HD subchannels (`HD1` through `HD4`) with live MER (Modulation Error Ratio dB), BER, and broadcast station telemetry.
-- **Single-Stick Wideband FM Channelizer**: Demodulate multiple nearby FM stations concurrently from a single 2.4 MHz IQ spectrum slice on **one USB stick** via high-speed vectorized NumPy/SciPy DSP (`wideband_channelizer.py`).
-- **Smart Auto-Clustering**: Automatically detects when stations fit within the 2.4 MHz window, auto-adjusting the RTL center frequency to cover all channels with optimal SNR.
-- **Multi-Dongle Device Pooling**: Run 2, 3, 4, or more physical RTL-SDR USB sticks concurrently (`-d 0`, `-d 1`, `-d 2`...).
+- **Dedicated 1-Dongle-Per-Station Hardware Architecture**: High-fidelity isolation with physical hardware dongle assignment per station monitor.
+- **Multi-Dongle Device Pooling & Auto-Assignment**: Run 2, 3, 4, or more physical RTL-SDR USB sticks concurrently (`-d 0`, `-d 1`, `-d 2`...). Automatic detection picks the next available idle stick seamlessly.
 - **Built-in EEPROM Serial Burner**: Program permanent sequential serial numbers (`00000001`, `00000002`...) into dongle EEPROMs using `rtl_eeprom` to prevent USB port renumbering on reboots.
 - **5-Bar LED Signal Gauge**: Live visual signal strength meter with color-coding (Emerald Green, Cyan, Amber, Red) and exact dBFS/MER readouts.
 
@@ -99,15 +98,13 @@ graph TD
 
     subgraph "Demodulation & SDR Layer"
         USB --> POOL["SdrPoolManager (recorder/sdr_receiver.js)"]
-        POOL -->|"Analog Mode"| RTL_FM["rtl_fm + redsea (FM & RDS)"]
-        POOL -->|"HD Mode"| NRSC5["nrsc5 (Digital HD1-HD4)"]
-        POOL -->|"Wideband Mode"| WB["wideband_channelizer.py (2.4 MSps IQ)"]
+        POOL -->|"Analog FM"| RTL_FM["rtl_fm + redsea (FM & RDS)"]
+        POOL -->|"Digital HD"| NRSC5["nrsc5 (Digital HD1-HD4)"]
     end
 
     subgraph "Core DSP & Ingestion"
         RTL_FM --> STREAM["/api/sdr/stream/:id.mp3"]
         NRSC5 --> STREAM
-        WB --> STREAM
         WEB --> STREAM_WEB["Stream Ingester (audio_dsp.js)"]
     end
 
@@ -161,7 +158,6 @@ services:
       - ./recorder/audio_dsp.js:/app/audio_dsp.js
       - ./recorder/transcriber.js:/app/transcriber.js
       - ./recorder/sdr_receiver.js:/app/sdr_receiver.js
-      - ./recorder/wideband_channelizer.py:/app/wideband_channelizer.py
       - ./recorder/shazam_recognize.py:/app/shazam_recognize.py
       - ./recorder/mcp_server.js:/app/mcp_server.js
       - recordings:/recordings
@@ -213,7 +209,7 @@ Radio SONAR includes a built-in MCP server for AI pair programmers:
 
 | MCP Tool | Description |
 | :--- | :--- |
-| `barracuda_sdr_status` | Retrieve status of all connected dongles, RF telemetry, and wideband clusters |
+| `barracuda_sdr_status` | Retrieve status of all connected dongles, tuner state, and RF telemetry |
 | `barracuda_sdr_tune` | Programmatically tune an SDR receiver (`freq`, `mode`, `program`, `gain`, `device`) |
 | `barracuda_get_status` | Get active station monitors, now playing tracks, ad detection states, and RF meters |
 | `barracuda_start_monitor` | Start monitoring an audio stream or off-air frequency |
