@@ -425,86 +425,6 @@ select option { background: var(--surface); color: #ffffff; }
 }
 .btn-rec-off:hover { background: var(--surface3); color: var(--text); }
 
-/* Quick Launch Station Grid */
-.quick-launch {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: 22px 24px;
-  margin-bottom: 24px;
-  box-shadow: var(--shadow);
-}
-.quick-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 14px;
-  letter-spacing: -0.01em;
-}
-.station-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
-}
-.station-btn {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  transition: all .15s ease;
-  text-align: left;
-  width: 100%;
-}
-.station-btn:hover {
-  background: var(--surface);
-  border-color: var(--muted);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
-}
-.station-btn-logo {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-sm);
-  object-fit: contain;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  padding: 3px;
-  flex-shrink: 0;
-}
-.station-btn-placeholder {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-sm);
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  color: var(--muted);
-  flex-shrink: 0;
-}
-.station-btn-name {
-  font-size: 13.5px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.station-btn-sub {
-  font-size: 11px;
-  color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 1px;
-}
 .group-label {
   font-size: 12px;
   font-weight: 700;
@@ -2829,14 +2749,6 @@ async function toggleMetaLog(id, cur) {
   refreshStatus();
 }
 
-// ── Quick launch (removed from monitor tab) ──────────────────────────────────
-function renderQuickLaunch() {}
-
-// ── Live player ──────────────────────────────────────────────────────────────
-const livePlayers = {};
-function toggleLivePlayer() {}
-function preserveLivePlayers() {}
-
 // ── Status polling ────────────────────────────────────────────────────────────
 
 let prevStates = {};
@@ -3740,7 +3652,6 @@ async function loadStations() {
     const lgData = await lgRes.json();
     logos = {}; lgData.forEach(s => { logos[s.station] = s.url; });
     renderStationGroupsView();
-    renderQuickLaunch();
     populateStationSelects();
     // Background-fetch logos for any saved station that doesn't have one yet
     ensureStationLogos();
@@ -3756,7 +3667,6 @@ async function refreshAllLogos() {
     await fetch(`${API}/api/logos/clear-all`, { method: 'POST' });
     logos = {};
     renderStationGroupsView();
-    renderQuickLaunch();
     toast('Re-fetching logos in background...', 'success');
     _logoFetchRunning = false;
     ensureStationLogos();
@@ -3785,7 +3695,6 @@ async function ensureStationLogos() {  if (_logoFetchRunning) return;
         logos[s.name] = data.logoUrl;
         logos[s.name.trim().replace(/[^a-zA-Z0-9_-]/g, '_')] = data.logoUrl;
         renderStationGroupsView();
-        renderQuickLaunch();
       }
     } catch(_) {}
     await new Promise(r => setTimeout(r, 1500)); // gentle rate-limit
@@ -3800,7 +3709,6 @@ async function rebuildBellUrls() {
     toast(`Bell URLs rebuilt: ${data.fixed} updated across ${data.total} Bell stations`, 'success');
     savedStations = data.stations;
     renderStationGroupsView();
-    renderQuickLaunch();
   } catch(e) { toast('Rebuild failed: ' + e.message, 'error'); }
 }
 
@@ -3812,7 +3720,6 @@ async function repairStationUrls() {
       toast(`Fixed ${data.fixed} corrupted metadata URL(s)`, 'success');
       savedStations = data.stations;
       renderStationGroupsView();
-      renderQuickLaunch();
     } else {
       toast('No corrupted URLs found', '');
     }
@@ -3979,9 +3886,19 @@ async function scanSdrDevices() {
     const testSelect = document.getElementById('sdrTestDevice');
 
     if (data.detected && data.devices.length > 0) {
+      const activeClusters = pool.clusters || [];
       out.innerHTML = `<span style="color:var(--green)">✓ Found ${data.count} RTL-SDR Dongle(s) (${esc(data.tunerType)}):</span><br>` +
-        data.devices.map(d => `• Stick #${d.index} [SN: <code>${esc(d.serial||'00000001')}</code>]: <strong>${esc(d.name)}</strong> ${d.inUse ? '<span style="color:var(--amber);font-size:10.5px">[ACTIVE]</span>' : '<span style="color:var(--green);font-size:10.5px">[IDLE]</span>'}`).join('<br>') +
-        (pool.widebandClustersCount > 0 ? `<br><span style="color:var(--blue);font-size:11px">⚡ Active Wideband Clusters: ${pool.widebandClustersCount}</span>` : '');
+        data.devices.map(d => {
+          const stickCluster = activeClusters.find(c => c.deviceIndex === d.index);
+          let statusBadge = '<span style="color:var(--green);font-size:10.5px">[IDLE]</span>';
+          if (stickCluster) {
+            statusBadge = `<span style="color:var(--amber);font-size:10.5px">[ACTIVE - Wideband Center ${stickCluster.centerMhz} MHz (${stickCluster.channels.join(', ')} MHz)]</span>`;
+          } else if (d.inUse) {
+            statusBadge = '<span style="color:var(--amber);font-size:10.5px">[ACTIVE]</span>';
+          }
+          return `• Stick #${d.index} [SN: <code>${esc(d.serial||'00000001')}</code>]: <strong>${esc(d.name)}</strong> ${statusBadge}`;
+        }).join('<br>') +
+        (activeClusters.length > 0 ? `<br><span style="color:var(--blue);font-size:11px">⚡ Active Wideband Clusters: ${activeClusters.length} (${activeClusters.map(c => `Center ${c.centerMhz} MHz: [${c.channels.join(', ')} MHz]`).join(' | ')})</span>` : '');
 
       // Populate serial number manager list
       if (serialList) {
@@ -4201,7 +4118,6 @@ async function saveStation() {
     clearStationForm();
     await loadStations();
     renderStationGroupsView();
-    renderQuickLaunch();
   } catch(e) { toast('Save failed', 'error'); }
 }
 

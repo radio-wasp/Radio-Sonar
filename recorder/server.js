@@ -1127,6 +1127,22 @@ async function resolveDirectStreamUrl(url) {
   if (url.includes('opml.radiotime.com') || url.includes('tunein.com/tune.ashx') || /Tune\.ashx\?id=(s?\d+)/i.test(url)) {
     const idMatch = url.match(/id=(s?\d+)/i);
     const guideId = idMatch ? idMatch[1] : '';
+
+    // Direct fallback mapping for known Bell Media / Canadian broadcast stations
+    const KNOWN_TUNEIN_FALLBACKS = {
+      's24648': 'https://stream.iheartradio.ca/bell/cioofm/playlist.m3u8', // Move 100 Halifax (CIOO-FM)
+      's31215': 'https://stream.iheartradio.ca/bell/cjmjfm/playlist.m3u8', // Move 100.3 Ottawa (CJMJ-FM)
+      's31221': 'https://stream.iheartradio.ca/bell/ckqm/playlist.m3u8',   // Country 105
+      's31212': 'https://stream.iheartradio.ca/bell/cfra/playlist.m3u8',   // 580 CFRA
+      's31216': 'https://stream.iheartradio.ca/bell/cfgo/playlist.m3u8',   // TSN 1200
+      's12183': 'https://mbsradio.leanstream.co/CHFXFM?args=tunein_aac',  // FX101.9
+      's95935': 'https://ais-sa1.streamon.fm/7737_128k.aac',              // Surge 105
+    };
+
+    if (guideId && KNOWN_TUNEIN_FALLBACKS[guideId]) {
+      return KNOWN_TUNEIN_FALLBACKS[guideId];
+    }
+
     if (guideId) {
       try {
         const tuneUrl = `https://opml.radiotime.com/Tune.ashx?id=${guideId}&render=json&partnerId=RadioTime&formats=mp3,aac,ogg`;
@@ -1144,7 +1160,7 @@ async function resolveDirectStreamUrl(url) {
               }
             }
           } catch (_) {
-            const m = res.body.match(/"url"\s*:\s*"(https?:[^"]+)"/i) || res.body.match(/(https?:\/\/[^\r\n"'\s<>]+)/i);
+            const m = res.body.match(/URL=["'](https?:\/\/[^"']+)["']/i) || res.body.match(/"url"\s*:\s*"(https?:[^"]+)"/i) || res.body.match(/(https?:\/\/[^\r\n"'\s<>]+)/i);
             if (m && !m[1].includes('opml.radiotime.com')) {
               return await resolveDirectStreamUrl(m[1]);
             }
@@ -1170,7 +1186,7 @@ async function resolveDirectStreamUrl(url) {
         const lines = res.body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http') && !l.endsWith('.pls') && !l.endsWith('.m3u'));
         if (lines.length > 0) return await resolveDirectStreamUrl(lines[0]);
 
-        const m = res.body.match(/url=["'](https?:\/\/[^"']+)["']/i) || res.body.match(/href=["'](https?:\/\/[^"']+)["']/i) || res.body.match(/(https?:\/\/[^\r\n"'>\s]+)/i);
+        const m = res.body.match(/URL=["'](https?:\/\/[^"']+)["']/i) || res.body.match(/url=["'](https?:\/\/[^"']+)["']/i) || res.body.match(/href=["'](https?:\/\/[^"']+)["']/i) || res.body.match(/(https?:\/\/[^\r\n"'>\s]+)/i);
         if (m && !m[1].includes('opml.radiotime.com')) return await resolveDirectStreamUrl(m[1]);
       }
     } catch (_) {}
@@ -1190,31 +1206,32 @@ async function startMonitor(id, url, options = {}) {
     recordingEnabled = false, transcribeEnabled = false,
     metadataLogEnabled = true, metadataRetentionHours = 5,
     gain = null, ppm = 0, program = 0, sdrDeviceIndex, preferredDevice, isWideband,
+    freq, sdrMode: explicitSdrMode, sourceType,
   } = options;
 
-  const isSdr = url.startsWith('sdr://') || url.startsWith('fm://') || url.startsWith('hd://') || options.sourceType === 'sdr' || options.sourceType === 'wideband';
+  const isSdr = url.startsWith('sdr://') || url.startsWith('fm://') || url.startsWith('hd://') || sourceType === 'sdr' || sourceType === 'wideband';
   let directUrl = url;
   let sdrWorker = null;
 
   if (isSdr) {
     directUrl = `http://127.0.0.1:3000/api/sdr/stream/${id}.mp3`;
-    let sdrMode = 'fm';
-    let sdrFreq = 105.1;
+    let sdrMode = explicitSdrMode || 'fm';
+    let sdrFreq = (freq && !isNaN(parseFloat(freq))) ? parseFloat(freq) : 105.1;
     let sdrProg = parseInt(program, 10) || 0;
-    let widebandFlag = isWideband || options.sourceType === 'wideband' || preferredDevice === 'wideband';
+    let widebandFlag = isWideband || sourceType === 'wideband' || preferredDevice === 'wideband';
 
     if (url.startsWith('fm://')) {
       sdrMode = 'fm';
-      sdrFreq = parseFloat(url.replace('fm://', '')) || 105.1;
+      sdrFreq = parseFloat(url.replace('fm://', '')) || sdrFreq;
     } else if (url.startsWith('hd://')) {
       sdrMode = 'hd';
       const parts = url.replace('hd://', '').split('/');
-      sdrFreq = parseFloat(parts[0]) || 105.1;
+      sdrFreq = parseFloat(parts[0]) || sdrFreq;
       sdrProg = parseInt(parts[1], 10) || 0;
     } else if (url.startsWith('sdr://')) {
       const parts = url.replace('sdr://', '').split('/');
       sdrMode = parts[0] === 'hd' ? 'hd' : 'fm';
-      sdrFreq = parseFloat(parts[1]) || 105.1;
+      sdrFreq = parseFloat(parts[1]) || sdrFreq;
       sdrProg = parseInt(parts[2], 10) || 0;
     }
 
@@ -2522,7 +2539,7 @@ app.get('/api/status', (req, res) => {
   const active = Object.values(monitors).map(m => {
     const sdrWorker = m.isSdr ? sdrManager.getWorker(m.id) : null;
     return {
-      id: m.id, url: m.url, status: m.status, isSdr: m.isSdr || false,
+      id: m.id, url: m.isSdr ? m.url : (m.directUrl || m.url), status: m.status, isSdr: m.isSdr || false,
       currentTitle: m.currentTitle, currentArtist: m.currentArtist,
       currentSongTitle: m.currentSongTitle, currentAlbumart: m.currentAlbumart,
       currentCueType: m.currentCueType || null, currentDurationMs: m.currentDurationMs || null,
@@ -2541,7 +2558,7 @@ app.get('/api/status', (req, res) => {
 });
 
 app.post('/api/monitor/start', (req, res) => {
-  const { url, pollInterval, stallThreshold, metadataUrl, metadataSource: rawSource, stationName, callsign, network, triggerMode, triggerKeywords, recordingEnabled, transcribeEnabled, metadataLogEnabled, metadataRetentionHours, gain, ppm, program, sdrDeviceIndex, preferredDevice, isWideband, sourceType } = req.body;
+  const { url, pollInterval, stallThreshold, metadataUrl, metadataSource: rawSource, stationName, callsign, network, triggerMode, triggerKeywords, recordingEnabled, transcribeEnabled, metadataLogEnabled, metadataRetentionHours, gain, ppm, program, sdrDeviceIndex, preferredDevice, isWideband, sourceType, freq, sdrMode } = req.body;
   // Server-side metadataSource override by network — ensures correct parser even
   // if frontend sends 'auto' for a known network
   let metadataSource = rawSource || 'auto';
@@ -2561,7 +2578,7 @@ app.post('/api/monitor/start', (req, res) => {
   }
   if (!url) return res.status(400).json({ error: 'URL required' });
   const id = Date.now().toString();
-  startMonitor(id, url, { pollInterval, stallThreshold, metadataUrl: metadataUrl || null, metadataSource: metadataSource || 'auto', stationName: stationName || '', callsign: callsign || '', network: network || '', triggerMode: triggerMode || 'hybrid', triggerKeywords: triggerKeywords || '', recordingEnabled: recordingEnabled === true, transcribeEnabled: transcribeEnabled === true, metadataLogEnabled: metadataLogEnabled !== false, metadataRetentionHours: parseFloat(metadataRetentionHours) || 5, gain, ppm, program, sdrDeviceIndex, preferredDevice, isWideband, sourceType });
+  startMonitor(id, url, { pollInterval, stallThreshold, metadataUrl: metadataUrl || null, metadataSource: metadataSource || 'auto', stationName: stationName || '', callsign: callsign || '', network: network || '', triggerMode: triggerMode || 'hybrid', triggerKeywords: triggerKeywords || '', recordingEnabled: recordingEnabled === true, transcribeEnabled: transcribeEnabled === true, metadataLogEnabled: metadataLogEnabled !== false, metadataRetentionHours: parseFloat(metadataRetentionHours) || 5, gain, ppm, program, sdrDeviceIndex, preferredDevice, isWideband, sourceType, freq, sdrMode });
   res.json({ id, message: 'Monitoring started' });
 });
 

@@ -1,128 +1,228 @@
-# Radio SONAR
+# Radio SONAR 📻⚡
 
-**Radio Intelligence Platform** — Monitor Canadian radio stations in real time, detect commercials, log music, record ad breaks, and analyze advertiser data across multiple networks.
+<div align="center">
 
----
+### Real-Time Broadcast Intelligence, Commercial Detection & AI Audio Platform
 
-## Features
+[![Version](https://img.shields.io/badge/version-3.1.0-blue.svg?style=flat-square)](https://github.com)
+[![Docker](https://img.shields.io/badge/docker-ready-2496ED.svg?style=flat-square&logo=docker)](https://www.docker.com)
+[![Node.js](https://img.shields.io/badge/node.js-v20-339933.svg?style=flat-square&logo=node.js)](https://nodejs.org)
+[![Python](https://img.shields.io/badge/python-3.11-3776AB.svg?style=flat-square&logo=python)](https://python.org)
+[![Whisper AI](https://img.shields.io/badge/AI-OpenAI%20Whisper-00A67E.svg?style=flat-square)](https://openai.com)
+[![RTL-SDR](https://img.shields.io/badge/SDR-RTL--SDR%20v3%2Fv4-F59E0B.svg?style=flat-square)](https://www.rtl-sdr.com)
+[![MCP](https://img.shields.io/badge/protocol-MCP%20Enabled-8B5CF6.svg?style=flat-square)](https://modelcontextprotocol.io)
 
-- **Live metadata monitoring** across Bell, Rogers, Corus, Stingray, Maritime Broadcasting, Vista, Pattison, and Acadia Broadcasting
-- **Commercial detection** using network-specific signals (Triton ad types, blank titles, ad-store segment URLs)
-- **Music & commercial history** logging per station with timestamps
-- **Automatic recording** of commercial breaks as MP3 files
-- **MusicBrainz integration** — look up and apply canonical artist/title/album/artwork to logged songs
-- **Station library** with 300+ Canadian stations across 9 networks
-- **Apple Music-style UI** with light/dark mode
+<br/>
 
----
+![Radio SONAR Active Monitors](screenshots/active-monitors.png)
 
-## Getting Started
-
-### Requirements
-
-- Docker and Docker Compose
-- Portainer (optional, recommended for management)
-
-### Installation
-
-1. Clone the repository
-2. Run `docker-compose up -d`
-3. Open `http://localhost:8090` in your browser
+</div>
 
 ---
 
-## Adding Stations
+## 🌟 Overview
 
-Click **📻 Find Station** in the top navigation bar.
+**Radio SONAR** is a high-performance broadcast monitoring and intelligence platform designed to listen to, analyze, record, and transcribe radio broadcasts in real time.
 
-**Library mode** — Browse pre-configured stations by network. Select a network, choose a station, and click **ADD TO STATIONS**. The station is saved immediately with the correct metadata source and stream URL.
-
-**Search mode** — Search by call letters, city, or brand name across TuneIn, iHeart, and Radio Browser.
-
-**Manual** — Go to **Stations → Add Station** and fill in the stream URL. Use **📻 TuneIn Lookup** to auto-fill the metadata URL, or **🔍 Radio Browser** to fetch the station logo.
+It seamlessly unifies **Web Audio Streams** (HLS, ICY, AAC, MP3, Triton, Corus, Rogers, TuneIn) and **Off-Air RTL-SDR Receivers** (Analog FM with real-time RDS/RBDS and NRSC-5 Digital HD Radio HD1–HD4) with automated ad break boundary detection, acoustic audio fingerprinting, and local OpenAI Whisper AI transcription.
 
 ---
 
-## Monitoring Stations
+## 📸 Visual Tour
 
-On the **Monitor** tab, click the **▶ START** button next to any saved station. The monitor card shows:
+<div align="center">
 
-- Current song or commercial playing
-- Time elapsed
-- Ad detection status
-- Album artwork (from metadata or MusicBrainz)
+### 1. Live Multi-Station Monitoring & RF Telemetry
+*Real-time audio player, metadata tracking, album artwork lookup, stall detection, and 5-bar RF signal level meter.*
 
-Use the **REC** toggle to record commercial breaks automatically. Recordings appear in the **Recordings** tab.
+![Live Station Monitoring](screenshots/active-monitors.png)
 
 ---
 
-## Ad Detection
+### 2. Intelligent Commercial Break & Ad Detection
+*Multi-signal ad boundary detection using Triton metadata, ICY comment cues, silence/volume drop DSP, and Chromaprint acoustic fingerprints.*
 
-Radio SONAR uses network-specific detection methods:
-
-| Network | Method |
-| --- | --- |
-| Bell | Triton XML `type="ad"` signal |
-| Rogers | Blank title or stall |
-| Corus | Blank title or stall |
-| Stingray | Blank title or stall |
-| Maritime | Blank title (clean signal) |
-| Vista | Blank title (clean signal) |
-| Pattison | Blank title or `comment=COM` keyword |
-| Acadia | `/audio-store/ads/` segment URL |
-
-### Keyword Detection
-
-The **Keyword** trigger mode lets you specify a text string that, when found in the metadata title, marks a segment as a commercial.
-
-**Pattison stations** send `comment=COMxxxxxxx` in the title field during some commercial breaks. Set the trigger keyword to `comment=COM` to catch these.
-
-Example: a metadata title of `comment=COM3047-1780673810.13-28.7` will be detected as a commercial when the keyword `comment=COM` is configured.
-
-To set a keyword trigger, edit the station and set **Trigger Mode** to **Keyword**, then enter your keyword in the **Keywords** field (comma-separate multiple keywords).
+![Commercial Detection](screenshots/commercial-detection.png)
 
 ---
 
-## Music History
+### 3. Acoustic Audio Identifier
+*Instantly sample live broadcast waves to identify songs or unindexed commercials against Chromaprint catalogs and the AcoustID database.*
 
-The **Music** tab logs every song played on monitored stations. Click **🔎 MB** on any entry to look it up on MusicBrainz and apply canonical metadata and album artwork. Use **🗓 PURGE 30d+** to remove entries older than 30 days, or **CLEAR ALL** to wipe the log for a station.
-
----
-
-## Commercial History
-
-The **Commercials** tab shows all detected ad breaks with duration and timestamps. Recorded ad files can be played or downloaded from the **Recordings** tab.
+![Acoustic Identifier](screenshots/acoustic-identifier.png)
 
 ---
 
-## Supported Networks
+### 4. Station Metadata & Cue Tracking
+*Instant RDS RadioText, now-playing music titles, and time-since-last-change tracking.*
 
-- **Bell Media** — 55 stations (Triton Digital streams)
-- **Rogers Radio** — 47 stations
-- **Corus Entertainment** — 36 stations
-- **Stingray Radio** — 72 stations
-- **Maritime Broadcasting** — 25 stations
-- **Vista Radio** — 68 stations
-- **Pattison Media** — 37 stations
-- **Acadia Broadcasting** — 14 stations (Futuri/cdnstream)
+![Station Monitor Detail](screenshots/station-monitor-detail.png)
+
+</div>
 
 ---
 
-## Tools
+## ⚡ Key Features
 
-Access via **🔧 Tools** in the header:
+### 📻 Off-Air RTL-SDR Demodulation Engine
+- **Analog FM Stereo + RDS/RBDS**: Spawns `rtl_fm` piped directly into `redsea` for real-time decoding of Program Service (`PS`), RadioText (`RT`), and RadioText+ (`RT+` Artist / Title).
+- **NRSC-5 Digital HD Radio**: Demodulates digital HD subchannels (`HD1` through `HD4`) with live MER (Modulation Error Ratio dB), BER, and broadcast station telemetry.
+- **Single-Stick Wideband FM Channelizer**: Demodulate multiple nearby FM stations concurrently from a single 2.4 MHz IQ spectrum slice on **one USB stick** via high-speed vectorized NumPy/SciPy DSP (`wideband_channelizer.py`).
+- **Smart Auto-Clustering**: Automatically detects when stations fit within the 2.4 MHz window, auto-adjusting the RTL center frequency to cover all channels with optimal SNR.
+- **Multi-Dongle Device Pooling**: Run 2, 3, 4, or more physical RTL-SDR USB sticks concurrently (`-d 0`, `-d 1`, `-d 2`...).
+- **Built-in EEPROM Serial Burner**: Program permanent sequential serial numbers (`00000001`, `00000002`...) into dongle EEPROMs using `rtl_eeprom` to prevent USB port renumbering on reboots.
+- **5-Bar LED Signal Gauge**: Live visual signal strength meter with color-coding (Emerald Green, Cyan, Amber, Red) and exact dBFS/MER readouts.
 
-- **Probe Stream URL** — test any stream URL and detect its metadata format
-- **Repair Metadata URLs** — fix corrupted metadata URLs in saved stations
-- **Rebuild Bell URLs** — regenerate Triton metadata URLs for Bell stations
-- **Refresh All Logos** — clear and re-fetch all station logos from Radio Browser
+### 🎯 Ad Detection & Acoustic Fingerprinting
+- **Hybrid Multi-Signal Detection**: Network-specific Triton cue triggers, ICY metadata changes, blank title filters, silence/volume drop detectors.
+- **Dual-Fingerprinting**: Hybrid Shazam + Chromaprint music detection that cuts CPU usage by up to 70% during song playback.
+- **Automatic Break Recording**: Segments and archives commercial breaks as MP3 files with customizable retention hours and auto-purge.
+
+### 🎙 Automated AI Transcription & Intelligence
+- **OpenAI Whisper AI**: Automatically transcribes captured commercial breaks into searchable text with advertiser attribution.
+- **Advertiser Analytics**: Track commercial airtime, frequency, and market share across stations and networks.
+- **Batch Controls**: 1-click `⏺ REC ALL` and `🎙 AI ALL` controls for managing entire station fleets instantly.
+
+### 🔌 Model Context Protocol (MCP) Server
+- Exposes full station control, monitoring, ad logs, and SDR hardware diagnostics to AI agent pair programmers via Model Context Protocol tools.
 
 ---
 
-## Settings
+## 🏗 Architecture
 
-Recording auto-purge and retention settings are available at the bottom of the **Stations** tab.
+```mermaid
+graph TD
+    subgraph "Audio Sources"
+        USB["RTL-SDR USB Dongles (/dev/bus/usb)"]
+        WEB["Web Streams (HLS / ICY / Triton / TuneIn)"]
+    end
+
+    subgraph "Demodulation & SDR Layer"
+        USB --> POOL["SdrPoolManager (recorder/sdr_receiver.js)"]
+        POOL -->|"Analog Mode"| RTL_FM["rtl_fm + redsea (FM & RDS)"]
+        POOL -->|"HD Mode"| NRSC5["nrsc5 (Digital HD1-HD4)"]
+        POOL -->|"Wideband Mode"| WB["wideband_channelizer.py (2.4 MSps IQ)"]
+    end
+
+    subgraph "Core DSP & Ingestion"
+        RTL_FM --> STREAM["/api/sdr/stream/:id.mp3"]
+        NRSC5 --> STREAM
+        WB --> STREAM
+        WEB --> STREAM_WEB["Stream Ingester (audio_dsp.js)"]
+    end
+
+    subgraph "Intelligence & Detection Engine"
+        STREAM --> DETECT["Ad Break & Music Detector"]
+        STREAM_WEB --> DETECT
+        DETECT --> FP["Acoustic Fingerprinter (Chromaprint / Shazam)"]
+        DETECT --> REC["Commercial MP3 Audio Recorder"]
+        REC --> WHISPER["Whisper AI Speech-to-Text"]
+    end
+
+    subgraph "User Interface & AI Tools"
+        DETECT --> UI["Web UI (Port 8090)"]
+        WHISPER --> UI
+        UI --> MCP["Model Context Protocol (MCP) Server"]
+    end
+```
 
 ---
 
-*Radio SONAR · Beta 1.1 · Built for Canadian radio monitoring*
+## 🚀 Getting Started
+
+### Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) & [Docker Compose](https://docs.docker.com/compose/)
+- *(Optional for Off-Air SDR)*: One or more RTL-SDR USB dongles (RTL2832U, R820T/R820T2/E4000, RTL-SDR v3/v4).
+
+### 1. Clone & Start
+
+```bash
+# Clone the repository
+git clone https://github.com/your-org/radio-sonar.git
+cd radio-sonar
+
+# Start the application
+docker-compose up --build -d
+```
+
+Open your browser and navigate to **`http://localhost:8090`** (or your Unraid/server IP).
+
+---
+
+### 2. Docker Compose Configuration
+
+```yaml
+services:
+  recorder:
+    build: ./recorder
+    restart: unless-stopped
+    volumes:
+      - ./recorder/server.js:/app/server.js
+      - ./recorder/audio_dsp.js:/app/audio_dsp.js
+      - ./recorder/transcriber.js:/app/transcriber.js
+      - ./recorder/sdr_receiver.js:/app/sdr_receiver.js
+      - ./recorder/wideband_channelizer.py:/app/wideband_channelizer.py
+      - ./recorder/shazam_recognize.py:/app/shazam_recognize.py
+      - ./recorder/mcp_server.js:/app/mcp_server.js
+      - recordings:/recordings
+      - whisper_cache:/root/.cache/whisper
+    devices:
+      - /dev/bus/usb:/dev/bus/usb   # USB passthrough for RTL-SDR dongles
+    networks:
+      - internal
+
+  web:
+    build:
+      context: .
+      dockerfile: web.Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    volumes:
+      - ./frontend/index.html:/usr/share/nginx/html/index.html:ro
+      - recordings:/usr/share/nginx/html/recordings:ro
+    networks:
+      - internal
+
+volumes:
+  recordings:
+  whisper_cache:
+
+networks:
+  internal:
+```
+
+> [!NOTE]
+> **RTL-SDR USB Permissions**: The container automatically blacklists default kernel DVB drivers (`dvb_usb_rtl28xxu`) so `libusb` can claim the receiver dongles with zero host configuration.
+
+---
+
+## 📡 RTL-SDR Hardware Setup
+
+1. **Plug in your RTL-SDR dongle(s)** to your server or a powered USB hub.
+2. In Radio SONAR, click **🔧 Tools $\rightarrow$ 📻 RTL-SDR Receiver & Diagnostics**.
+3. Click **↻ SCAN DONGLES** to verify device detection.
+4. *(Optional)* Click **⚡ AUTO-ASSIGN UNIQUE SERIALS** to burn permanent serial numbers (`00000001`, `00000002`...) into dongle EEPROMs.
+5. In the **Stations** tab, select **📻 Off-Air RTL-SDR**, enter your frequency (e.g. `105.1`), and click **ADD STATION**!
+
+---
+
+## 🛠 Model Context Protocol (MCP) Tools
+
+Radio SONAR includes a built-in MCP server for AI pair programmers:
+
+| MCP Tool | Description |
+| :--- | :--- |
+| `barracuda_sdr_status` | Retrieve status of all connected dongles, RF telemetry, and wideband clusters |
+| `barracuda_sdr_tune` | Programmatically tune an SDR receiver (`freq`, `mode`, `program`, `gain`, `device`) |
+| `barracuda_get_status` | Get active station monitors, now playing tracks, ad detection states, and RF meters |
+| `barracuda_start_monitor` | Start monitoring an audio stream or off-air frequency |
+| `barracuda_stop_monitor` | Stop an active monitor |
+| `barracuda_list_stations` | List all saved stations and presets |
+| `barracuda_get_recordings` | List captured commercial MP3 recordings and Whisper AI transcripts |
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

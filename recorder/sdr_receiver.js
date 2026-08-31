@@ -360,7 +360,16 @@ class SdrWorker extends EventEmitter {
    * Connect to Wideband Channelizer FIFO output
    */
   connectWidebandChannel(freqMhz, fifoPath, options = {}) {
-    this.stop();
+    if (this.fifoStream) {
+      try { this.fifoStream.destroy(); } catch (_) {}
+      this.fifoStream = null;
+    }
+    for (const proc of this.procs) {
+      if (proc && !proc.killed) {
+        try { proc.kill('SIGTERM'); } catch (_) {}
+      }
+    }
+    this.procs = [];
     this.running = true;
     this.isWideband = true;
     this.currentMode = 'fm';
@@ -368,7 +377,6 @@ class SdrWorker extends EventEmitter {
     this.fifoPath = fifoPath;
     this.activeStationName = options.stationName || `FM ${freqMhz} MHz (Wideband)`;
 
-    this.resetState();
     this.updateState({
       running: true,
       mode: 'fm',
@@ -392,6 +400,8 @@ class SdrWorker extends EventEmitter {
 
       // Open FIFO read stream
       const fifoStream = fs.createReadStream(fifoPath);
+      this.fifoStream = fifoStream;
+
       fifoStream.pipe(redseaProc.stdin);
       redseaProc.stdout.pipe(ffmpegProc.stdin);
 
@@ -419,6 +429,12 @@ class SdrWorker extends EventEmitter {
         }
       });
 
+      redseaProc.on('error', (err) => {
+        console.warn(`[sdr-worker:${this.id}] redsea process error:`, err.message);
+      });
+      ffmpegProc.on('error', (err) => {
+        console.warn(`[sdr-worker:${this.id}] ffmpeg process error:`, err.message);
+      });
       fifoStream.on('error', (err) => {
         console.warn(`[sdr-worker:${this.id}] FIFO read error:`, err.message);
       });
@@ -523,7 +539,8 @@ class SdrWorker extends EventEmitter {
     }
     this.procs = [];
 
-    if (this.fifoPath && fs.existsSync(this.fifoPath)) {
+    // ONLY unlink fifoPath if NOT wideband cluster (cluster manages its own FIFO lifecycle)
+    if (!this.isWideband && this.fifoPath && fs.existsSync(this.fifoPath)) {
       try { fs.unlinkSync(this.fifoPath); } catch (_) {}
     }
     this.fifoPath = null;
@@ -567,12 +584,18 @@ class WidebandCluster {
     const fifoPath = path.join(this.tmpDir, `ch_${String(freqMhz).replace('.', '_')}.raw`);
     try {
       if (!fs.existsSync(fifoPath)) {
-        exec(`mkfifo "${fifoPath}"`);
+        execSync(`mkfifo "${fifoPath}"`);
       }
     } catch (_) {}
     this.channels.set(freqMhz, { fifoPath, worker });
     this.restartProcess();
-    worker.connectWidebandChannel(freqMhz, fifoPath, { stationName: worker.activeStationName });
+
+    // Reconnect ALL active channel workers in the cluster so all channels receive continuous audio
+    setTimeout(() => {
+      for (const [f, ch] of this.channels) {
+        ch.worker.connectWidebandChannel(f, ch.fifoPath, { stationName: ch.worker.activeStationName });
+      }
+    }, 200);
   }
 
   removeChannel(freqMhz) {
@@ -590,6 +613,11 @@ class WidebandCluster {
       const maxF = Math.max(...freqs);
       this.centerMhz = parseFloat(((minF + maxF) / 2).toFixed(3));
       this.restartProcess();
+      setTimeout(() => {
+        for (const [f, c] of this.channels) {
+          c.worker.connectWidebandChannel(f, c.fifoPath, { stationName: c.worker.activeStationName });
+        }
+      }, 200);
     }
   }
 
@@ -619,10 +647,33 @@ class WidebandCluster {
     console.log(`[sdr-wideband] Auto-adjusting cluster on Stick #${this.deviceIndex} (Center: ${this.centerMhz} MHz, Active Channels: [${[...this.channels.keys()].join(', ')}])`);
     this.proc = spawn(pyCmd, args, { stdio: ['ignore', 'ignore', 'pipe'] });
 
+    let stderrBuf = '';
     this.proc.stderr.on('data', (d) => {
-      const str = d.toString('utf8').trim();
-      if (str.includes('Error') || str.includes('offset')) {
-        console.log(`[sdr-wideband:${this.clusterKey}] ${str}`);
+      stderrBuf += d.toString('utf8');
+      const lines = stderrBuf.split('\n');
+      stderrBuf = lines.pop();
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+
+        const statMatch = trimmed.match(/\[ch-stat:([\d.]+)\]\s+pct=(\d+)\s+dbfs=([-\d.]+)/);
+        if (statMatch) {
+          const freq = parseFloat(statMatch[1]);
+          const pct = parseInt(statMatch[2], 10);
+          const dbfs = parseFloat(statMatch[3]);
+          const ch = this.channels.get(freq);
+          if (ch && ch.worker) {
+            ch.worker.updateState({
+              signalPercent: pct,
+              dbfs: dbfs,
+              signal: `${pct}% (${dbfs >= 0 ? '+' : ''}${dbfs.toFixed(1)} dBFS)`,
+              syncState: ch.worker.state.syncState === 'IDLE' ? 'RECEIVING' : ch.worker.state.syncState,
+            });
+          }
+        } else if (trimmed.includes('Error') || trimmed.includes('offset')) {
+          console.log(`[sdr-wideband:${this.clusterKey}] ${trimmed}`);
+        }
       }
     });
   }
@@ -945,13 +996,24 @@ class SdrPoolManager extends EventEmitter {
     const activeWorkers = [];
     for (const [id, w] of this.workers) {
       if (w.running) {
-        activeWorkers.push(w.getStatus());
+        activeWorkers.push({ id, ...w.getStatus() });
       }
+    }
+    const clusters = [];
+    for (const [k, c] of this.widebandClusters) {
+      clusters.push({
+        clusterKey: k,
+        deviceIndex: c.deviceIndex,
+        centerMhz: c.centerMhz,
+        channels: Array.from(c.channels.keys()),
+        running: !!(c.proc && !c.proc.killed),
+      });
     }
     return {
       activeWorkersCount: activeWorkers.length,
       workers: activeWorkers,
       widebandClustersCount: this.widebandClusters.size,
+      clusters: clusters,
       defaultStatus: this.defaultWorker.getStatus(),
     };
   }

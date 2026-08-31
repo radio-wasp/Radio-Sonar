@@ -683,6 +683,21 @@ async function resolveDirectStreamUrl(url) {
   if (url.includes('opml.radiotime.com') || url.includes('tunein.com/tune.ashx') || /Tune\.ashx\?id=(s?\d+)/i.test(url)) {
     const idMatch = url.match(/id=(s?\d+)/i);
     const guideId = idMatch ? idMatch[1] : '';
+
+    const KNOWN_TUNEIN_FALLBACKS = {
+      's24648': 'https://stream.iheartradio.ca/bell/cioofm/playlist.m3u8', // Move 100 Halifax (CIOO-FM)
+      's31215': 'https://stream.iheartradio.ca/bell/cjmjfm/playlist.m3u8', // Move 100.3 Ottawa (CJMJ-FM)
+      's31221': 'https://stream.iheartradio.ca/bell/ckqm/playlist.m3u8',   // Country 105
+      's31212': 'https://stream.iheartradio.ca/bell/cfra/playlist.m3u8',   // 580 CFRA
+      's31216': 'https://stream.iheartradio.ca/bell/cfgo/playlist.m3u8',   // TSN 1200
+      's12183': 'https://mbsradio.leanstream.co/CHFXFM?args=tunein_aac',  // FX101.9
+      's95935': 'https://ais-sa1.streamon.fm/7737_128k.aac',              // Surge 105
+    };
+
+    if (guideId && KNOWN_TUNEIN_FALLBACKS[guideId]) {
+      return KNOWN_TUNEIN_FALLBACKS[guideId];
+    }
+
     if (guideId) {
       try {
         const tuneUrl = `https://opml.radiotime.com/Tune.ashx?id=${guideId}&render=json&partnerId=RadioTime&formats=mp3,aac,ogg`;
@@ -691,11 +706,19 @@ async function resolveDirectStreamUrl(url) {
           signal: AbortSignal.timeout(6000)
         });
         if (res.ok) {
-          const data = await res.json();
-          const items = Array.isArray(data.body) ? data.body : [data.body || {}];
-          for (const item of items) {
-            if (item && item.url && !item.url.includes('opml.radiotime.com')) {
-              return await resolveDirectStreamUrl(item.url);
+          try {
+            const data = await res.json();
+            const items = Array.isArray(data.body) ? data.body : [data.body || {}];
+            for (const item of items) {
+              if (item && item.url && !item.url.includes('opml.radiotime.com')) {
+                return await resolveDirectStreamUrl(item.url);
+              }
+            }
+          } catch (_) {
+            const text = await res.text();
+            const m = text.match(/URL=["'](https?:\/\/[^"']+)["']/i) || text.match(/"url"\s*:\s*"(https?:[^"]+)"/i) || text.match(/(https?:\/\/[^\r\n"'\s<>]+)/i);
+            if (m && !m[1].includes('opml.radiotime.com')) {
+              return await resolveDirectStreamUrl(m[1]);
             }
           }
         }
@@ -720,7 +743,7 @@ async function resolveDirectStreamUrl(url) {
         const lines = body.split('\n').map(l => l.trim()).filter(l => l.startsWith('http') && !l.endsWith('.pls') && !l.endsWith('.m3u'));
         if (lines.length > 0) return await resolveDirectStreamUrl(lines[0]);
 
-        const m = body.match(/url=["'](https?:\/\/[^"']+)["']/i) || body.match(/href=["'](https?:\/\/[^"']+)["']/i) || body.match(/(https?:\/\/[^\r\n"'>\s]+)/i);
+        const m = body.match(/URL=["'](https?:\/\/[^"']+)["']/i) || body.match(/url=["'](https?:\/\/[^"']+)["']/i) || body.match(/href=["'](https?:\/\/[^"']+)["']/i) || body.match(/(https?:\/\/[^\r\n"'>\s]+)/i);
         if (m && !m[1].includes('opml.radiotime.com')) return await resolveDirectStreamUrl(m[1]);
       }
     } catch (_) {}
