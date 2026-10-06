@@ -1,0 +1,8 @@
+FROM nginx:alpine
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY frontend/index.html /usr/share/nginx/html/index.html
+COPY frontend/sonar-logo.png /usr/share/nginx/html/sonar-logo.png
+COPY frontend/stingray-logo.png /usr/share/nginx/html/stingray-logo.png
+COPY frontend/favicon.png /usr/share/nginx/html/favicon.png
+COPY README.md /usr/share/nginx/html/README.md
+

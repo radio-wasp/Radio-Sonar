@@ -1,8 +1,8 @@
-# Radio SONAR 📻⚡
+# Stingray BIC 📻⚡
 
 <div align="center">
 
-### Real-Time Broadcast Intelligence, Commercial Detection & AI Audio Platform
+### Broadcast Intelligence Console · Commercial Detection & AI Audio Platform
 
 [![Version](https://img.shields.io/badge/version-3.1.0-blue.svg?style=flat-square)](https://github.com)
 [![Docker](https://img.shields.io/badge/docker-ready-2496ED.svg?style=flat-square&logo=docker)](https://www.docker.com)
@@ -14,7 +14,7 @@
 
 <br/>
 
-![Radio SONAR Active Monitors](screenshots/active-monitors.png)
+![Stingray BIC Active Monitors](screenshots/active-monitors.png)
 
 </div>
 
@@ -22,7 +22,7 @@
 
 ## 🌟 Overview
 
-**Radio SONAR** is a high-performance broadcast monitoring and intelligence platform designed to listen to, analyze, record, and transcribe radio broadcasts in real time.
+**Stingray BIC** (Broadcast Intelligence Console) is a high-performance broadcast monitoring and intelligence platform designed to listen to, analyze, record, and transcribe radio broadcasts in real time.
 
 It seamlessly unifies **Web Audio Streams** (HLS, ICY, AAC, MP3, Triton, Corus, Rogers, TuneIn) and **Off-Air RTL-SDR Receivers** (Analog FM with real-time RDS/RBDS and NRSC-5 Digital HD Radio HD1–HD4) with automated ad break boundary detection, acoustic audio fingerprinting, and local OpenAI Whisper AI transcription.
 
@@ -196,7 +196,7 @@ networks:
 ## 📡 RTL-SDR Hardware Setup
 
 1. **Plug in your RTL-SDR dongle(s)** to your server or a powered USB hub.
-2. In Radio SONAR, click **🔧 Tools $\rightarrow$ 📻 RTL-SDR Receiver & Diagnostics**.
+2. In Stingray BIC, click **🔧 Tools $\rightarrow$ 📻 RTL-SDR Receiver & Diagnostics**.
 3. Click **↻ SCAN DONGLES** to verify device detection.
 4. *(Optional)* Click **⚡ AUTO-ASSIGN UNIQUE SERIALS** to burn permanent serial numbers (`00000001`, `00000002`...) into dongle EEPROMs.
 5. In the **Stations** tab, select **📻 Off-Air RTL-SDR**, enter your frequency (e.g. `105.1`), and click **ADD STATION**!
@@ -205,7 +205,7 @@ networks:
 
 ## 🛠 Model Context Protocol (MCP) Tools
 
-Radio SONAR includes a built-in MCP server for AI pair programmers:
+Stingray BIC includes a built-in MCP server for AI pair programmers:
 
 | MCP Tool | Description |
 | :--- | :--- |
